@@ -1,41 +1,194 @@
 # OmokProj
-### 2주차
+## API 서버
 
-### API 서버
+## Hive Server
 
-**Hive 서버 기능 3개**
+### 계정 생성
+- 클라이언트 → 서버 전송 데이터
+  - account : 이메일
+  - password : 패스워드
+1. account가 이메일 형식인지 확인
+2. account가 accountDB에 이미 등록되어 있는지 확인
+3. DB에 account와 password 등록(계정 생성)
+- 요청 예시
+  ```csharp
+        POST http://localhost:5021/accountcreate
+        Content-Type: application.json
+        
+        {
+              "account" : "kong@gmail.com",
+              "password" : "1234"
+        }
+  ```
+  - 응답 예시
+    - 이메일 형식이 아닌 경우(ErrorCode = ?)
+      ```csharp
+        {
+              "result" : ?
+        }
+      ```
+    - 이미 등록된 이메일인 경우(ErrorCode = ?)
+      ```csharp
+        {
+              "result" : ?
+        }
+      ```
+    - 계정이 정상적으로 생성된 경우(ErrorCode = 0)
+      ```csharp
+        {
+              "result" : 0
+        }
+      ```
 
-- 계정 생성
-    - Hive 서버에 구현
-    - 최소 저장 데이터
-        - 이메일 = 계정
-        - 패스워드 → 암호화
-    
-    클라 → Hive서버 : 이메일, 패스워드
-    
-    Hive서버 : 이메일 형식 맞는지 확인 + 중복 체크 → 성공 시 DB에 저장(패스워드 암호화)
-    
-    Hive 서버 : 실패 시 실패 응답 / 성공 시 성공 응답
-    
-- 클라이언트 - Hive 서버 로그인
-    - Hive 서버에 구현
-    - 로그인에 성공한 경우 인증 토큰을 생성하고 전달하기
-        - Hive 서버가 인증 토큰을 생성하고 클라이언트에게 전달
-    - 없는 계정인 경우? → 없다고 알려주기
-    
-    클라 → Hive서버 : 이메일, 패스워드
-    
-    Hive 서버 : 이메일 존재하는지 확인 → 존재 하면 패스워드 맞는지 확인 → 둘 다 통과하면 인증토큰 생성 + 응답으로 토큰 전달
-    
+<br>
 
-**API 서버 기능 1개**
+### 계정 생성 Sequence Flow
+***
 
-- 로그인
-    - API 게임 서버에 구현
-    - 클라이언트는 Hive 서버가 준 인증토큰으로 API 게임 서버한테 로그인 요청
-    - API 게임 서버는 클라이언트가 준 인증토큰을 Hive 서버에게 유효한 토큰인지 확인하기
-    - 처음으로 API 게임 서버에 접속한 것이면 기본 게임 데이터 생성하기
-        - 테이블 이름 : UserGameData
-            - 레벨, 경험치, 승/패 정보(전체 통계 몇 승 몇 패) 필수
-            
-            + 우편함, 출석부, 유저의 아이템 정보를 가진 테이블(인벤토리?)
+```mermaid
+sequenceDiagram
+    actor A as client
+    participant B as Hive_Server
+    participant C as Account_DB
+
+    %% 계정 생성
+    note left of A: 계정 생성
+    A->>B: [POST] /accountcreate
+    B->>C: 이메일 중복 조회
+    C--)B: 중복 여부 응답
+    B--)A: [ErrorCode:?]이메일이 이미 등록된 경우(중복)
+    B->>C: 이메일 / 패스워드 등록
+    B--)A: [ErrorCode:0] 성공 응답
+```
+<br>
+
+### 클라이언트 - Hive 서버 로그인
+- 클라이언트 → 서버 전송 데이터
+  - account : 이메일
+  - password : 패스워드
+1. accountDB에서 account에 해당하는 데이터 얻어오기
+2. account가 존재하는지 확인
+3. 전달받은 password와 얻어온 password가 일치하는지 확인
+4. 인증토큰 생성
+
+- 요청 예시
+  ```csharp
+        POST http://localhost:5021/hivelogin
+        Content-Type: application.json
+        
+        {
+              "account" : "kong@gmail.com",
+              "password" : "1234"
+        }
+  ```
+  - 응답 예시
+    - 존재하지 않는 계정인 경우(ErrorCode = ?)
+      ```csharp
+        {
+              "result" : ?
+        }
+      ```
+    - 패스워드가 일치하지 않는 경우(ErrorCode = ?)
+      ```csharp
+        {
+              "result" : ?
+        }
+      ```
+    - 로그인에 성공한 경우(ErrorCode = 0)
+      ```csharp
+        {
+              "result" : 0,
+              "authToken" : ERQWEROJJP123
+        }
+      ```
+
+<br>
+
+### 인증토큰 검증
+- 게임 서버 → Hive 서버 전송 데이터
+  - account : 이메일
+  - authToken : 인증토큰
+1. account를 이용해서 인증토큰 발급하는 로직 수행
+2. 전달받은 authToken과 새로 만든 인증토큰이 동일한지 확인
+3. 게임 서버에 응답
+
+- 요청 예시
+  ```csharp
+        POST http://localhost:5021/validauthtoken
+        Content-Type: application.json
+        
+        {
+              "account" : "kong@gmail.com",
+              "authToken" : "EQNKFLWE123"
+        }
+  ```
+  - 응답 예시
+    - 인증토큰이 일치하지 않는 경우(ErrorCode = ?)
+      ```csharp
+        {
+              "result" : ?
+        }
+      ```
+    - 인증토큰이 일치하는 경우(ErrorCode = 0)
+      ```csharp
+        {
+              "result" : 0
+        }
+      ```
+
+<br>
+
+## Game Server
+
+### 클라이언트 - 게임 서버 로그인
+- 클라이언트 → 서버 전송 데이터
+  - account : 이메일
+  - authToken : Hive 서버에게서 받은 인증토큰
+1. Hive 서버에 인증토큰 유효성 검증 요청
+2. Hive 서버의 응답 결과에 따라 응답
+
+- 요청 예시
+  ```csharp
+        POST http://localhost:5021/gamelogin
+        Content-Type: application.json
+        
+        {
+              "account" : "kong@gmail.com",
+              "authToken" : "EIOQWENLFLQW123"
+        }
+  ```
+  - 응답 예시
+    - Hive 서버가 일치하지 않는다고 응답한 경우(ErrorCode = ?)
+      ```csharp
+        {
+              "result" : ?
+        }
+      ```
+    - Hive 서버가 일치한다고 응답한 경우(ErrorCode = 0)
+      ```csharp
+        {
+              "result" : 0
+        }
+      ```
+
+<br>
+
+### 클라이언트 - 게임 서버 로그인 Sequence Flow
+***
+
+```mermaid
+sequenceDiagram
+    actor A as client
+    participant B as Game_Server
+    participant C as Hive_Server
+
+    %% 클라이언트-게임 서버 로그인
+    note left of A: 클라이언트-게임 서버 로그인
+    A->>B: [POST] /gamelogin
+    B->>C: 인증토큰 유효성 검증 요청
+    C--)B: 검증 결과 응답
+    B--)A: [ErrorCode:?] 인증토큰이 유효하지 않은 경우
+    B--)A: [ErrorCode:0] 인증토큰이 유효한 경우
+```
+<br>
+
