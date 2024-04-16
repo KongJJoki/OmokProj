@@ -1,0 +1,10 @@
+{
+  "sdk": {
+    "version": "8.0.204",
+    "msbuild-sdks": {
+      "MSBuildSdkResolver": {
+        "version": "17.8.3"
+      }
+    }
+  }
+}
