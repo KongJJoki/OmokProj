@@ -8,7 +8,7 @@
 ```mermaid
 erDiagram
     Account {
-        bigint userId
+        int userId
         varchar(100) email
         varchar(255) password
     }
@@ -113,16 +113,16 @@ sequenceDiagram
               "result" : 101
         }
       ```
-    - 존재하지 않는 계정인 경우(ErrorCode = 103(NotExistAccount))
+    - 존재하지 않는 계정인 경우(ErrorCode = 111(NotExistAccount))
       ```csharp
         {
-              "result" : 103
+              "result" : 111
         }
       ```
-    - 패스워드가 일치하지 않는 경우(ErrorCode = 104(WrongPassword))
+    - 패스워드가 일치하지 않는 경우(ErrorCode = 112(WrongPassword))
       ```csharp
         {
-              "result" : 104
+              "result" : 112
         }
       ```
     - 로그인에 성공한 경우(ErrorCode = 0)
@@ -240,6 +240,31 @@ sequenceDiagram
       ```
 
 <br>
+
+### Game Server
+### 유저 정보 테이블
+<hr>
+
+```mermaid
+erDiagram
+    UserGameData {
+        int userId
+        int level
+        int exp
+        int winCount
+        int loseCount
+    }
+```
+- 인덱스 : PRIMARY(클러스터 인덱스), email(email을 컬럼으로 갖는 보조인덱스)
+### Game_Redis
+<hr>
+
+```mermaid
+erDiagram
+Redis{
+        userID authToken
+    }
+```
 
 ### 클라이언트 - 게임 서버 로그인 Sequence Flow
 ***
