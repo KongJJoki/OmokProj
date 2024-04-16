@@ -241,7 +241,7 @@ sequenceDiagram
 
 <br>
 
-### Game Server
+## Game Server
 ### 유저 정보 테이블
 <hr>
 
