@@ -146,7 +146,7 @@ sequenceDiagram
     participant C as Hive_Redis
 
     %% 클라이언트-Hive 서버 로그인
-    note left of A: 클라이언트-게임 서버 로그인
+    note left of A: 클라이언트-Hive 서버 로그인
     A->>B: [POST] /hivelogin
     B--)A: [ErrorCode:103] 존재하지 않는 계정인 경우
     B--)A: [ErrorCode:104] 패스워드가 일치하지 않는 경우
