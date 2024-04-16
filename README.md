@@ -20,7 +20,7 @@ erDiagram
   - password : 패스워드
 1. email이 이메일 형식인지 확인
 2. email가 accountDB에 이미 등록되어 있는지 확인
-3. DB에 email과과 password 등록(계정 생성)
+3. DB에 email과 password 등록(계정 생성)
 - 요청 예시
   ```csharp
         POST http://localhost:5021/accountcreate
@@ -163,10 +163,10 @@ sequenceDiagram
         }
   ```
   - 응답 예시
-    - 인증토큰이 일치하지 않는 경우(ErrorCode = 1(InvalidToken))
+    - 인증토큰이 일치하지 않는 경우(ErrorCode = 10(InvalidToken))
       ```csharp
         {
-              "result" : 1
+              "result" : 10
         }
       ```
     - 인증토큰이 일치하는 경우(ErrorCode = 0)
@@ -180,9 +180,30 @@ sequenceDiagram
 
 ### 인증토큰 검증 Sequence Flow
 ***
+```mermaid
+sequenceDiagram
+    actor A as Game_Server
+    participant B as Hive_Server
+    participant C as Hive_Redis
 
-```mer성
-6. 로그인 성공 응답
+    %% 인증토큰 검증
+    note left of A: 인증토큰 검증
+    A->>B: [POST] /authtokenverification
+    B->>C: userId에 맞는 인증토큰 확인
+    B--)A: [EErrorCode:10] 인증토큰이 일치하지 않는 경우
+    B--)A: [EErorCode:0] 인증토큰이 일치하는 경우
+```
+<br>
+
+### 클라이언트 - 게임 서버 로그인
+- 클라이언트 → 서버 전송 데이터
+  - userId : 유저 id
+  - authToken : 인증토큰
+1. 게임 서버가 Hive 서버에 인증토큰 유효성 검사 요청
+2. 유효한 경우 게임 서버의 Redis에 저장
+3. DB에 유저의 기본데이터가 존재하는지 확인
+4. 없을 경우 기본데이터 생성
+5. 로그인 성공 응답
 
 - 요청 예시
   ```csharp
@@ -195,10 +216,10 @@ sequenceDiagram
         }
   ```
   - 응답 예시
-    - Hive 서버가 일치하지 않는다고 응답한 경우(ErrorCode = 1(InvalidToken))
+    - Hive 서버가 일치하지 않는다고 응답한 경우(ErrorCode = 10(InvalidToken))
       ```csharp
         {
-              "result" : 1
+              "result" : 10
         }
       ```
     - Hive 서버가 일치한다고 응답한 경우(ErrorCode = 0)
@@ -226,7 +247,7 @@ sequenceDiagram
     A->>B: [POST] /gamelogin
     B->>C: 인증토큰 유효성 검증 요청
     C--)B: 검증 결과 응답
-    B--)A: [ErrorCode:1] 인증토큰이 유효하지 않은 경우
+    B--)A: [ErrorCode:10] 인증토큰이 유효하지 않은 경우
     B->>D: 인증토큰 저장
     B->>E: 유저의 기본 데이터가 있는지 확인
     B->>E: 유저의 기본 데이터가 없는 경우 생성
