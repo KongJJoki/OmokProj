@@ -83,7 +83,7 @@ sequenceDiagram
 3. 전달받은 password와 얻어온 password가 일치하는지 확인
 4. 인증토큰 생성
 5. Redis에 인증토큰 저장
-6. 인증토큰 응답
+6. 인증토큰과 userID 응답
 
 - 요청 예시
   ```csharp
@@ -112,6 +112,7 @@ sequenceDiagram
       ```csharp
         {
               "result" : 0,
+              "userID" : 2,
               "authToken" : "ERQWEROJJP123"
         }
       ```
@@ -139,9 +140,9 @@ sequenceDiagram
 
 ### 인증토큰 검증
 - 게임 서버 → Hive 서버 전송 데이터
-  - account : 이메일
+  - userID : 유저 id
   - authToken : 인증토큰
-1. Hive 서버에 account에 해당하는 인증토큰과 전달받은 인증토큰이 동일한지 확인
+1. Hive 서버에 userID에 해당하는 인증토큰과 전달받은 인증토큰이 동일한지 확인
 2. 게임 서버에 응답
 
 - 요청 예시
@@ -150,7 +151,7 @@ sequenceDiagram
         Content-Type: application.json
         
         {
-              "account" : "kong@gmail.com",
+              "userID" : 3,
               "authToken" : "EQNKFLWE123"
         }
   ```
@@ -173,31 +174,8 @@ sequenceDiagram
 ### 인증토큰 검증 Sequence Flow
 ***
 
-```mermaid
-sequenceDiagram
-    actor A as Game_Server
-    participant B as Hive_Server
-    participant C as Hive_Redis
-
-    %% 인증토큰 검증
-    note left of A: 인증토큰 검증
-    A->>B: [POST] /validauthtoken
-    B->>C: 인증토큰이 동일한지 확인
-    B--)A: [ErrorCode:1] 인증토큰이 일치하지 않는 경우
-    B->>A: [ErrorCode:0] 인증토큰 검증 성공 응답
-```
-<br>
-
-## Game Server
-
-### 클라이언트 - 게임 서버 로그인
-- 클라이언트 → 서버 전송 데이터
-  - account : 이메일
-  - authToken : Hive 서버에게서 받은 인증토큰
-1. Hive 서버에 인증토큰 유효성 검증 요청
-2. 인증토큰이 유효하지 않은 경우 실패 응답
-3. 유효한 경우 Redis에 해당 유저의 인증토큰 값 저장
-4. 로그인 성공 응답
+```mer성
+6. 로그인 성공 응답
 
 - 요청 예시
   ```csharp
@@ -205,7 +183,7 @@ sequenceDiagram
         Content-Type: application.json
         
         {
-              "account" : "kong@gmail.com",
+              "userID" : 3,
               "authToken" : "EIOQWENLFLQW123"
         }
   ```
