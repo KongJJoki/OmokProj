@@ -16,18 +16,18 @@ erDiagram
 - 인덱스 : PRIMARY(클러스터 인덱스), email(email을 컬럼으로 갖는 보조인덱스)
 ### 계정 생성
 - 클라이언트 → 서버 전송 데이터
-  - account : 이메일
+  - email : 이메일
   - password : 패스워드
-1. account가 이메일 형식인지 확인
-2. account가 accountDB에 이미 등록되어 있는지 확인
-3. DB에 account와 password 등록(계정 생성)
+1. email이 이메일 형식인지 확인
+2. email가 accountDB에 이미 등록되어 있는지 확인
+3. DB에 email과과 password 등록(계정 생성)
 - 요청 예시
   ```csharp
         POST http://localhost:5021/accountcreate
         Content-Type: application.json
         
         {
-              "account" : "kong@gmail.com",
+              "email" : "kong@gmail.com",
               "password" : "1234"
         }
   ```
@@ -76,10 +76,10 @@ sequenceDiagram
 
 ### 클라이언트 - Hive 서버 로그인
 - 클라이언트 → 서버 전송 데이터
-  - account : 이메일
+  - email : 이메일
   - password : 패스워드
-1. accountDB에서 account에 해당하는 데이터 얻어오기
-2. account가 존재하는지 확인
+1. accountDB에서 email에 해당하는 데이터 얻어오기
+2. email이 존재하는지 확인
 3. 전달받은 password와 얻어온 password가 일치하는지 확인
 4. 인증토큰 생성
 5. Redis에 인증토큰 저장
@@ -91,7 +91,7 @@ sequenceDiagram
         Content-Type: application.json
         
         {
-              "account" : "kong@gmail.com",
+              "email" : "kong@gmail.com",
               "password" : "1234"
         }
   ```
