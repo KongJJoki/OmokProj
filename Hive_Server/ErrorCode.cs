@@ -8,6 +8,8 @@ namespace Hive_Server
         RedisError = 2,
 
         InvalidToken = 10,
+        TokenNotExist = 11,
+        TokenVerifyFail = 12,
 
         AccountCreateFail = 100,
         NotEmailForm = 101,

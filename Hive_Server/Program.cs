@@ -19,6 +19,7 @@ builder.Services.AddTransient<IRedisDB, RedisDB>();
 
 builder.Services.AddTransient<IAccountCreateService, AccountCreateService>();
 builder.Services.AddTransient<IHiveLoginService, HiveLoginService>();
+builder.Services.AddTransient<ITokenVerifyService, TokenVerifyService>();
 
 builder.Services.AddControllers();
 

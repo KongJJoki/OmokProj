@@ -26,5 +26,10 @@ namespace Hive_Server.Repository
             TimeSpan expireTime = TimeSpan.FromHours(24);
             return await redisDB.StringSetAsync(userId, authToken, expireTime);
         }
+
+        public async Task<string> GetAuthToken(string userId)
+        {
+            return await redisDB.StringGetAsync(userId);
+        }
     }
 }
