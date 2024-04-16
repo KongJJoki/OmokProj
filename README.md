@@ -179,6 +179,12 @@ sequenceDiagram
               "result" : 10
         }
       ```
+    - 인증토큰이 없는 경우(ErrorCode = 11(TokenNotExist))
+      ```csharp
+        {
+              "result" : 11
+        }
+      ```
     - 인증토큰이 일치하는 경우(ErrorCode = 0)
       ```csharp
         {
