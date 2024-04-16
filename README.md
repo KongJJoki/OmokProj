@@ -2,7 +2,18 @@
 ## API 서버
 
 ## Hive Server
+### 계정 정보 테이블
+<hr>
 
+```mermaid
+erDiagram
+    Account {
+        bigint userId
+        varchar(100) email
+        varchar(255) password
+    }
+```
+- 인덱스 : PRIMARY(클러스터 인덱스), email(email을 컬럼으로 갖는 보조인덱스)
 ### 계정 생성
 - 클라이언트 → 서버 전송 데이터
   - account : 이메일
