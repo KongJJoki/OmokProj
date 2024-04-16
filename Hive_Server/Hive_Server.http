@@ -1,0 +1,6 @@
+@Hive_Server_HostAddress = http://localhost:5115
+
+GET {{Hive_Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

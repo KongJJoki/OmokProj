@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hive_Server", "Hive_Server.csproj", "{07AA8004-2A92-489B-8C89-C8C95AC7620B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07AA8004-2A92-489B-8C89-C8C95AC7620B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07AA8004-2A92-489B-8C89-C8C95AC7620B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07AA8004-2A92-489B-8C89-C8C95AC7620B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07AA8004-2A92-489B-8C89-C8C95AC7620B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {472DE1D7-E964-46D1-9567-D57C603DA8AC}
+	EndGlobalSection
+EndGlobal
