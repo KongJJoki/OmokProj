@@ -14,6 +14,16 @@ erDiagram
     }
 ```
 - 인덱스 : PRIMARY(클러스터 인덱스), email(email을 컬럼으로 갖는 보조인덱스)
+### Hive_Redis
+<hr>
+
+```mermaid
+erDiagram
+Redis{
+        userID authToken
+    }
+```
+
 ### 계정 생성
 - 클라이언트 → 서버 전송 데이터
   - email : 이메일
