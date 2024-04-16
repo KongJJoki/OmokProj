@@ -205,6 +205,31 @@ sequenceDiagram
 ```
 <br>
 
+## Game Server
+### 유저 정보 테이블
+<hr>
+
+```mermaid
+erDiagram
+    UserGameData {
+        int userId
+        int level
+        int exp
+        int winCount
+        int loseCount
+    }
+```
+- 인덱스 :
+### Game_Redis
+<hr>
+
+```mermaid
+erDiagram
+Redis{
+        userID authToken
+    }
+```
+
 ### 클라이언트 - 게임 서버 로그인
 - 클라이언트 → 서버 전송 데이터
   - userId : 유저 id
@@ -240,31 +265,6 @@ sequenceDiagram
       ```
 
 <br>
-
-## Game Server
-### 유저 정보 테이블
-<hr>
-
-```mermaid
-erDiagram
-    UserGameData {
-        int userId
-        int level
-        int exp
-        int winCount
-        int loseCount
-    }
-```
-- 인덱스 : PRIMARY(클러스터 인덱스), email(email을 컬럼으로 갖는 보조인덱스)
-### Game_Redis
-<hr>
-
-```mermaid
-erDiagram
-Redis{
-        userID authToken
-    }
-```
 
 ### 클라이언트 - 게임 서버 로그인 Sequence Flow
 ***
