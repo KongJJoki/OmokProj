@@ -78,12 +78,13 @@ sequenceDiagram
 - 클라이언트 → 서버 전송 데이터
   - email : 이메일
   - password : 패스워드
-1. accountDB에서 email에 해당하는 데이터 얻어오기
+1. 이메일 형식이 맞는지 확인
 2. email이 존재하는지 확인
-3. 전달받은 password와 얻어온 password가 일치하는지 확인
-4. 인증토큰 생성
-5. Redis에 인증토큰 저장
-6. 인증토큰과 userID 응답
+3. accountDB에서 email에 해당하는 데이터 얻어오기
+4. 전달받은 password와 얻어온 password가 일치하는지 확인
+5. 인증토큰 생성
+6. Redis에 인증토큰 저장
+7. 인증토큰과 userID 응답
 
 - 요청 예시
   ```csharp
@@ -96,6 +97,12 @@ sequenceDiagram
         }
   ```
   - 응답 예시
+    - 이메일 형식이 아닌 경우(ErrorCode = 101(NotEmailForm))
+      ```csharp
+        {
+              "result" : 101
+        }
+      ```
     - 존재하지 않는 계정인 경우(ErrorCode = 103(NotExistAccount))
       ```csharp
         {
