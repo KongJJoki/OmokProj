@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using MySqlConnector;
 using SqlKata.Execution;
 using System.Data;
+using SqlKata;
 using SqlKata.Compilers;
 
 namespace Hive_Server.Repository
@@ -27,10 +28,16 @@ namespace Hive_Server.Repository
 
         public async Task<int> InsertAccount(string email, string securePassword)
         {
-            return await queryFactory.Query("account").InsertAsync(new 
-                { 
-                    email = email, password = securePassword
-                });
+            return await queryFactory.Query("account").InsertAsync(new
+            {
+                email = email,
+                password = securePassword
+            });
+        }
+
+        public async Task<bool> AccountExistCheck(string email)
+        {
+            return await queryFactory.Query("account").Where("email", email).ExistsAsync();
         }
     }
 }

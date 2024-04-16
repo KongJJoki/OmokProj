@@ -4,6 +4,7 @@ using Hive_Server.Services.Interface;
 using MySqlConnector;
 using Hive_Server.Model.DTO;
 using Hive_Server;
+using System.Text.RegularExpressions;
 
 namespace Hive_Server.Services
 {
@@ -20,6 +21,21 @@ namespace Hive_Server.Services
         {
             try
             {
+                // 이메일 형식인지 확인
+                string emailPattern = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
+                Regex regex = new Regex(emailPattern);
+                if (!regex.IsMatch(email))
+                {
+                    return EErrorCode.NotEmailForm;
+                }
+
+                // 이미 있는 계정인지 확인
+                if (await accountDB.AccountExistCheck(email))
+                {
+                    return EErrorCode.AlreadyExistEmail;
+                }
+
+                // 패스워드 암호화
                 string hashedPassword = Hashing.HashingPassword(password);
 
                 int insertCount = await accountDB.InsertAccount(email, hashedPassword);
