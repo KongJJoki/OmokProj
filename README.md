@@ -38,7 +38,7 @@ erDiagram
               "result" : 101
         }
       ```
-    - 이미 등록된 이메일인 경우(ErrorCode = 102(AlreadyExistEmail))
+    - 이미 등록된 이메일인 경우(ErrorCode = 102(AlreadyExistAccount))
       ```csharp
         {
               "result" : 102
