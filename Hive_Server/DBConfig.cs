@@ -4,4 +4,5 @@ namespace Hive_Server;
 public class DBConfig
 {
     public string AccountDB { get; set; }
+    public string RedisDB { get; set; }
 }

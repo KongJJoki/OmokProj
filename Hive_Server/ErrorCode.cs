@@ -7,11 +7,15 @@ namespace Hive_Server
         DBError = 1,
         RedisError = 2,
 
+        InvalidToken = 10,
+
         AccountCreateFail = 100,
         NotEmailForm = 101,
-        AlreadyExistEmail = 102,
-        NotExistAccount = 103,
-        WrongPassword = 104,
+        AlreadyExistAccount = 102,
+
+        HiveLoginFail = 110,
+        NotExistAccount = 111,
+        WrongPassword = 112,
 
     }
 }

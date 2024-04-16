@@ -10,7 +10,7 @@ namespace Hive_Server.Services
 {
     public class AccountCreateService : IAccountCreateService
     {
-        private IAccountDB accountDB;
+        private readonly IAccountDB accountDB;
 
         public AccountCreateService(IAccountDB accountDB)
         {
@@ -32,7 +32,7 @@ namespace Hive_Server.Services
                 // 이미 있는 계정인지 확인
                 if (await accountDB.AccountExistCheck(email))
                 {
-                    return EErrorCode.AlreadyExistEmail;
+                    return EErrorCode.AlreadyExistAccount;
                 }
 
                 // 패스워드 암호화

@@ -4,14 +4,15 @@ using SqlKata.Execution;
 using System.Data;
 using SqlKata;
 using SqlKata.Compilers;
+using Hive_Server.Model.DAO;
 
 namespace Hive_Server.Repository
 {
     public class AccountDB : IAccountDB
     {
-        private DBConfig dbConfig;
-        private IDbConnection dbConnection;
-        private QueryFactory queryFactory;
+        private readonly DBConfig dbConfig;
+        private readonly IDbConnection dbConnection;
+        private readonly QueryFactory queryFactory;
 
         public AccountDB(IOptions<DBConfig> dbConfig) // DBConfig가 아니라 IOptions<DBConfig>로 주입받으면 실행 중에도 설정 값 업데이트 가능
         {
@@ -38,6 +39,14 @@ namespace Hive_Server.Repository
         public async Task<bool> AccountExistCheck(string email)
         {
             return await queryFactory.Query("account").Where("email", email).ExistsAsync();
+        }
+
+        public async Task<Account> GetAccountInfo(string email)
+        {
+            return await queryFactory.Query("account")
+                .Select("userId as UserId", "email as Email", "password as Password")
+                .Where("email", email)
+                .FirstOrDefaultAsync<Account>();
         }
     }
 }

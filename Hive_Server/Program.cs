@@ -15,8 +15,10 @@ builder.Services.Configure<DBConfig>(configuration.GetSection(nameof(DBConfig)))
 
 // 생명 주기 설정 -> 생명 주기 끝나면 자동으로 Dispose 호출해서 DB연결 close
 builder.Services.AddTransient<IAccountDB, AccountDB>();
+builder.Services.AddTransient<IRedisDB, RedisDB>();
 
 builder.Services.AddTransient<IAccountCreateService, AccountCreateService>();
+builder.Services.AddTransient<IHiveLoginService, HiveLoginService>();
 
 builder.Services.AddControllers();
 
