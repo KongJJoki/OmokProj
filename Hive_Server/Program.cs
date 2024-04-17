@@ -2,7 +2,6 @@ using Hive_Server;
 using Hive_Server.Repository;
 using Hive_Server.Services;
 using Hive_Server.Services.Interface;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 

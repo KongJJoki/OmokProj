@@ -1,10 +1,7 @@
 using Hive_Server.Repository;
-using Hive_Server.Model;
 using Hive_Server.Services.Interface;
 using Hive_Server.Model.DTO;
-using Hive_Server.Model.DAO;
 using Hive_Server;
-using System.Text.RegularExpressions;
 
 namespace Hive_Server.Services
 {

@@ -1,11 +1,10 @@
 using Hive_Server.Repository;
-using Hive_Server.Model;
 using Hive_Server.Services.Interface;
-using MySqlConnector;
 using Hive_Server.Model.DTO;
 using Hive_Server.Model.DAO;
 using Hive_Server;
 using System.Text.RegularExpressions;
+using MySql.Data.MySqlClient;
 
 namespace Hive_Server.Services
 {
@@ -55,6 +54,10 @@ namespace Hive_Server.Services
                 }
 
                 return (EErrorCode.None, accountInfo.UserId, authToken);
+            }
+            catch (MySqlException dbEx)
+            {
+                return (EErrorCode.DBError, null, null);
             }
             catch (Exception ex)
             {
