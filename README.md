@@ -164,7 +164,7 @@ sequenceDiagram
 
 - 요청 예시
   ```csharp
-        POST http://localhost:5021/validauthtoken
+        POST http://localhost:5021/tokenverify
         Content-Type: application.json
         
         {
