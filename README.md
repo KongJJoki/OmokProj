@@ -13,7 +13,7 @@ erDiagram
         varchar(255) password
     }
 ```
-- 인덱스 : PRIMARY(클러스터 인덱스), email(email을 컬럼으로 갖는 보조인덱스)
+- 인덱스 : PRIMARY(PK인 userId에 대한 클러스터 인덱스), email(email을 컬럼으로 갖는 보조인덱스)
 ### Hive_Redis
 <hr>
 
@@ -225,7 +225,7 @@ erDiagram
         int loseCount
     }
 ```
-- 인덱스 :
+- 인덱스 : PRIMARY(PK인 userId에 대한 클러스터 인덱스)
 ### Game_Redis
 <hr>
 
