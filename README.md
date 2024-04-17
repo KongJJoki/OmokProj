@@ -1,4 +1,4 @@
-# OmokProj
+# OmokProj - 김정아
 ## API 서버
 
 ## Hive Server
