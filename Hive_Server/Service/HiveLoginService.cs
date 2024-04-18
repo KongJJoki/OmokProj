@@ -1,4 +1,4 @@
-using Hive_Server.Repository;
+ï»¿using Hive_Server.Repository;
 using Hive_Server.Services.Interface;
 using Hive_Server.Model.DTO;
 using Hive_Server.Model.DAO;
@@ -23,7 +23,7 @@ namespace Hive_Server.Services
         {
             try
             {
-                // ÀÌ¸ŞÀÏ Çü½ÄÀÎÁö È®ÀÎ
+                // ì´ë©”ì¼ í˜•ì‹ì¸ì§€ í™•ì¸
                 string emailPattern = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
                 Regex regex = new Regex(emailPattern);
                 if (!regex.IsMatch(email))
@@ -31,24 +31,24 @@ namespace Hive_Server.Services
                     return (EErrorCode.NotEmailForm, null, null);
                 }
 
-                // Á¸ÀçÇÏ´Â °èÁ¤ÀÎÁö È®ÀÎ
+                // ì¡´ì¬í•˜ëŠ” ê³„ì •ì¸ì§€ í™•ì¸
                 if (!await accountDB.AccountExistCheck(email))
                 {
                     return (EErrorCode.NotExistAccount, null, null);
                 }
 
-                // °èÁ¤ Á¤º¸ ¾ò¾î¿À±â
+                // ê³„ì • ì •ë³´ ì–»ì–´ì˜¤ê¸°
                 Account accountInfo = await accountDB.GetAccountInfo(email);
                 string comparePassword = Hashing.HashingPassword(password);
-                if(comparePassword != accountInfo.Password) // ÆĞ½º¿öµå°¡ ºÒÀÏÄ¡ÇÏ´Â °æ¿ì
+                if(comparePassword != accountInfo.Password) // íŒ¨ìŠ¤ì›Œë“œê°€ ë¶ˆì¼ì¹˜í•˜ëŠ” ê²½ìš°
                 {
                     return (EErrorCode.WrongPassword, null, null);
                 }
 
-                // ÀÎÁõÅäÅ« »ı¼º
+                // ì¸ì¦í† í° ìƒì„±
                 string authToken = Hashing.MakeAuthToken(accountInfo.UserId);
                 bool isAutoTokenSave = await redisDB.InsertAuthToken(accountInfo.UserId.ToString(), authToken); ;
-                if(!isAutoTokenSave) // ·¹µğ½º¿¡ ÀúÀå ¸øÇÑ °æ¿ì
+                if(!isAutoTokenSave) // ë ˆë””ìŠ¤ì— ì €ì¥ ëª»í•œ ê²½ìš°
                 {
                     return (EErrorCode.RedisError, null, null);
                 }

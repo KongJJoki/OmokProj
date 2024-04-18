@@ -1,4 +1,4 @@
-using Game_Server.Repository;
+ï»¿using Game_Server.Repository;
 using Game_Server.Services.Interface;
 using Game_Server.Model.DTO;
 using Game_Server;
@@ -30,39 +30,39 @@ namespace Game_Server.Services
         {
             try
             {
-                // Hive ¼­¹ö¿¡ ÀÎÁõÅäÅ« À¯È¿¼º °Ë»ç ¿äÃ»
+                // Hive ì„œë²„ì— ì¸ì¦í† í° ìœ íš¨ì„± ê²€ì‚¬ ìš”ì²­
                 string verifyUrl = serverUrl + "/tokenverify";
                 VerifyData verifyData = new VerifyData
                 {
                     UserId = userId,
                     AuthToken = authToken
                 };
-                // ¿äÃ»¿¡ º¸³¾ Body Á÷·ÄÈ­
+                // ìš”ì²­ì— ë³´ë‚¼ Body ì§ë ¬í™”
                 string requestBody = Newtonsoft.Json.JsonConvert.SerializeObject(verifyData);
 
                 HttpResponseMessage response = await httpClient.PostAsync(verifyUrl, 
-                    new StringContent(requestBody, Encoding.UTF8, "application/json")); // ¿äÃ» º»¹®ÀÇ ¹®ÀÚ ÀÎÄÚµù + ¹Ìµğ¾î Å¸ÀÔ ÁöÁ¤
+                    new StringContent(requestBody, Encoding.UTF8, "application/json")); // ìš”ì²­ ë³¸ë¬¸ì˜ ë¬¸ì ì¸ì½”ë”© + ë¯¸ë””ì–´ íƒ€ì… ì§€ì •
 
-                if(response.IsSuccessStatusCode) // ¼º°øÇØ¼­ ÀÀ´ä ¹ŞÀº °æ¿ì
+                if(response.IsSuccessStatusCode) // ì„±ê³µí•´ì„œ ì‘ë‹µ ë°›ì€ ê²½ìš°
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
 
-                    // ¿ªÁ÷·ÄÈ­ JObject´Â ¶óÀÌºê·¯¸®¿¡¼­ Á¦°øÇÏ´Â JSON °´Ã¼
+                    // ì—­ì§ë ¬í™” JObjectëŠ” ë¼ì´ë¸ŒëŸ¬ë¦¬ì—ì„œ ì œê³µí•˜ëŠ” JSON ê°ì²´
                     JObject jsonResponse = JObject.Parse(responseBody);
                     int resultValue = (int)jsonResponse["result"];
 
-                    if(resultValue != 0) // ÀÎÁõÅäÅ« À¯È¿¼º °Ë»ç °á°ú°¡ ¼º°øÀÌ ¾Æ´Ñ °æ¿ì
+                    if(resultValue != 0) // ì¸ì¦í† í° ìœ íš¨ì„± ê²€ì‚¬ ê²°ê³¼ê°€ ì„±ê³µì´ ì•„ë‹Œ ê²½ìš°
                     {
                         return EErrorCode.InvalidToken;
                     }
                 }
-                else // ¿äÃ»¿¡ ½ÇÆĞÇÑ °æ¿ì
+                else // ìš”ì²­ì— ì‹¤íŒ¨í•œ ê²½ìš°
                 {
                     return EErrorCode.HttpReqFail;
                 }
 
-                // ÀÎÁõÅäÅ« À¯È¿¼º °Ë»ç ¼º°øÇÑ °æ¿ì
-                // Game_ServerÀÇ Redis¿¡ ÀúÀå
+                // ì¸ì¦í† í° ìœ íš¨ì„± ê²€ì‚¬ ì„±ê³µí•œ ê²½ìš°
+                // Game_Serverì˜ Redisì— ì €ì¥
                 bool redisSaveSuccess = await redisDB.InsertAuthToken(userId.ToString(), authToken);
                 if(!redisSaveSuccess)
                 {
@@ -70,7 +70,7 @@ namespace Game_Server.Services
                 }
 
                 bool isUserDataExist = await gameDB.GetUserDataExist(userId);
-                if(!isUserDataExist) // ±âº»µ¥ÀÌÅÍ ¾ø´Â °æ¿ì
+                if(!isUserDataExist) // ê¸°ë³¸ë°ì´í„° ì—†ëŠ” ê²½ìš°
                 {
                     int insertCount = await gameDB.InsertBasicData(userId);
                     if(insertCount != 1)

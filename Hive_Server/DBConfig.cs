@@ -1,6 +1,6 @@
-namespace Hive_Server;
+ï»¿namespace Hive_Server;
 
-// DB ÁÖ¼Ò ¹Ù²ð¶§¸¦ ´ëºñÇÑ Conf
+// DB ì£¼ì†Œ ë°”ë€”ë•Œë¥¼ ëŒ€ë¹„í•œ Conf
 public class DBConfig
 {
     public string AccountDB { get; set; }

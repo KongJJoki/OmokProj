@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Options;
+ï»¿using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using CloudStructures;
 using CloudStructures.Structures;
@@ -11,14 +11,14 @@ namespace Hive_Server.Repository
         private readonly RedisConfig redisConfig;
         private readonly RedisConnection redisDB;
 
-        public RedisDB(IOptions<DBConfig> dbConfig) // DBConfig°¡ ¾Æ´Ï¶ó IOptions<DBConfig>·Î ÁÖÀÔ¹ŞÀ¸¸é ½ÇÇà Áß¿¡µµ ¼³Á¤ °ª ¾÷µ¥ÀÌÆ® °¡´É
+        public RedisDB(IOptions<DBConfig> dbConfig) // DBConfigê°€ ì•„ë‹ˆë¼ IOptions<DBConfig>ë¡œ ì£¼ì…ë°›ìœ¼ë©´ ì‹¤í–‰ ì¤‘ì—ë„ ì„¤ì • ê°’ ì—…ë°ì´íŠ¸ ê°€ëŠ¥
         {
             this.dbConfig = dbConfig.Value;
             redisConfig = new RedisConfig("redisDB", this.dbConfig.RedisDB);
             redisDB = new RedisConnection(redisConfig);
         }
 
-        // Redis¿¬°áÀº ¾ÖÇÃ¸®ÄÉÀÌ¼Ç Á¾·á ½Ã ÀÚµ¿À¸·Î ´İÈû ConnectionMultiplexer°¡ °ü¸®
+        // Redisì—°ê²°ì€ ì• í”Œë¦¬ì¼€ì´ì…˜ ì¢…ë£Œ ì‹œ ìë™ìœ¼ë¡œ ë‹«í˜ ConnectionMultiplexerê°€ ê´€ë¦¬
 
         public async Task<bool> InsertAuthToken(string userId, string authToken)
         {
@@ -26,21 +26,21 @@ namespace Hive_Server.Repository
             string key = userId;
             string value = authToken;
             RedisString<string> redisString = new RedisString<string>(redisDB, key, expireTime);
-            // SetAsync°¡ ºñµ¿±â ¸Ş¼­µå¶ó¼­ await ÇÊ¿ä
-            return await redisString.SetAsync(authToken); // SetAsync ¼º°ø ½Ã true ½ÇÆĞ ½Ã false ¹İÈ¯
+            // SetAsyncê°€ ë¹„ë™ê¸° ë©”ì„œë“œë¼ì„œ await í•„ìš”
+            return await redisString.SetAsync(authToken); // SetAsync ì„±ê³µ ì‹œ true ì‹¤íŒ¨ ì‹œ false ë°˜í™˜
         }
 
         public async Task<string> GetAuthToken(string userId)
         {
             try
             {
-                RedisString<string> redisString = new RedisString<string>(redisDB, userId, null); // °ªÀ» °¡Á®¿À±â¸¸ ÇÏ¹Ç·Î ¸¸·á½Ã°£ null
+                RedisString<string> redisString = new RedisString<string>(redisDB, userId, null); // ê°’ì„ ê°€ì ¸ì˜¤ê¸°ë§Œ í•˜ë¯€ë¡œ ë§Œë£Œì‹œê°„ null
                 RedisResult<string> result = await redisString.GetAsync();
                 return result.Value;
             }
-            catch (System.InvalidOperationException) // Á¸ÀçÇÏÁö ¾Ê´Â Å° Á¶È¸ ½Ã ¹ß»ıÇÏ´Â ¿¹¿Ü
+            catch (System.InvalidOperationException) // ì¡´ì¬í•˜ì§€ ì•ŠëŠ” í‚¤ ì¡°íšŒ ì‹œ ë°œìƒí•˜ëŠ” ì˜ˆì™¸
             {
-                return null; // ¿¹¿Ü ¹ß»ı ½Ã null ¹İÈ¯À¸·Î Service¿¡¼­ ¿¡·¯ÄÚµå Ã³¸®
+                return null; // ì˜ˆì™¸ ë°œìƒ ì‹œ null ë°˜í™˜ìœ¼ë¡œ Serviceì—ì„œ ì—ëŸ¬ì½”ë“œ ì²˜ë¦¬
             }
         }
     }

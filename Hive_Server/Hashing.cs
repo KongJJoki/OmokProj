@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+ï»¿using System.Security.Cryptography;
 using System;
 using System.Text;
 
@@ -12,19 +12,19 @@ namespace Hive_Server
         {
             string saltedPassword = originPassword + saltValue;
 
-            using (SHA256 sha256Hash = SHA256.Create()) // using ±¸¹® ¾È¿¡ SHA256 °´Ã¼ ¼±¾ğÇØ¼­ ÀÚµ¿À¸·Î dispose È£Ãâ
+            using (SHA256 sha256Hash = SHA256.Create()) // using êµ¬ë¬¸ ì•ˆì— SHA256 ê°ì²´ ì„ ì–¸í•´ì„œ ìë™ìœ¼ë¡œ dispose í˜¸ì¶œ
             {
-                // ¼ÖÆ®°ªÀ» ºÙÀÎ ÆĞ½º¿öµå¸¦ ¹ÙÀÌÆ® ¹è¿­·Î º¯È¯ÇÏ¿© ÇØ½Ã °è»ê
+                // ì†”íŠ¸ê°’ì„ ë¶™ì¸ íŒ¨ìŠ¤ì›Œë“œë¥¼ ë°”ì´íŠ¸ ë°°ì—´ë¡œ ë³€í™˜í•˜ì—¬ í•´ì‹œ ê³„ì‚°
                 byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(saltedPassword));
 
-                // ¹ÙÀÌÆ® ¹è¿­À» ¹®ÀÚ¿­·Î º¯È¯
+                // ë°”ì´íŠ¸ ë°°ì—´ì„ ë¬¸ìì—´ë¡œ ë³€í™˜
                 StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < bytes.Length; i++)
                 {
-                    builder.Append(bytes[i].ToString("x2")); // 16Áø¼ö·Î º¯È¯
+                    builder.Append(bytes[i].ToString("x2")); // 16ì§„ìˆ˜ë¡œ ë³€í™˜
                 }
 
-                return builder.ToString(); // returnÀÌ ½ÇÇàµÇ±â Àü¿¡ using¹®ÀÌ disposeÇÔ
+                return builder.ToString(); // returnì´ ì‹¤í–‰ë˜ê¸° ì „ì— usingë¬¸ì´ disposeí•¨
             }
         }
         public static string MakeAuthToken(Int32 userId)

@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Options;
+ï»¿using Microsoft.Extensions.Options;
 using MySqlConnector;
 using SqlKata.Execution;
 using System.Data;
@@ -12,11 +12,11 @@ namespace Game_Server.Repository
         private readonly IDbConnection dbConnection;
         private readonly QueryFactory queryFactory;
 
-        public GameDB(IOptions<DBConfig> dbConfig) // DBConfig°¡ ¾Æ´Ï¶ó IOptions<DBConfig>·Î ÁÖÀÔ¹ŞÀ¸¸é ½ÇÇà Áß¿¡µµ ¼³Á¤ °ª ¾÷µ¥ÀÌÆ® °¡´É
+        public GameDB(IOptions<DBConfig> dbConfig) // DBConfigê°€ ì•„ë‹ˆë¼ IOptions<DBConfig>ë¡œ ì£¼ì…ë°›ìœ¼ë©´ ì‹¤í–‰ ì¤‘ì—ë„ ì„¤ì • ê°’ ì—…ë°ì´íŠ¸ ê°€ëŠ¥
         {
-            this.dbConfig = dbConfig.Value; // IOptions<DBConfig> ³»ºÎÀÇ °ªÀ» ÇÒ´çÇÏ±â À§ÇØ .Value
+            this.dbConfig = dbConfig.Value; // IOptions<DBConfig> ë‚´ë¶€ì˜ ê°’ì„ í• ë‹¹í•˜ê¸° ìœ„í•´ .Value
             dbConnection = new MySqlConnection(this.dbConfig.GameDB);
-            MySqlCompiler compiler = new MySqlCompiler(); // mysql¿ë ÄÄÆÄÀÏ·¯ ¼±¾ğ
+            MySqlCompiler compiler = new MySqlCompiler(); // mysqlìš© ì»´íŒŒì¼ëŸ¬ ì„ ì–¸
             queryFactory = new QueryFactory(dbConnection, compiler);
         }
 
@@ -39,7 +39,7 @@ namespace Game_Server.Repository
                 exp = 0,
                 winCount = 0,
                 loseCount = 0
-            }); // ±âº» µ¥ÀÌÅÍ insert
+            }); // ê¸°ë³¸ ë°ì´í„° insert
         }
     }
 }

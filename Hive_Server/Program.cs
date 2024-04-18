@@ -1,4 +1,4 @@
-using Hive_Server;
+ï»¿using Hive_Server;
 using Hive_Server.Repository;
 using Hive_Server.Services;
 using Hive_Server.Services.Interface;
@@ -9,10 +9,10 @@ IConfiguration configuration = builder.Configuration;
 
 // Add services to the container.
 
-// ¼³Á¤ÆÄÀÏ(appsettings.json)¿¡¼­ DBConfig °ª °¡Á®¿À°í, DBConfig Å¬·¡½º¿¡ ¸ÅÇÎÇØÁÖ±â
+// ì„¤ì •íŒŒì¼(appsettings.json)ì—ì„œ DBConfig ê°’ ê°€ì ¸ì˜¤ê³ , DBConfig í´ë˜ìŠ¤ì— ë§¤í•‘í•´ì£¼ê¸°
 builder.Services.Configure<DBConfig>(configuration.GetSection(nameof(DBConfig)));
 
-// »ı¸í ÁÖ±â ¼³Á¤ -> »ı¸í ÁÖ±â ³¡³ª¸é ÀÚµ¿À¸·Î Dispose È£ÃâÇØ¼­ DB¿¬°á close
+// ìƒëª… ì£¼ê¸° ì„¤ì • -> ìƒëª… ì£¼ê¸° ëë‚˜ë©´ ìë™ìœ¼ë¡œ Dispose í˜¸ì¶œí•´ì„œ DBì—°ê²° close
 builder.Services.AddTransient<IAccountDB, AccountDB>();
 builder.Services.AddTransient<IRedisDB, RedisDB>();
 

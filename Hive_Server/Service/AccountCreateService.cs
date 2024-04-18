@@ -1,4 +1,4 @@
-using Hive_Server.Repository;
+ï»¿using Hive_Server.Repository;
 using Hive_Server.Services.Interface;
 using Hive_Server.Model.DTO;
 using Hive_Server;
@@ -20,7 +20,7 @@ namespace Hive_Server.Services
         {
             try
             {
-                // ÀÌ¸ŞÀÏ Çü½ÄÀÎÁö È®ÀÎ
+                // ì´ë©”ì¼ í˜•ì‹ì¸ì§€ í™•ì¸
                 string emailPattern = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
                 Regex regex = new Regex(emailPattern);
                 if (!regex.IsMatch(email))
@@ -28,13 +28,13 @@ namespace Hive_Server.Services
                     return EErrorCode.NotEmailForm;
                 }
 
-                // ÀÌ¹Ì ÀÖ´Â °èÁ¤ÀÎÁö È®ÀÎ
+                // ì´ë¯¸ ìˆëŠ” ê³„ì •ì¸ì§€ í™•ì¸
                 if (await accountDB.AccountExistCheck(email))
                 {
                     return EErrorCode.AlreadyExistAccount;
                 }
 
-                // ÆĞ½º¿öµå ¾ÏÈ£È­
+                // íŒ¨ìŠ¤ì›Œë“œ ì•”í˜¸í™”
                 string hashedPassword = Hashing.HashingPassword(password);
 
                 int insertCount = await accountDB.InsertAccount(email, hashedPassword);

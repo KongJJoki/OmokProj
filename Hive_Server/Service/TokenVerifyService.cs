@@ -1,4 +1,4 @@
-using Hive_Server.Repository;
+ï»¿using Hive_Server.Repository;
 using Hive_Server.Services.Interface;
 using Hive_Server.Model.DTO;
 using Hive_Server;
@@ -19,11 +19,11 @@ namespace Hive_Server.Services
             try
             {
                 string originToken = await redisDB.GetAuthToken(userId);
-                if(originToken == null) // ÅäÅ«ÀÌ Á¸ÀçÇÏÁö ¾Ê´Â °æ¿ì
+                if(originToken == null) // í† í°ì´ ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ê²½ìš°
                 {
                     return EErrorCode.TokenNotExist;
                 }
-                if(authToken != originToken) // ÅäÅ«ÀÌ ´Ş¶ó¼­ À¯È¿ÇÏÁö ¾ÊÀº °æ¿ì
+                if(authToken != originToken) // í† í°ì´ ë‹¬ë¼ì„œ ìœ íš¨í•˜ì§€ ì•Šì€ ê²½ìš°
                 {
                     return EErrorCode.InvalidToken;
                 }
