@@ -1,4 +1,5 @@
-# OmokProj - 김정아
+# OmokProj
+김정아 컴투스 서버캠퍼스 2기
 ## API 서버
 
 ## Hive Server
