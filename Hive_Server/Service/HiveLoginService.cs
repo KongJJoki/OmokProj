@@ -1,4 +1,4 @@
-﻿using Hive_Server.Repository;
+using Hive_Server.Repository;
 using Hive_Server.Services.Interface;
 using Hive_Server.Model.DTO;
 using Hive_Server.Model.DAO;
@@ -19,7 +19,9 @@ namespace Hive_Server.Services
             this.redisDB = redisDB;
         }
 
-        public async Task<(EErrorCode, Int32?, string?)> HiveLogin(string email, string password)
+        public record HiveLoginResult(EErrorCode ErrorCode, Int32? UserId, string? AuthToken);
+
+        public async Task<HiveLoginResult> HiveLogin(string email, string password)
         {
             try
             {
@@ -28,13 +30,13 @@ namespace Hive_Server.Services
                 Regex regex = new Regex(emailPattern);
                 if (!regex.IsMatch(email))
                 {
-                    return (EErrorCode.NotEmailForm, null, null);
+                    return new HiveLoginResult(ErrorCode: EErrorCode.NotEmailForm, UserId: null, AuthToken: null);
                 }
 
                 // 존재하는 계정인지 확인
                 if (!await accountDB.AccountExistCheck(email))
                 {
-                    return (EErrorCode.NotExistAccount, null, null);
+                    return new HiveLoginResult(ErrorCode: EErrorCode.NotExistAccount, UserId: null, AuthToken: null);
                 }
 
                 // 계정 정보 얻어오기
@@ -42,7 +44,7 @@ namespace Hive_Server.Services
                 string comparePassword = Hashing.HashingPassword(password);
                 if(comparePassword != accountInfo.Password) // 패스워드가 불일치하는 경우
                 {
-                    return (EErrorCode.WrongPassword, null, null);
+                    return new HiveLoginResult(ErrorCode: EErrorCode.WrongPassword, UserId: null, AuthToken: null);
                 }
 
                 // 인증토큰 생성
@@ -50,18 +52,18 @@ namespace Hive_Server.Services
                 bool isAutoTokenSave = await redisDB.InsertAuthToken(accountInfo.UserId.ToString(), authToken); ;
                 if(!isAutoTokenSave) // 레디스에 저장 못한 경우
                 {
-                    return (EErrorCode.RedisError, null, null);
+                    return new HiveLoginResult(ErrorCode: EErrorCode.RedisError, UserId: null, AuthToken: null);
                 }
 
-                return (EErrorCode.None, accountInfo.UserId, authToken);
+                return new HiveLoginResult(ErrorCode: EErrorCode.None, UserId: accountInfo.UserId, AuthToken: authToken);
             }
             catch (MySqlException dbEx)
             {
-                return (EErrorCode.DBError, null, null);
+                return new HiveLoginResult(ErrorCode: EErrorCode.DBError, UserId: null, AuthToken: null);
             }
             catch (Exception ex)
             {
-                return (EErrorCode.HiveLoginFail, null, null);
+                return new HiveLoginResult(ErrorCode: EErrorCode.HiveLoginFail, UserId: null, AuthToken: null);
             }
         }
     }

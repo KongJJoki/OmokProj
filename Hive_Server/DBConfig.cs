@@ -1,4 +1,4 @@
-﻿namespace Hive_Server;
+namespace Hive_Server;
 
 // DB 주소 바뀔때를 대비한 Conf
 public class DBConfig
