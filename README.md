@@ -34,7 +34,7 @@ Redis{
 3. DB에 email과 password 등록(계정 생성)
 - 요청 예시
   ```csharp
-        POST http://localhost:5021/accountcreate
+        POST http://localhost:7144/accountcreate
         Content-Type: application.json
         
         {
@@ -99,7 +99,7 @@ sequenceDiagram
 
 - 요청 예시
   ```csharp
-        POST http://localhost:5021/hivelogin
+        POST http://localhost:7144/hivelogin
         Content-Type: application.json
         
         {
@@ -165,7 +165,7 @@ sequenceDiagram
 
 - 요청 예시
   ```csharp
-        POST http://localhost:5021/tokenverify
+        POST http://localhost:7144/tokenverify
         Content-Type: application.json
         
         {
@@ -249,7 +249,7 @@ Redis{
 
 - 요청 예시
   ```csharp
-        POST http://localhost:5021/gamelogin
+        POST http://localhost:7296/gamelogin
         Content-Type: application.json
         
         {
