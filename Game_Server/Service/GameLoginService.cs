@@ -3,10 +3,9 @@ using Game_Server.Services.Interface;
 using Game_Server.Model.DTO;
 using Game_Server;
 using System.Net.Http;
-using Newtonsoft.Json;
+using System.Text.Json;
 using Microsoft.Extensions.Options;
 using System.Text;
-using Newtonsoft.Json.Linq;
 using MySql.Data.MySqlClient;
 
 namespace Game_Server.Services
@@ -38,7 +37,7 @@ namespace Game_Server.Services
                     AuthToken = authToken
                 };
                 // 요청에 보낼 Body 직렬화
-                string requestBody = Newtonsoft.Json.JsonConvert.SerializeObject(verifyData);
+                string requestBody = JsonSerializer.Serialize(verifyData);
 
                 HttpResponseMessage response = await httpClient.PostAsync(verifyUrl, 
                     new StringContent(requestBody, Encoding.UTF8, "application/json")); // 요청 본문의 문자 인코딩 + 미디어 타입 지정
@@ -47,9 +46,11 @@ namespace Game_Server.Services
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
 
-                    // 역직렬화 JObject는 라이브러리에서 제공하는 JSON 객체
-                    JObject jsonResponse = JObject.Parse(responseBody);
-                    int resultValue = (int)jsonResponse["result"];
+                    // JsonDoument : JSON 데이터 읽고 파싱 JsonElemnt : JSON 데이터 접근 및 값 가져오기
+                    JsonDocument jsonDocument = JsonDocument.Parse(responseBody);
+                    JsonElement jsonResult = jsonDocument.RootElement;
+
+                    int resultValue = jsonResult.GetProperty("result").GetInt32();
 
                     if(resultValue != 0) // 인증토큰 유효성 검사 결과가 성공이 아닌 경우
                     {
