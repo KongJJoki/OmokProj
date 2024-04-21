@@ -1,4 +1,4 @@
-﻿using Hive_Server;
+using Hive_Server;
 using Hive_Server.Repository;
 using Hive_Server.Services;
 using Hive_Server.Services.Interface;
@@ -6,8 +6,6 @@ using Hive_Server.Services.Interface;
 var builder = WebApplication.CreateBuilder(args);
 
 IConfiguration configuration = builder.Configuration;
-
-// Add services to the container.
 
 // 설정파일(appsettings.json)에서 DBConfig 값 가져오고, DBConfig 클래스에 매핑해주기
 builder.Services.Configure<DBConfig>(configuration.GetSection(nameof(DBConfig)));
@@ -23,12 +21,6 @@ builder.Services.AddTransient<ITokenVerifyService, TokenVerifyService>();
 builder.Services.AddControllers();
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

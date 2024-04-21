@@ -1,4 +1,4 @@
-﻿using Game_Server.Repository;
+using Game_Server.Repository;
 using Game_Server.Services.Interface;
 using Game_Server.Model.DTO;
 using Game_Server;
@@ -13,14 +13,14 @@ namespace Game_Server.Services
 {
     public class GameLoginService : IGameLoginService
     {
-        private readonly string serverUrl;
+        private readonly string tokenVerifyUrl;
         private readonly IGameDB gameDB;
         private readonly IRedisDB redisDB;
         private readonly HttpClient httpClient;
 
         public GameLoginService(IGameDB gameDB, IRedisDB redisDB, IConfiguration serverconfig)
         {
-            this.serverUrl = serverconfig.GetSection("HiveServer").Value;
+            this.tokenVerifyUrl = serverconfig.GetSection("HiveServer").Value + serverconfig.GetSection("TokenVerifyUrl").Value;
             this.gameDB = gameDB;
             this.redisDB = redisDB;
             this.httpClient = new HttpClient();
@@ -31,7 +31,7 @@ namespace Game_Server.Services
             try
             {
                 // Hive 서버에 인증토큰 유효성 검사 요청
-                string verifyUrl = serverUrl + "/tokenverify";
+                string verifyUrl = tokenVerifyUrl;
                 VerifyData verifyData = new VerifyData
                 {
                     UserId = userId,
