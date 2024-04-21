@@ -36,30 +36,11 @@ namespace Game_Server.Services
                     UserId = userId,
                     AuthToken = authToken
                 };
-                // 요청에 보낼 Body 직렬화
-                string requestBody = JsonSerializer.Serialize(verifyData);
 
-                HttpResponseMessage response = await httpClient.PostAsync(verifyUrl, 
-                    new StringContent(requestBody, Encoding.UTF8, "application/json")); // 요청 본문의 문자 인코딩 + 미디어 타입 지정
-
-                if(response.IsSuccessStatusCode) // 성공해서 응답 받은 경우
+                EErrorCode httpRespond = await HttpRequest(verifyUrl, verifyData);
+                if(httpRespond!=EErrorCode.None)
                 {
-                    string responseBody = await response.Content.ReadAsStringAsync();
-
-                    // JsonDoument : JSON 데이터 읽고 파싱 JsonElemnt : JSON 데이터 접근 및 값 가져오기
-                    JsonDocument jsonDocument = JsonDocument.Parse(responseBody);
-                    JsonElement jsonResult = jsonDocument.RootElement;
-
-                    int resultValue = jsonResult.GetProperty("result").GetInt32();
-
-                    if(resultValue != 0) // 인증토큰 유효성 검사 결과가 성공이 아닌 경우
-                    {
-                        return EErrorCode.InvalidToken;
-                    }
-                }
-                else // 요청에 실패한 경우
-                {
-                    return EErrorCode.HttpReqFail;
+                    return httpRespond;
                 }
 
                 // 인증토큰 유효성 검사 성공한 경우
@@ -90,6 +71,37 @@ namespace Game_Server.Services
             {
                 return EErrorCode.GameLoginFail;
             }
+        }
+
+        public async Task<EErrorCode> HttpRequest(string verifyUrl, VerifyData verifyData)
+        {
+            // 요청에 보낼 Body 직렬화
+            string requestBody = JsonSerializer.Serialize(verifyData);
+
+            HttpResponseMessage response = await httpClient.PostAsync(verifyUrl,
+                new StringContent(requestBody, Encoding.UTF8, "application/json")); // 요청 본문의 문자 인코딩 + 미디어 타입 지정
+
+            if (response.IsSuccessStatusCode) // 성공해서 응답 받은 경우
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                // JsonDoument : JSON 데이터 읽고 파싱 JsonElemnt : JSON 데이터 접근 및 값 가져오기
+                JsonDocument jsonDocument = JsonDocument.Parse(responseBody);
+                JsonElement jsonResult = jsonDocument.RootElement;
+
+                int resultValue = jsonResult.GetProperty("result").GetInt32();
+
+                if (resultValue != 0) // 인증토큰 유효성 검사 결과가 성공이 아닌 경우
+                {
+                    return EErrorCode.InvalidToken;
+                }
+            }
+            else // 요청에 실패한 경우
+            {
+                return EErrorCode.HttpReqFail;
+            }
+
+            return EErrorCode.None;
         }
     }
 }
