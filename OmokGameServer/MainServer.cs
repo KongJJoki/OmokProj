@@ -1,7 +1,8 @@
 using SuperSocket.SocketBase;
+using SuperSocket.SocketEngine;
+using SuperSocket.SocketBase.Protocol;
 
 using PacketDefine;
-using SuperSocket.SocketBase.Protocol;
 
 namespace OmokGameServer
 {
@@ -12,16 +13,16 @@ namespace OmokGameServer
 
         SuperSocket.SocketBase.Config.IServerConfig m_Config;
 
-        // ÆĞÅ¶ ÇÁ·Î¼¼¼­ ¼±¾ğ
+        // íŒ¨í‚· í”„ë¡œì„¸ì„œ ì„ ì–¸
         
-        // ·ë ¸Å´ÏÀú ¼±¾ğ
+        // ë£¸ ë§¤ë‹ˆì € ì„ ì–¸
 
         public MainServer()
             :base(new DefaultReceiveFilterFactory<ReceiveFilter, EFBinaryRequestInfo>)
         {
-            // »õ·Î¿î ¼¼¼Ç ¿¬°á
-            // ¼¼¼Ç ´İÈû
-            // »õ·Î¿î ¿äÃ» ¹ŞÀ½
+            // ìƒˆë¡œìš´ ì„¸ì…˜ ì—°ê²°
+            // ì„¸ì…˜ ë‹«í˜
+            // ìƒˆë¡œìš´ ìš”ì²­ ë°›ìŒ
         }
 
         public void InitConfig(ServerOption options)
@@ -45,12 +46,33 @@ namespace OmokGameServer
         {
             try
             {
+                bool isSuccess = Setup(new SuperSocket.SocketBase.Config.RootConfig(), m_Config, logFactory: new NLogLogFactory());
 
+                if(!isSuccess)
+                {
+                    Console.WriteLine("[Error] ì„œë²„ ë„¤íŠ¸ì›Œí¬ ì„¤ì • ì‹¤íŒ¨");
+                    return;
+                }
+                else
+                {
+                    MainLogger = base.Logger;
+                    MainLogger.Info("ì„œë²„ ì´ˆê¸°í™” ì„±ê³µ");
+                }
+
+                Start();
+
+                MainLogger.Info("ì„œë²„ ìƒì„± ì„±ê³µ");
             }
-            catch
+            catch(Exception ex)
             {
-
+                Console.WriteLine($"[Error] ì„œë²„ ìƒì„± ì‹¤íŒ¨ : {ex}")
             }
+        }
+        public void StopServer()
+        {
+            Stop();
+
+            // íŒ¨í‚· í”„ë¡œì„¸ì„œ ì‚­ì œ
         }
     }
 
