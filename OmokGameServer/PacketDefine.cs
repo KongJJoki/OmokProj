@@ -47,16 +47,4 @@ namespace PacketDefine
             return new Tuple<int, byte[]>(packetId, packetBody);
         }
     }
-
-    public enum PACKET_ID
-    {
-
-    }
-
-    [MemoryPackable]
-    public partial class PKTReqLogin
-    {
-        public string UserId { get; set; }
-        public string AuthToken { get; set; }
-    }
 }

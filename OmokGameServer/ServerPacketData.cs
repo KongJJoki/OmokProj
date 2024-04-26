@@ -10,7 +10,7 @@ namespace OmokGameServer
         public void SetPacket(string sessionId, Int16 packetId, byte[] bodyData)
         {
             SessionId = sessionId;
-            PacketId = PacketId;
+            PacketId = packetId;
 
             if(bodyData.Length > 0)
             {
