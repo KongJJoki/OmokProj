@@ -3,7 +3,7 @@
 
 ## 소켓 서버
 ### TO DO
-- [x] appsettings.json과 호스트 빌더로 서버 설
+- [x] appsettings.json과 호스트 빌더로 서버 설정
 - [x] EFBinaryRequstInfo 구현
 - [x] ReceiveFilter 구현
 - [ ] ServerPacketData 구현
@@ -13,7 +13,7 @@
 - [ ] Room 추가
 - [ ] RoomMgr 추가
 - [ ] UserMgr 추가
-- [ ] 패킷 핸들러들 추
+- [ ] 패킷 핸들러들 추가
 
 ---
 ## API 서버
