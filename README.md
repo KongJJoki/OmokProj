@@ -9,6 +9,7 @@
 - [x] ServerPacketData 구현
 - [x] PacketDefine 구현(PACKET_ID, ConstDefine 등)
 - [x] PacketDefine 내부에 패킷아이디 + 바디 -> 바이트 배열 함수 구현
+- [ ] PacketProcessor 구현
 - [x] NLog 추가
 - [ ] 클라이언트 연결/종료 시 내부 알림 패킷 전송 기능
 - [ ] Room 추가
