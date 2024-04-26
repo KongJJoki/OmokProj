@@ -6,10 +6,11 @@
 - [x] appsettings.json과 호스트 빌더로 서버 설정
 - [x] EFBinaryRequstInfo 구현
 - [x] ReceiveFilter 구현
-- [ ] ServerPacketData 구현
+- [x] ServerPacketData 구현
 - [x] PacketDefine 구현(PACKET_ID, ConstDefine 등)
 - [x] PacketDefine 내부에 패킷아이디 + 바디 -> 바이트 배열 함수 구현
 - [x] NLog 추가
+- [ ] 클라이언트 연결/종료 시 내부 알림 패킷 전송 기능
 - [ ] Room 추가
 - [ ] RoomMgr 추가
 - [ ] UserMgr 추가
