@@ -1,25 +1,31 @@
 using SuperSocket.SocketBase;
 using SuperSocket.SocketEngine;
 using SuperSocket.SocketBase.Protocol;
+using SuperSocket.SocketBase.Logging;
+using SuperSocket.SocketBase.Config;
 
 using PacketDefine;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace OmokGameServer
 {
     public class MainServer : AppServer<ClientSession, EFBinaryRequestInfo>
     {
-        public static ServerOption serverOption;
-        public static SuperSocket.SocketBase.Logging.ILog MainLogger;
+        public static ILog MainLogger;
 
-        SuperSocket.SocketBase.Config.IServerConfig m_Config;
+        ServerOption serverOption;
+        IServerConfig m_Config;
 
         // 패킷 프로세서 선언
         
         // 룸 매니저 선언
 
-        public MainServer()
+        public MainServer(IOptions<ServerOption> serverConfig)
             :base(new DefaultReceiveFilterFactory<ReceiveFilter, EFBinaryRequestInfo>)
         {
+            serverOption = serverConfig.Value;
+
             // 새로운 세션 연결
             // 세션 닫힘
             // 새로운 요청 받음

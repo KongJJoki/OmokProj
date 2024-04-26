@@ -1,4 +1,4 @@
-﻿using MemoryPack;
+using MemoryPack;
 using System.ComponentModel.DataAnnotations;
 
 namespace PacketDefine
@@ -56,7 +56,7 @@ namespace PacketDefine
     [MemoryPackable]
     public partial class PKTReqLogin
     {
-        public string UserId;
-        public string AuthToken;
+        public string UserId { get; set; }
+        public string AuthToken { get; set; }
     }
 }
