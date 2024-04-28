@@ -22,5 +22,8 @@ namespace PacketDefine
         ROOM_ENTER_NOTIFY = 3004,
         ROOM_LEAVE_NOTIFY = 3005,
         ROOM_MEMBER_NOTIFY = 3006,
+        ROOM_CHAT_REQUEST = 3007,
+        ROOM_CHAT_RESPOND = 3008,
+        ROOM_CHAT_NOTIFY = 3009,
     }
 }

@@ -68,4 +68,21 @@ namespace PacketTypes
     {
         public List<string> UserIdList { get; set; } = new List<string>();
     }
+
+    [MemoryPackable]
+    public partial class PKTReqRoomChat
+    {
+        public string Message { get; set; }
+    }
+    [MemoryPackable]
+    public partial class PKTResRoomChat
+    {
+        public int Result { get; set; }
+    }
+    [MemoryPackable]
+    public partial class PKTNTFRoomChat
+    {
+        public string UserId { get; set; }
+        public string Message { get; set; }
+    }
 }

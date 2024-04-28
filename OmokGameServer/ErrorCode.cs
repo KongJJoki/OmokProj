@@ -22,5 +22,8 @@ namespace OmokGameServer
 
         Room_Leave_Fail_Invalid_User = 3004,
         Room_Leave_Fail_Not_In_Room = 3005,
+
+        Room_Chat_Fail_Invalid_User = 3006,
+        Room_Chat_Fail_Not_In_Room = 3007,
     }
 }

@@ -1,3 +1,4 @@
+using Antlr4.Runtime.Tree;
 using MemoryPack;
 using PacketDefine;
 using PacketTypes;
@@ -17,6 +18,7 @@ namespace OmokGameServer
         {
             packetHandlerDictionary.Add((int)PACKET_ID.ROOM_ENTER_REQUEST, RoomEnterRequest);
             packetHandlerDictionary.Add((int)PACKET_ID.ROOM_LEAVE_REQUEST, RoomLeaveRequest);
+            packetHandlerDictionary.Add((int)PACKET_ID.ROOM_CHAT_REQUEST, RoomChatRequest);
         }
         public Room GetRoom(int roomNum)
         {
@@ -196,6 +198,61 @@ namespace OmokGameServer
 
             var bodyData = MemoryPackSerializer.Serialize(roomLeaveNTF);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.ROOM_LEAVE_NOTIFY, bodyData);
+
+            room.Broadcast("", sendData);
+        }
+
+        public void RoomChatRequest(ServerPacketData packet)
+        {
+            string sessionId = packet.SessionId;
+            MainServer.MainLogger.Info($"sessionId({sessionId} send Chat)");
+
+            try
+            {
+                User user = userManager.GetUser(sessionId);
+                if(user == null)
+                {
+                    RoomChatRespond(ERROR_CODE.Room_Chat_Fail_Invalid_User, sessionId);
+                    return;
+                }
+
+                if(!user.isInRoom)
+                {
+                    RoomChatRespond(ERROR_CODE.Room_Chat_Fail_Not_In_Room, sessionId);
+                    return;
+                }
+
+                RoomChatRespond(ERROR_CODE.None, sessionId);
+
+                var requestData = MemoryPackSerializer.Deserialize<PKTReqRoomChat>(packet.BodyData);
+
+                Room room = GetRoom(user.roomNumber);
+
+                NotifyRoomChat(user.userId, requestData.Message, room);
+            }
+            catch(Exception ex)
+            {
+                MainServer.MainLogger.Error(ex.ToString());
+            }
+        }
+        void RoomChatRespond(ERROR_CODE errorCode, string sessionId)
+        {
+            PKTResRoomChat roomEnterRes = new PKTResRoomChat();
+            roomEnterRes.Result = (int)errorCode;
+
+            var bodyData = MemoryPackSerializer.Serialize(roomEnterRes);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.ROOM_CHAT_RESPOND, bodyData);
+
+            sendFunc(sessionId, sendData);
+        }
+        void NotifyRoomChat(string userId, string message, Room room)
+        {
+            PKTNTFRoomChat roomChatNTF = new PKTNTFRoomChat();
+            roomChatNTF.UserId = userId;
+            roomChatNTF.Message = message;
+
+            var bodyData = MemoryPackSerializer.Serialize(roomChatNTF);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.ROOM_CHAT_NOTIFY, bodyData);
 
             room.Broadcast("", sendData);
         }
