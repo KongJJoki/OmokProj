@@ -21,5 +21,6 @@ namespace PacketDefine
         ROOM_LEAVE_RESPOND = 3003,
         ROOM_ENTER_NOTIFY = 3004,
         ROOM_LEAVE_NOTIFY = 3005,
+        ROOM_MEMBER_NOTIFY = 3006,
     }
 }

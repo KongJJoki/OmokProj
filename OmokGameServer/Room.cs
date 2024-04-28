@@ -57,13 +57,28 @@ namespace OmokGameServer
         {
             return userList.Contains(user);
         }
-        public void Broadcast(byte[] packet)
+        public void Broadcast(string exceptSessionId, byte[] packet)
         {
             for (int i = 0; i < userList.Count; i++)
             {
                 User user = userList[i];
+                if(user.sessionId == exceptSessionId)
+                {
+                    continue;
+                }
                 sendFunc(user.sessionId, packet);
             }
+        }
+        public List<string> GetUserIds()
+        {
+            List<string> UserIds = new List<string>();
+
+            for(int i = 0; i < nowUserCount; i++)
+            {
+                UserIds.Add(userList[i].userId);
+            }
+
+            return UserIds;
         }
     }
 }

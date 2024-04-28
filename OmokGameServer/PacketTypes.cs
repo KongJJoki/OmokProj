@@ -63,4 +63,9 @@ namespace PacketTypes
     {
         public string UserId { get; set; }
     }
+    [MemoryPackable]
+    public partial class PKTNTFRoomMember
+    {
+        public List<string> UserIdList { get; set; } = new List<string>();
+    }
 }
