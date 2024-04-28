@@ -33,10 +33,10 @@ namespace OmokGameServer
                 return ERROR_CODE.Login_User_Count_Limit_Exceed;
             }
 
-            if(userDictionary.ContainsKey(sessionId))
+            /*if(userDictionary.ContainsKey(sessionId))
             {
                 return ERROR_CODE.Already_Exist_Session;
-            }
+            }*/
 
             User newUser = new User();
             newUser.SetUser(sessionId, userId);
@@ -52,6 +52,18 @@ namespace OmokGameServer
             if(!isRemoveSuccess)
             {
                 return ERROR_CODE.Not_Exist_Session;
+            }
+
+            return ERROR_CODE.None;
+        }
+
+        public ERROR_CODE CheckUserExist(string sessionId)
+        {
+            bool isUserExist = userDictionary.ContainsKey(sessionId);
+            
+            if(isUserExist)
+            {
+                return ERROR_CODE.Already_Exist_Session;
             }
 
             return ERROR_CODE.None;

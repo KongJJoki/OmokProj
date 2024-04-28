@@ -20,4 +20,10 @@ namespace PacketTypes
     {
         public int Result { get; set; }
     }
+
+    [MemoryPackable]
+    public partial class PKTResFullUser
+    {
+        public int Result { get; set; }
+    }
 }

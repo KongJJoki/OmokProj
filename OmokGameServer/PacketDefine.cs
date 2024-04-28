@@ -1,6 +1,3 @@
-using MemoryPack;
-using System.ComponentModel.DataAnnotations;
-
 namespace PacketDefine
 {
     public class ConstDefine
@@ -35,7 +32,7 @@ namespace PacketDefine
             return byteData;
         }
 
-        public static Tuple<int, byte[]> ResolveBytes(int recvLength, byte[] recvData)
+        /*public static Tuple<int, byte[]> ResolveBytes(int recvLength, byte[] recvData)
         {
             Int16 packetSize = BitConverter.ToInt16(recvData, 0);
             Int16 packetId = BitConverter.ToInt16(recvData, 2); // 패킷의 2번째 인덱스부터 ID
@@ -45,6 +42,6 @@ namespace PacketDefine
             Buffer.BlockCopy(recvData, ConstDefine.PACKET_HEADER_SIZE, packetBody, 0, bodySize);
 
             return new Tuple<int, byte[]>(packetId, packetBody);
-        }
+        }*/
     }
 }

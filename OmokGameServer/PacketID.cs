@@ -12,6 +12,8 @@ namespace PacketDefine
 
 
         // External
-
+        LOGIN_REQUEST = 2000,
+        LOGIN_RESPOND = 2001,
+        FULL_USER = 2002,
     }
 }

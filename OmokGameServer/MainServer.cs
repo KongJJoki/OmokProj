@@ -31,6 +31,7 @@ namespace OmokGameServer
             // 세션 닫힘
             SessionClosed += new SessionHandler<ClientSession, CloseReason>(OnClientDisConnect);
             // 새로운 요청 받음
+            NewRequestReceived += new RequestHandler<ClientSession, EFBinaryRequestInfo>(OnPacketReceived);
         }
 
         public void InitConfig(ServerOption options)
@@ -84,6 +85,30 @@ namespace OmokGameServer
             // 패킷 프로세서 삭제
             packetProcessor.ProcessorStop();
         }
+
+        public bool SendData(string sessionID, byte[] sendData)
+        {
+            var session = GetSessionByID(sessionID);
+
+            try
+            {
+                if (session == null)
+                {
+                    return false;
+                }
+
+                session.Send(sendData, 0, sendData.Length);
+            }
+            catch (Exception ex)
+            {
+                MainLogger.Error($"Send Error : {ex}");
+
+                session.SendEndWhenSendingTimeOut();
+                session.Close();
+            }
+            return true;
+        }
+
         public void PassToProcessor(ServerPacketData packet)
         {
             packetProcessor.InsertPacket(packet);
@@ -104,6 +129,19 @@ namespace OmokGameServer
 
             ServerPacketData packet = new ServerPacketData();
             packet.SetPacketNoBody(clientSession.SessionID, (Int16)PACKET_ID.IN_NTF_CLIENT_DISCONNECT);
+
+            PassToProcessor(packet);
+        }
+        void OnPacketReceived(ClientSession clientSession, EFBinaryRequestInfo requestInfo)
+        {
+            MainLogger.Info($"New Packet Received : sessionId : {clientSession.SessionID}");
+
+            // 받은 세션과 reqInfo로 ServerPacketData로 만들어서 프로세서에 전달
+            ServerPacketData packet = new ServerPacketData();
+            packet.PacketSize = requestInfo.Size;
+            packet.SessionId = clientSession.SessionID;
+            packet.PacketId = requestInfo.PacketId;
+            packet.BodyData = requestInfo.Body;
 
             PassToProcessor(packet);
         }
