@@ -52,4 +52,15 @@ namespace PacketTypes
     {
         public int Result { get; set; }
     }
+
+    [MemoryPackable]
+    public partial class PKTNTFRoomEnter
+    {
+        public string UserId { get; set; }
+    }
+    [MemoryPackable]
+    public partial class PKTNTFRoomLeave
+    {
+        public string UserId { get; set; }
+    }
 }

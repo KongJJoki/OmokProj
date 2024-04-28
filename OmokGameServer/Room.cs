@@ -31,6 +31,7 @@ namespace OmokGameServer
             }
 
             userList.Add(user);
+            nowUserCount++;
 
             return ERROR_CODE.None;
         }
@@ -43,6 +44,11 @@ namespace OmokGameServer
             }
 
             userList.Remove(user);
+
+            if (nowUserCount > 0)
+            {
+                nowUserCount--;
+            }
 
             return ERROR_CODE.None;
         }

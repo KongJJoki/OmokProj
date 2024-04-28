@@ -71,6 +71,8 @@ namespace OmokGameServer
 
                 RoomEnterRespond(errorCode, sessionId);
 
+                NotifyRoomEnter(user, room);
+
                 MainServer.MainLogger.Info($"sessionId({sessionId}) enter {requestData.RoomNumber} Room");
             }
             catch(Exception ex)
@@ -88,6 +90,21 @@ namespace OmokGameServer
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.ROOM_ENTER_RESPOND, bodyData);
 
             sendFunc(sessionId, sendData);
+        }
+        void NotifyRoomEnter(User user, Room room)
+        {
+            if(room.nowUserCount == 0)
+            {
+                return;
+            }
+
+            PKTNTFRoomEnter roomEnterNTF = new PKTNTFRoomEnter();
+            roomEnterNTF.UserId = user.userId;
+
+            var bodyData = MemoryPackSerializer.Serialize(roomEnterNTF);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.ROOM_ENTER_NOTIFY, bodyData);
+
+            room.Broadcast(sendData);
         }
 
         public void RoomLeaveRequest(ServerPacketData packet)
@@ -130,6 +147,7 @@ namespace OmokGameServer
 
                 user.SetRoomLeave();
 
+                NotifyRoomLeave(user, room);
                 RoomLeaveRespond(errorCode, sessionId);
 
                 MainServer.MainLogger.Info($"sessionId({sessionId}) leave Room");
@@ -149,6 +167,21 @@ namespace OmokGameServer
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.ROOM_LEAVE_RESPOND, bodyData);
 
             sendFunc(sessionId, sendData);
+        }
+        void NotifyRoomLeave(User user, Room room)
+        {
+            if (room.nowUserCount == 0)
+            {
+                return;
+            }
+
+            PKTNTFRoomLeave roomLeaveNTF = new PKTNTFRoomLeave();
+            roomLeaveNTF.UserId = user.userId;
+
+            var bodyData = MemoryPackSerializer.Serialize(roomLeaveNTF);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.ROOM_LEAVE_NOTIFY, bodyData);
+
+            room.Broadcast(sendData);
         }
     }
 }
