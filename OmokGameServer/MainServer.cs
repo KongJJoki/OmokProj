@@ -18,7 +18,7 @@ namespace OmokGameServer
         IServerConfig m_Config;
 
         // 패킷 프로세서 선언
-        
+        PacketProcessor packetProcessor = new PacketProcessor();
         // 룸 매니저 선언
 
         public MainServer(IOptions<ServerOption> serverConfig)
@@ -27,7 +27,9 @@ namespace OmokGameServer
             serverOption = serverConfig.Value;
 
             // 새로운 세션 연결
+            NewSessionConnected += new SessionHandler<ClientSession>(OnClientConnect);
             // 세션 닫힘
+            SessionClosed += new SessionHandler<ClientSession, CloseReason>(OnClientDisConnect);
             // 새로운 요청 받음
         }
 
@@ -66,6 +68,7 @@ namespace OmokGameServer
                 }
 
                 Start();
+                packetProcessor.ProcessorStart(this);
 
                 MainLogger.Info("서버 생성 성공");
             }
@@ -79,6 +82,30 @@ namespace OmokGameServer
             Stop();
 
             // 패킷 프로세서 삭제
+            packetProcessor.ProcessorStop();
+        }
+        public void PassToProcessor(ServerPacketData packet)
+        {
+            packetProcessor.InsertPacket(packet);
+        }
+
+        void OnClientConnect(ClientSession clientSession)
+        {
+            MainLogger.Info($"New Session : {clientSession.SessionID}");
+
+            ServerPacketData packet = new ServerPacketData();
+            packet.SetPacketNoBody(clientSession.SessionID, (Int16)PACKET_ID.IN_NTF_CLIENT_CONNECT);
+            
+            PassToProcessor(packet);
+        }
+        void OnClientDisConnect(ClientSession clientSession, CloseReason reason)
+        {
+            MainLogger.Info($"Closed Session : {clientSession.SessionID}");
+
+            ServerPacketData packet = new ServerPacketData();
+            packet.SetPacketNoBody(clientSession.SessionID, (Int16)PACKET_ID.IN_NTF_CLIENT_DISCONNECT);
+
+            PassToProcessor(packet);
         }
     }
 

@@ -17,5 +17,11 @@ namespace OmokGameServer
                 BodyData = bodyData;
             }
         }
+
+        public void SetPacketNoBody(string sessionId, Int16 packetId)
+        {
+            SessionId = sessionId;
+            PacketId = packetId;
+        }
     }
 }

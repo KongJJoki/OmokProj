@@ -44,7 +44,7 @@ namespace OmokGameServer
         }
 
         // 버퍼에 패킷 넣는 함수
-        void InsertPacket(ServerPacketData packetData)
+        public void InsertPacket(ServerPacketData packetData)
         {
             PacketBuffer.Post(packetData);
         }
