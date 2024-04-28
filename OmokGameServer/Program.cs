@@ -17,6 +17,7 @@ namespace OmokGameServer
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.Configure<ServerOption>(hostContext.Configuration.GetSection("ServerOption"));
+                    services.AddHostedService<MainServer>();
                 })
                 .Build();
 

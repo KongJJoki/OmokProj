@@ -2,7 +2,7 @@ namespace PacketDefine
 {
     public class ConstDefine
     {
-        public const Int16 PACKET_HEADER_SIZE = 5;
+        public const Int16 PACKET_HEADER_SIZE = 4;
         public const int MAX_USER_ID_BYTE_LENGTH = 16;
         public const int MAX_USER_PW_BYTE_LENGTH = 16;
     }

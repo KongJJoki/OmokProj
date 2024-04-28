@@ -10,21 +10,24 @@ using Microsoft.Extensions.Options;
 
 namespace OmokGameServer
 {
-    public class MainServer : AppServer<ClientSession, EFBinaryRequestInfo>
+    public class MainServer : AppServer<ClientSession, EFBinaryRequestInfo>, IHostedService
     {
         public static ILog MainLogger;
 
         public static ServerOption serverOption;
         IServerConfig m_Config;
 
+        private readonly IHostApplicationLifetime _appLifetime;
+
         // 패킷 프로세서 선언
         PacketProcessor packetProcessor = new PacketProcessor();
         // 룸 매니저 선언
 
-        public MainServer(IOptions<ServerOption> serverConfig)
+        public MainServer(IHostApplicationLifetime appLifetime, IOptions<ServerOption> serverConfig)
             :base(new DefaultReceiveFilterFactory<ReceiveFilter, EFBinaryRequestInfo>())
         {
             serverOption = serverConfig.Value;
+            _appLifetime = appLifetime;
 
             // 새로운 세션 연결
             NewSessionConnected += new SessionHandler<ClientSession>(OnClientConnect);
@@ -38,7 +41,7 @@ namespace OmokGameServer
         {
             serverOption = options;
 
-            m_Config = new SuperSocket.SocketBase.Config.ServerConfig
+            m_Config = new ServerConfig
             {
                 Name = options.Name,
                 Ip = "Any",
@@ -55,7 +58,7 @@ namespace OmokGameServer
         {
             try
             {
-                bool isSuccess = Setup(new SuperSocket.SocketBase.Config.RootConfig(), m_Config, logFactory: new NLogLogFactory());
+                bool isSuccess = Setup(new RootConfig(), m_Config, logFactory: new NLogLogFactory());
 
                 if(!isSuccess)
                 {
@@ -144,6 +147,26 @@ namespace OmokGameServer
             packet.BodyData = requestInfo.Body;
 
             PassToProcessor(packet);
+        }
+
+        public void AppOnStarted()
+        {
+            InitConfig(serverOption);
+            StartServer();
+        }
+
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            _appLifetime.ApplicationStarted.Register(AppOnStarted);
+            _appLifetime.ApplicationStopped.Register(StopServer);
+
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+
+            return Task.CompletedTask;
         }
     }
 

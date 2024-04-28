@@ -1,6 +1,3 @@
-using MemoryPack;
-using System.ComponentModel.DataAnnotations;
-
 namespace PacketDefine
 {
     public enum PACKET_ID
