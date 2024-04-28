@@ -14,7 +14,7 @@ namespace OmokGameServer
     {
         public static ILog MainLogger;
 
-        ServerOption serverOption;
+        public static ServerOption serverOption;
         IServerConfig m_Config;
 
         // 패킷 프로세서 선언
@@ -22,7 +22,7 @@ namespace OmokGameServer
         // 룸 매니저 선언
 
         public MainServer(IOptions<ServerOption> serverConfig)
-            :base(new DefaultReceiveFilterFactory<ReceiveFilter, EFBinaryRequestInfo>)
+            :base(new DefaultReceiveFilterFactory<ReceiveFilter, EFBinaryRequestInfo>())
         {
             serverOption = serverConfig.Value;
 
@@ -71,7 +71,7 @@ namespace OmokGameServer
             }
             catch(Exception ex)
             {
-                Console.WriteLine($"[Error] 서버 생성 실패 : {ex}")
+                Console.WriteLine($"[Error] 서버 생성 실패 : {ex}");
             }
         }
         public void StopServer()

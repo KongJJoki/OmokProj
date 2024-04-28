@@ -2,11 +2,13 @@ namespace OmokGameServer
 {
     public class PacketHandler
     {
-        protected MainServer GameServer;
+        protected MainServer mainServer;
+        protected UserManager userManager;
         
-        public void Init(MainServer mainServer)
+        public void Init(MainServer mainServer, UserManager userManager)
         {
-            GameServer = mainServer;
+            this.mainServer = mainServer;
+            this.userManager = userManager;
         }
     }
 }
