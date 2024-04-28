@@ -16,7 +16,7 @@ namespace OmokGameServer
         // 클라이언트 연결
         public void InternalNTFClientConnect(ServerPacketData packetData)
         {
-            MainServer.MainLogger.Debug($"New Client Connect / Now Session Count : {mainServer.SessionCount}");
+            MainServer.MainLogger.Debug($"New Client Connect / Now Session Count : {MainServer.sessionCount}");
         }
         // 클라이언트 연결 종료
         public void InterNTFClientDisconnect(ServerPacketData packetData)
@@ -30,7 +30,7 @@ namespace OmokGameServer
                 userManager.RemoveUser(userSessionId);
             }
 
-            MainServer.MainLogger.Debug($"Client DisConnect / Now Session Count : {mainServer.SessionCount}");
+            MainServer.MainLogger.Debug($"Client DisConnect / Now Session Count : {MainServer.sessionCount}");
         }
         // 로그인 요청
         public void LoginRequest(ServerPacketData packet)
@@ -40,10 +40,10 @@ namespace OmokGameServer
 
             try
             {
-                if(userManager.CheckUserExist(sessionId) == ERROR_CODE.Already_Exist_Session)
+                if(userManager.CheckUserExist(sessionId) == ERROR_CODE.Login_Fail_Already_Exist_Session)
                 {
-                    LoginRespond(ERROR_CODE.Already_Exist_Session, sessionId);
-                    MainServer.MainLogger.Debug($"sessionId({sessionId}) Login Fail : Error({ERROR_CODE.Already_Exist_Session})");
+                    LoginRespond(ERROR_CODE.Login_Fail_Already_Exist_Session, sessionId);
+                    MainServer.MainLogger.Debug($"sessionId({sessionId}) Login Fail : Error({ERROR_CODE.Login_Fail_Already_Exist_Session})");
                     return;
                 }
 
@@ -51,7 +51,7 @@ namespace OmokGameServer
 
                 ERROR_CODE errorCode = userManager.AddUser(sessionId, requestData.UserId);
 
-                if(errorCode == ERROR_CODE.Login_User_Count_Limit_Exceed)
+                if(errorCode == ERROR_CODE.Login_Fail_User_Count_Limit_Exceed)
                 {
                     FullUserRespond(errorCode, sessionId);
                     MainServer.MainLogger.Debug($"sessionId({sessionId}) Login Fail : Error({errorCode})");
@@ -74,7 +74,7 @@ namespace OmokGameServer
             var bodyData = MemoryPackSerializer.Serialize(loginRes);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.LOGIN_RESPOND, bodyData);
 
-            mainServer.SendData(sessionId, sendData);
+            sendFunc(sessionId, sendData);
         }
         // 유저 다 찬 경우 보낼 응답
         public void FullUserRespond(ERROR_CODE errorCode, string sessionId)
@@ -85,7 +85,7 @@ namespace OmokGameServer
             var bodyData = MemoryPackSerializer.Serialize(userFullRes);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.FULL_USER, bodyData);
 
-            mainServer.SendData(sessionId, sendData);
+            sendFunc(sessionId, sendData);
         }
     }
 }

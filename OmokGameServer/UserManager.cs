@@ -1,20 +1,5 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 namespace OmokGameServer
 {
-    public class User
-    {
-        string sessionId;
-        string userId;
-
-        public void SetUser(string sessionId, string userId)
-        {
-            this.sessionId = sessionId;
-            this.userId = userId;
-        }
-    }
-
     public class UserManager
     {
         int maxUserNumber;
@@ -30,7 +15,7 @@ namespace OmokGameServer
         {
             if(userDictionary.Count()>=maxUserNumber)
             {
-                return ERROR_CODE.Login_User_Count_Limit_Exceed;
+                return ERROR_CODE.Login_Fail_User_Count_Limit_Exceed;
             }
 
             /*if(userDictionary.ContainsKey(sessionId))
@@ -51,7 +36,7 @@ namespace OmokGameServer
 
             if(!isRemoveSuccess)
             {
-                return ERROR_CODE.Not_Exist_Session;
+                return ERROR_CODE.Remove_Fail_Not_Exist_Session;
             }
 
             return ERROR_CODE.None;
@@ -63,10 +48,14 @@ namespace OmokGameServer
             
             if(isUserExist)
             {
-                return ERROR_CODE.Already_Exist_Session;
+                return ERROR_CODE.Login_Fail_Already_Exist_Session;
             }
 
             return ERROR_CODE.None;
+        }
+        public User GetUser(string sessionId)
+        {
+            return userDictionary[sessionId];
         }
     }
 }
