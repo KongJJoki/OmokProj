@@ -9,12 +9,14 @@
 - [x] ServerPacketData 구현
 - [x] PacketDefine 구현(PACKET_ID, ConstDefine 등)
 - [x] PacketDefine 내부에 패킷아이디 + 바디 -> 바이트 배열 함수 구현
-- [ ] PacketProcessor 구현
+- [x] PacketProcessor 구현
 - [x] NLog 추가
 - [ ] 클라이언트 연결/종료 시 내부 알림 패킷 전송 기능
+- [ ] 로그인 요청/응답 패킷 구현
+- [ ] 로그인 요청/응답 패킷 전송 기능
 - [ ] Room 추가
 - [ ] RoomMgr 추가
-- [ ] UserMgr 추가
+- [x] UserMgr 추가
 - [ ] 패킷 핸들러들 추가
 
 ---
