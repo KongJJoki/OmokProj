@@ -35,16 +35,16 @@ namespace OmokGameServer
             return ERROR_CODE.None;
         }
 
-        public bool RemoveUser(User user)
+        public ERROR_CODE RemoveUser(User user)
         {
             if (!CheckUserExist(user))
             {
-                return false;
+                return ERROR_CODE.Room_Leave_Fail_Not_In_Room;
             }
 
             userList.Remove(user);
 
-            return true;
+            return ERROR_CODE.None;
         }
 
         public bool CheckUserExist(User user)

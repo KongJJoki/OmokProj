@@ -41,4 +41,15 @@ namespace PacketTypes
     {
         public int Result { get; set; }
     }
+
+    [MemoryPackable]
+    public partial class PKTReqRoomLeave
+    {
+        public int RoomNumber { get; set; }
+    }
+    [MemoryPackable]
+    public partial class PKTResRoomLeave
+    {
+        public int Result { get; set; }
+    }
 }

@@ -17,5 +17,7 @@ namespace PacketDefine
         // Room
         ROOM_ENTER_REQUEST = 3000,
         ROOM_ENTER_RESPOND = 3001,
+        ROOM_LEAVE_REQUEST = 3002,
+        ROOM_LEAVE_RESPOND = 3003,
     }
 }

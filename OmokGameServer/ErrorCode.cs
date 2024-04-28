@@ -20,5 +20,7 @@ namespace OmokGameServer
         Room_Enter_Fail_Not_Exist_Room = 3002,
         Room_Enter_Fail_User_Count_Limit_Exceed = 3003,
 
+        Room_Leave_Fail_Invalid_User = 3004,
+        Room_Leave_Fail_Not_In_Room = 3005,
     }
 }

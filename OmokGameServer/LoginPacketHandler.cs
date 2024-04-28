@@ -66,7 +66,7 @@ namespace OmokGameServer
             }
         }
         // 로그인 응답
-        public void LoginRespond(ERROR_CODE errorCode, string sessionId)
+        void LoginRespond(ERROR_CODE errorCode, string sessionId)
         {
             PKTResLogin loginRes = new PKTResLogin();
             loginRes.Result = (int)errorCode;

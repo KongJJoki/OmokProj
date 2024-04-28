@@ -12,10 +12,15 @@ namespace OmokGameServer
             this.sessionId = sessionId;
             this.userId = userId;
         }
-        public void SetRoomNumber(int roomNum)
+        public void SetRoomEnter(int roomNum)
         {
             isInRoom = true;
             roomNumber = roomNum;
+        }
+        public void SetRoomLeave()
+        {
+            isInRoom = false;
+            roomNumber = -1;
         }
     }
 }
