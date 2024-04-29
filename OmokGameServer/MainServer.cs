@@ -9,12 +9,11 @@ using Microsoft.Extensions.Options;
 
 namespace OmokGameServer
 {
-    public class MainServer : AppServer<ClientSession, EFBinaryRequestInfo>, IHostedService
+    public class MainServer : AppServer<ClientSession, OmokBinaryRequestInfo>, IHostedService
     {
-        public static ILog MainLogger;
-        public static int sessionCount;
+        ILog mainLogger;
 
-        public static ServerOption serverOption;
+        ServerOption serverOption;
         IServerConfig m_Config;
 
         private readonly IHostApplicationLifetime _appLifetime;
@@ -24,14 +23,14 @@ namespace OmokGameServer
         RoomManager roomManager = new RoomManager();
 
         public MainServer(IHostApplicationLifetime appLifetime, IOptions<ServerOption> serverConfig)
-            :base(new DefaultReceiveFilterFactory<ReceiveFilter, EFBinaryRequestInfo>())
+            :base(new DefaultReceiveFilterFactory<ReceiveFilter, OmokBinaryRequestInfo>())
         {
             serverOption = serverConfig.Value;
             _appLifetime = appLifetime;
 
             NewSessionConnected += new SessionHandler<ClientSession>(OnClientConnect);
             SessionClosed += new SessionHandler<ClientSession, CloseReason>(OnClientDisConnect);
-            NewRequestReceived += new RequestHandler<ClientSession, EFBinaryRequestInfo>(OnPacketReceived);
+            NewRequestReceived += new RequestHandler<ClientSession, OmokBinaryRequestInfo>(OnPacketReceived);
         }
 
         public void InitConfig(ServerOption options)
@@ -64,14 +63,15 @@ namespace OmokGameServer
                 }
                 else
                 {
-                    MainLogger = base.Logger;
-                    MainLogger.Info("서버 초기화 성공");
+                    mainLogger = base.Logger;
+                    mainLogger.Info("서버 초기화 성공");
                 }
 
-                Start();
+                packetProcessor.ProcessorStart(userManager, roomManager, mainLogger, serverOption, SendData);
                 Settings();
+                base.Start();
 
-                MainLogger.Info("서버 생성 성공");
+                mainLogger.Info("서버 생성 성공");
             }
             catch(Exception ex)
             {
@@ -82,16 +82,14 @@ namespace OmokGameServer
         {
             Stop();
 
-            // 패킷 프로세서 삭제
             packetProcessor.ProcessorStop();
         }
 
         public void Settings()
         {
-            packetProcessor.ProcessorStart(userManager, roomManager);
             userManager.SetMaxUserNumber(serverOption.RoomMaxCount * serverOption.RoomMaxUserCount);
+            roomManager.SetServerOption(serverOption);
             roomManager.CreateRooms();
-            PacketHandler.sendFunc = SendData;
             Room.sendFunc = SendData;
         }
 
@@ -110,7 +108,7 @@ namespace OmokGameServer
             }
             catch (Exception ex)
             {
-                MainLogger.Error($"Send Error : {ex}");
+                mainLogger.Error($"Send Error : {ex}");
 
                 session.SendEndWhenSendingTimeOut();
                 session.Close();
@@ -118,36 +116,34 @@ namespace OmokGameServer
             return true;
         }
 
-        public void PassToProcessor(ServerPacketData packet)
+        public void PassPacketToProcessor(ServerPacketData packet)
         {
             packetProcessor.InsertPacket(packet);
         }
 
         void OnClientConnect(ClientSession clientSession)
         {
-            MainLogger.Info($"New Session : {clientSession.SessionID}");
+            mainLogger.Info($"New Session : {clientSession.SessionID} / Now Session Count : {SessionCount}");
 
             ServerPacketData packet = new ServerPacketData();
-            packet.SetPacketNoBody(clientSession.SessionID, (Int16)PACKET_ID.IN_NTF_CLIENT_CONNECT);
-            
-            PassToProcessor(packet);
 
-            sessionCount++;
+            packet.SetPacketNoBody(clientSession.SessionID, (Int16)PACKET_ID.InNTFClientConnect);
+
+            PassPacketToProcessor(packet);
         }
         void OnClientDisConnect(ClientSession clientSession, CloseReason reason)
         {
-            MainLogger.Info($"Closed Session : {clientSession.SessionID}");
+            mainLogger.Info($"Closed Session : {clientSession.SessionID} /  Now Session Count : {SessionCount}");
 
             ServerPacketData packet = new ServerPacketData();
-            packet.SetPacketNoBody(clientSession.SessionID, (Int16)PACKET_ID.IN_NTF_CLIENT_DISCONNECT);
 
-            PassToProcessor(packet);
+            packet.SetPacketNoBody(clientSession.SessionID, (Int16)PACKET_ID.InNTFClientDisconnect);
 
-            sessionCount--;
+            PassPacketToProcessor(packet);
         }
-        void OnPacketReceived(ClientSession clientSession, EFBinaryRequestInfo requestInfo)
+        void OnPacketReceived(ClientSession clientSession, OmokBinaryRequestInfo requestInfo)
         {
-            MainLogger.Info($"New Packet Received : sessionId : {clientSession.SessionID}");
+            mainLogger.Info($"New Packet Received : sessionId : {clientSession.SessionID}");
 
             // 받은 세션과 reqInfo로 ServerPacketData로 만들어서 프로세서에 전달
             ServerPacketData packet = new ServerPacketData();
@@ -156,7 +152,7 @@ namespace OmokGameServer
             packet.PacketId = requestInfo.PacketId;
             packet.BodyData = requestInfo.Body;
 
-            PassToProcessor(packet);
+            PassPacketToProcessor(packet);
         }
 
         public void AppOnStarted()
@@ -180,7 +176,7 @@ namespace OmokGameServer
         }
     }
 
-    public class ClientSession : AppSession<ClientSession, EFBinaryRequestInfo>
+    public class ClientSession : AppSession<ClientSession, OmokBinaryRequestInfo>
     {
 
     }

@@ -61,7 +61,7 @@ namespace OmokGameServer
         {
             for (int i = 0; i < userList.Count; i++)
             {
-                User user = userList[i];
+                var user = userList[i];
                 if(user.sessionId == exceptSessionId)
                 {
                     continue;

@@ -3,12 +3,18 @@ namespace OmokGameServer
     public class RoomManager
     {
         List<Room> roomList = new List<Room>();
+        ServerOption serverOption;
+
+        public void SetServerOption(ServerOption serverOption)
+        {
+            this.serverOption = serverOption;
+        }
 
         public void CreateRooms()
         {
-            int maxRoomCount = MainServer.serverOption.RoomMaxCount;
-            int maxUserCount = MainServer.serverOption.RoomMaxUserCount;
-            int roomStartNum = MainServer.serverOption.RoomStartNumber;
+            int maxRoomCount = serverOption.RoomMaxCount;
+            int maxUserCount = serverOption.RoomMaxUserCount;
+            int roomStartNum = serverOption.RoomStartNumber;
 
             int nowLastRoomNum = roomStartNum;
 

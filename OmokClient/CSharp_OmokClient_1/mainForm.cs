@@ -1,4 +1,4 @@
-﻿using CSCommon;
+using CSCommon;
 using MemoryPack;
 using MessagePack;
 using System;
@@ -241,7 +241,7 @@ namespace csharp_test_client
             labelStatus.Text = "서버 접속이 끊어짐";
         }
 
-        void PostSendPacket(int packetID, byte[] packetData)
+        void PostSendPacket(short packetID, byte[] packetData)
         {
             if (Network.IsConnected() == false)
             {
@@ -251,7 +251,7 @@ namespace csharp_test_client
 
             const int headerSize = 4;
             byte[] bodyBytes = packetData;
-            int packetSize = headerSize + packetData.Length;
+            short packetSize = (short)(headerSize + packetData.Length);
 
             byte[] packet = new byte[packetSize];
             WriteUInt16(packet, 0, packetSize);
@@ -337,7 +337,7 @@ namespace csharp_test_client
             loginReq.AuthToken = textBoxUserPW.Text;
             var packet = MemoryPackSerializer.Serialize(loginReq);
                         
-            PostSendPacket((int)PACKET_ID.LOGIN_REQUEST, packet);            
+            PostSendPacket((short)PACKET_ID.LoginRequest, packet);            
             DevLog.Write($"로그인 요청:  {textBoxUserID.Text}, {textBoxUserPW.Text}");
         }
 
@@ -348,7 +348,7 @@ namespace csharp_test_client
             roomEnterReq.RoomNumber = textBoxRoomNumber.Text.ToInt16();
             var packet = MemoryPackSerializer.Serialize(roomEnterReq);
 
-            PostSendPacket((int)PACKET_ID.ROOM_ENTER_REQUEST, packet);
+            PostSendPacket((short)PACKET_ID.RoomEnterRequset, packet);
             DevLog.Write($"방 입장 요청:  {textBoxRoomNumber.Text} 번");
         }
 
@@ -358,7 +358,7 @@ namespace csharp_test_client
             roomLeaveReq.RoomNumber = textBoxRoomNumber.Text.ToInt16();
             var packet = MemoryPackSerializer.Serialize(roomLeaveReq);
 
-            PostSendPacket((int)PACKET_ID.ROOM_LEAVE_REQUEST, packet);
+            PostSendPacket((short)PACKET_ID.RoomLeaveRequest, packet);
             DevLog.Write($"방 퇴장 요청:  {textBoxRoomNumber.Text} 번");
         }
 
@@ -374,7 +374,7 @@ namespace csharp_test_client
             requestPkt.Message = textBoxRoomSendMsg.Text;
             var packet = MemoryPackSerializer.Serialize(requestPkt);
 
-            PostSendPacket((int)PACKET_ID.ROOM_CHAT_REQUEST, packet);
+            PostSendPacket((short)PACKET_ID.RoomChatRequest, packet);
             DevLog.Write($"방 채팅 요청");
         }
 

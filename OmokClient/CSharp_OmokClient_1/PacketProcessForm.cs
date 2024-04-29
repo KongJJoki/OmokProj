@@ -1,4 +1,4 @@
-﻿using CSCommon;
+using CSCommon;
 using MessagePack;
 using System;
 using System.Collections.Generic;
@@ -19,15 +19,15 @@ namespace csharp_test_client
         void SetPacketHandler()
         {
             //PacketFuncDic.Add(PACKET_ID.PACKET_ID_ERROR_NTF, PacketProcess_ErrorNotify);
-            PacketFuncDic.Add((int)PACKET_ID.LOGIN_RESPOND, PacketProcess_Loginin);
+            PacketFuncDic.Add((int)PACKET_ID.LoginRespond, PacketProcess_Loginin);
 
-            PacketFuncDic.Add((int)PACKET_ID.ROOM_ENTER_RESPOND, PacketProcess_RoomEnterResponse);
-            PacketFuncDic.Add((int)PACKET_ID.ROOM_ENTER_NOTIFY, PacketProcess_RoomNewUserNotify);
-            PacketFuncDic.Add((int)PACKET_ID.ROOM_MEMBER_NOTIFY, PacketProcess_RoomUserListNotify);
-            PacketFuncDic.Add((int)PACKET_ID.ROOM_LEAVE_RESPOND, PacketProcess_RoomLeaveResponse);
-            PacketFuncDic.Add((int)PACKET_ID.ROOM_LEAVE_NOTIFY, PacketProcess_RoomLeaveUserNotify);
-            PacketFuncDic.Add((int)PACKET_ID.ROOM_CHAT_RESPOND, PacketProcess_RoomChatResponse);
-            PacketFuncDic.Add((int)PACKET_ID.ROOM_CHAT_NOTIFY, PacketProcess_RoomChatNotify);
+            PacketFuncDic.Add((int)PACKET_ID.RoomEnterRespond, PacketProcess_RoomEnterResponse);
+            PacketFuncDic.Add((int)PACKET_ID.RoomEnterNotify, PacketProcess_RoomNewUserNotify);
+            PacketFuncDic.Add((int)PACKET_ID.RoomMemberNotify, PacketProcess_RoomUserListNotify);
+            PacketFuncDic.Add((int)PACKET_ID.RoomLeaveRespond, PacketProcess_RoomLeaveResponse);
+            PacketFuncDic.Add((int)PACKET_ID.RoomLeaveNotify, PacketProcess_RoomLeaveUserNotify);
+            PacketFuncDic.Add((int)PACKET_ID.RoomChatRespond, PacketProcess_RoomChatResponse);
+            PacketFuncDic.Add((int)PACKET_ID.RoomChatNotify, PacketProcess_RoomChatNotify);
             //PacketFuncDic.Add(PacketID.ResReadyOmok, PacketProcess_ReadyOmokResponse);
             //PacketFuncDic.Add(PacketID.NtfReadyOmok, PacketProcess_ReadyOmokNotify);
             //PacketFuncDic.Add(PacketID.NtfStartOmok, PacketProcess_StartOmokNotify);

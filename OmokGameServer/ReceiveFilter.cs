@@ -4,7 +4,7 @@ using SuperSocket.SocketEngine.Protocol;
 
 namespace OmokGameServer
 {
-    public class ReceiveFilter : FixedHeaderReceiveFilter<EFBinaryRequestInfo>
+    public class ReceiveFilter : FixedHeaderReceiveFilter<OmokBinaryRequestInfo>
     {
         public ReceiveFilter() : base(ConstDefine.PACKET_HEADER_SIZE)
         { 
@@ -18,20 +18,15 @@ namespace OmokGameServer
                 Array.Reverse(header, 0, ConstDefine.PACKET_HEADER_SIZE);
             }
 
-            Int16 packetSize = BitConverter.ToInt16(header, offset);
+            var packetSize = BitConverter.ToInt16(header, offset);
             var bodySize = packetSize - ConstDefine.PACKET_HEADER_SIZE;
 
             return bodySize;
         }
 
-        protected override EFBinaryRequestInfo ResolveRequestInfo(ArraySegment<byte> header, byte[] bodyBuffer, int offset, int length)
+        protected override OmokBinaryRequestInfo ResolveRequestInfo(ArraySegment<byte> header, byte[] bodyBuffer, int offset, int length)
         {
-            if(!BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(header.Array, 0, ConstDefine.PACKET_HEADER_SIZE);
-            }
-
-            return new EFBinaryRequestInfo(BitConverter.ToInt16(header.Array, 0),
+            return new OmokBinaryRequestInfo(BitConverter.ToInt16(header.Array, 0),
                                            BitConverter.ToInt16(header.Array, 2),
                                            bodyBuffer.CloneRange(offset, length));
         }
