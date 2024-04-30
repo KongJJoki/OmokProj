@@ -29,6 +29,7 @@ namespace csharp_test_client
             PacketFuncDic.Add((int)PACKET_ID.RoomChatRespond, PacketProcess_RoomChatResponse);
             PacketFuncDic.Add((int)PACKET_ID.RoomChatNotify, PacketProcess_RoomChatNotify);
             PacketFuncDic.Add((int)PACKET_ID.GameReadyResponse, PacketProcess_ReadyOmokResponse);
+            PacketFuncDic.Add((int)PACKET_ID.GameStartResponse, PacketProcess_GameStartResultResponse);
             //PacketFuncDic.Add(PacketID.NtfReadyOmok, PacketProcess_ReadyOmokNotify);
             //PacketFuncDic.Add(PacketID.NtfStartOmok, PacketProcess_StartOmokNotify);
             //PacketFuncDic.Add(PacketID.ResPutMok, PacketProcess_PutMokResponse);
@@ -70,21 +71,6 @@ namespace csharp_test_client
 
             DevLog.Write($"'{responsePkt.userID}' Put Stone  : [{responsePkt.xPos}] , [{responsePkt.yPos}] ");*/
 
-        }
-
-        void PacketProcess_GameStartResultResponse(byte[] bodyData)
-        {
-            /*var responsePkt = new GameStartResPacket();
-            responsePkt.FromBytes(bodyData);
-
-            if ((ERROR_CODE)responsePkt.Result == ERROR_CODE.NOT_READY_EXIST)
-            {
-                DevLog.Write($"모두 레디상태여야 시작합니다.");
-            }
-            else
-            {
-                DevLog.Write($"게임시작 !!!! '{responsePkt.UserID}' turn  ");
-            }*/
         }
 
         void PacketProcess_GameEndResultResponse(byte[] bodyData)
@@ -205,6 +191,13 @@ namespace csharp_test_client
         void PacketProcess_ReadyOmokResponse(byte[] packetData)
         {
             var responsePkt = MemoryPackSerializer.Deserialize<PKTResGameReady>(packetData);
+
+            DevLog.Write($"게임 준비 완료 요청 결과:  {responsePkt.Result}");
+        }
+
+        void PacketProcess_GameStartResultResponse(byte[] packetData)
+        {
+            var responsePkt = MemoryPackSerializer.Deserialize<PKTResGameStart>(packetData);
 
             DevLog.Write($"게임 준비 완료 요청 결과:  {responsePkt.Result}");
         }

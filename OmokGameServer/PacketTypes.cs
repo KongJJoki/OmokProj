@@ -99,4 +99,17 @@ namespace PacketTypes
     {
         public ERROR_CODE Result { get; set; }
     }
+
+    // Game Start
+    [MemoryPackable]
+    public partial class PKTReqGameStart
+    {
+
+    }
+
+    [MemoryPackable]
+    public partial class PKTResGameStart
+    {
+        public ERROR_CODE Result { get; set; }
+    }
 }

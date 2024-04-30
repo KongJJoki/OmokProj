@@ -29,6 +29,9 @@ namespace PacketDefine
         // Game Ready
         GameReadyRequest = 4000,
         GameReadyResponse = 4001,
-        GameStartNotify = 4002,
+
+        // Game Start
+        GameStartRequest = 4002,
+        GameStartResponse = 4003,
     }
 }

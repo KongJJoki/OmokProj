@@ -378,7 +378,7 @@ namespace csharp_test_client
             DevLog.Write($"방 채팅 요청");
         }
 
-        // 게임 시작 요청
+        // 게임 준비 요청
         private void button3_Click(object sender, EventArgs e)
         {
             var requestPkt = new PKTReqRoomChat();
@@ -387,6 +387,18 @@ namespace csharp_test_client
             PostSendPacket((short)PACKET_ID.GameReadyRequest, packet);
 
             DevLog.Write($"게임 준비 완료 요청");
+        }
+        
+        // 게임 시작 요청
+        private void btn_GameStartClick(object sender, EventArgs e)
+        {
+            var requestPkt = new PKTReqGameStart();
+            var packet = MemoryPackSerializer.Serialize(requestPkt);
+
+            PostSendPacket((short)PACKET_ID.GameStartRequest, packet);
+
+            DevLog.Write($"게임 시작 요청");
+            //StartGame(true, "My", "Other");
         }
 
         /*private void btnMatching_Click(object sender, EventArgs e)
@@ -421,11 +433,6 @@ namespace csharp_test_client
             DevLog.Write($"put stone 요청 : x  [ {x} ], y: [ {y} ] ");
         }*/
 
-        private void btn_GameStartClick(object sender, EventArgs e)
-        {
-            //PostSendPacket(PACKET_ID.GAME_START_REQ, null);
-            StartGame(true, "My", "Other");
-        }
 
         private void button1_Click(object sender, EventArgs e)
         {

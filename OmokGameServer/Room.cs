@@ -169,10 +169,5 @@ namespace OmokGameServer
 
             Broadcast("", sendData);
         }
-
-        public void NotifyGameStart()
-        {
-
-        }
     }
 }

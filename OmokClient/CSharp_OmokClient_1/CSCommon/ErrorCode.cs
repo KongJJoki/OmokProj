@@ -29,7 +29,15 @@ namespace CSCommon
         // 게임 준비
         GameReadyFailInvalidUser = 4000,
         GameReadyFailNotInRoom = 4001,
+        GameReadyFailAlreadyGameStart = 4002,
+        GameReadyFailAlreadyReadyStatus = 4003,
 
-
+        // 게임 시작
+        GameStartFailInvalidUser = 4004,
+        GameStartFailNotInRoom = 4005,
+        GameStartFailNotEnoughUserCount = 4006,
+        GameStartFailAlreadyGameStart = 4007,
+        GameStartFailNotReady = 4008,
+        GameStartFailNotAllReady = 4009,
     }
 }

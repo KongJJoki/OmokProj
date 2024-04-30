@@ -267,7 +267,7 @@ namespace csharp_test_client
             this.GameStartBtn.Name = "GameStartBtn";
             this.GameStartBtn.Size = new System.Drawing.Size(148, 28);
             this.GameStartBtn.TabIndex = 55;
-            this.GameStartBtn.Text = "dummy - GameStart";
+            this.GameStartBtn.Text = "GameStart";
             this.GameStartBtn.UseVisualStyleBackColor = true;
             this.GameStartBtn.Click += new System.EventHandler(this.btn_GameStartClick);
             // 
