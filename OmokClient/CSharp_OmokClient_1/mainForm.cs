@@ -300,7 +300,7 @@ namespace csharp_test_client
                 if((string)user == userID)
                 {
                     removeItem = user;
-                    return;
+                    break;
                 }
             }
 
