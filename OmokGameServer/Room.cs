@@ -1,3 +1,7 @@
+using MemoryPack;
+using PacketDefine;
+using PacketTypes;
+
 namespace OmokGameServer
 {
     public class Room
@@ -79,6 +83,64 @@ namespace OmokGameServer
             }
 
             return UserIds;
+        }
+        public void NotifyNewUserRoomEnter(User user)
+        {
+            if (nowUserCount == 0)
+            {
+                return;
+            }
+
+            PKTNTFRoomEnter roomEnterNTF = new PKTNTFRoomEnter();
+            roomEnterNTF.UserId = user.userId;
+
+            var bodyData = MemoryPackSerializer.Serialize(roomEnterNTF);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomEnterNotify, bodyData);
+
+            Broadcast(user.sessionId, sendData);
+        }
+        public void NotifyRoomMemberList(string sessionId)
+        {
+            if (nowUserCount == 0)
+            {
+                return;
+            }
+
+            PKTNTFRoomMember roomMemberNTF = new PKTNTFRoomMember();
+            roomMemberNTF.UserIdList = GetUserIds();
+
+            var bodyData = MemoryPackSerializer.Serialize(roomMemberNTF);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomMemberNotify, bodyData);
+
+            sendFunc(sessionId, sendData);
+        }
+        
+        public void NotifyRoomLeave(User user)
+        {
+            if (nowUserCount == 0)
+            {
+                return;
+            }
+
+            PKTNTFRoomLeave roomLeaveNTF = new PKTNTFRoomLeave();
+            roomLeaveNTF.UserId = user.userId;
+
+            var bodyData = MemoryPackSerializer.Serialize(roomLeaveNTF);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomLeaveNotify, bodyData);
+
+            Broadcast("", sendData);
+        }
+
+        public void NotifyRoomChat(string userId, string message)
+        {
+            PKTNTFRoomChat roomChatNTF = new PKTNTFRoomChat();
+            roomChatNTF.UserId = userId;
+            roomChatNTF.Message = message;
+
+            var bodyData = MemoryPackSerializer.Serialize(roomChatNTF);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomChatNotify, bodyData);
+
+            Broadcast("", sendData);
         }
     }
 }
