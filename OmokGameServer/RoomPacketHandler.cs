@@ -1,4 +1,3 @@
-using Antlr4.Runtime.Tree;
 using MemoryPack;
 using PacketDefine;
 using PacketTypes;
@@ -9,7 +8,7 @@ namespace OmokGameServer
     {
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
         {
-            packetHandlerDictionary.Add((int)PACKET_ID.RoomEnterRequset, RoomEnterRequest);
+            packetHandlerDictionary.Add((int)PACKET_ID.RoomEnterRequest, RoomEnterRequest);
             packetHandlerDictionary.Add((int)PACKET_ID.RoomLeaveRequest, RoomLeaveRequest);
             packetHandlerDictionary.Add((int)PACKET_ID.RoomChatRequest, RoomChatRequest);
         }
@@ -27,7 +26,7 @@ namespace OmokGameServer
         public void RoomEnterRequest(ServerPacketData packet)
         {
             string sessionId = packet.SessionId;
-            mainLogger.Info($"SessionId({sessionId}) Request Room Enter");
+            mainLogger.Debug($"SessionId({sessionId}) Request Room Enter");
 
             try
             {
@@ -35,13 +34,13 @@ namespace OmokGameServer
 
                 if(user == null)
                 {
-                    RoomEnterRespond(ERROR_CODE.Room_Enter_Fail_Invalid_User, sessionId);
+                    RoomEnterRespond(ERROR_CODE.RoomEnterFailInvalidUser, sessionId);
                     return;
                 }
 
                 if(user.isInRoom)
                 {
-                    RoomEnterRespond(ERROR_CODE.Room_Enter_Fail_Already_In_Room, sessionId);
+                    RoomEnterRespond(ERROR_CODE.RoomEnterFailAlreadyInRoom, sessionId);
                     return;
                 }
 
@@ -51,7 +50,7 @@ namespace OmokGameServer
 
                 if(room == null)
                 {
-                    RoomEnterRespond(ERROR_CODE.Room_Enter_Fail_Not_Exist_Room, sessionId);
+                    RoomEnterRespond(ERROR_CODE.RoomEnterFailNotExistRoom, sessionId);
                     return;
                 }
 
@@ -80,7 +79,7 @@ namespace OmokGameServer
         void RoomEnterRespond(ERROR_CODE errorCode, string sessionId)
         {
             PKTResRoomEnter roomEnterRes = new PKTResRoomEnter();
-            roomEnterRes.Result = (int)errorCode;
+            roomEnterRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(roomEnterRes);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomEnterRespond, bodyData);
@@ -91,7 +90,7 @@ namespace OmokGameServer
         public void RoomLeaveRequest(ServerPacketData packet)
         {
             string sessionId = packet.SessionId;
-            mainLogger.Info($"SessionId({sessionId}) Request Room Leave");
+            mainLogger.Debug($"SessionId({sessionId}) Request Room Leave");
 
             try
             {
@@ -99,13 +98,13 @@ namespace OmokGameServer
 
                 if (user == null)
                 {
-                    RoomLeaveRespond(ERROR_CODE.Room_Leave_Fail_Invalid_User, sessionId);
+                    RoomLeaveRespond(ERROR_CODE.RoomLeaveFailInvalidUser, sessionId);
                     return;
                 }
 
                 if(!user.isInRoom)
                 {
-                    RoomLeaveRespond(ERROR_CODE.Room_Leave_Fail_Not_In_Room, sessionId);
+                    RoomLeaveRespond(ERROR_CODE.RoomLeaveFailNotInRoom, sessionId);
                     return;
                 }
 
@@ -115,7 +114,7 @@ namespace OmokGameServer
 
                 if(requestData.RoomNumber != user.roomNumber)
                 {
-                    RoomLeaveRespond(ERROR_CODE.Room_Leave_Fail_Not_In_Room, sessionId);
+                    RoomLeaveRespond(ERROR_CODE.RoomLeaveFailNotInRoom, sessionId);
                     return;
                 }
 
@@ -142,7 +141,7 @@ namespace OmokGameServer
         void RoomLeaveRespond(ERROR_CODE errorCode, string sessionId)
         {
             PKTResRoomLeave roomLeaveRes = new PKTResRoomLeave();
-            roomLeaveRes.Result = (int)errorCode;
+            roomLeaveRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(roomLeaveRes);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomLeaveRespond, bodyData);
@@ -160,13 +159,13 @@ namespace OmokGameServer
                 var user = userManager.GetUser(sessionId);
                 if(user == null)
                 {
-                    RoomChatRespond(ERROR_CODE.Room_Chat_Fail_Invalid_User, sessionId);
+                    RoomChatRespond(ERROR_CODE.RoomChatFailInvalidUser, sessionId);
                     return;
                 }
 
                 if(!user.isInRoom)
                 {
-                    RoomChatRespond(ERROR_CODE.Room_Chat_Fail_Not_In_Room, sessionId);
+                    RoomChatRespond(ERROR_CODE.RoomChatFailNotInRoom, sessionId);
                     return;
                 }
 
@@ -186,7 +185,7 @@ namespace OmokGameServer
         void RoomChatRespond(ERROR_CODE errorCode, string sessionId)
         {
             PKTResRoomChat roomEnterRes = new PKTResRoomChat();
-            roomEnterRes.Result = (int)errorCode;
+            roomEnterRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(roomEnterRes);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomChatRespond, bodyData);

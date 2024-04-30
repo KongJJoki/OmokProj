@@ -1,4 +1,4 @@
-﻿using MemoryPack;
+using MemoryPack;
 using System.Collections.Generic;
 
 namespace CSCommon
@@ -22,13 +22,13 @@ namespace CSCommon
     [MemoryPackable]
     public partial class PKTResLogin
     {
-        public int Result { get; set; }
+        public ERROR_CODE Result { get; set; }
     }
 
     [MemoryPackable]
     public partial class PKTResFullUser
     {
-        public int Result { get; set; }
+        public ERROR_CODE Result { get; set; }
     }
 
     // Room
@@ -41,7 +41,7 @@ namespace CSCommon
     [MemoryPackable]
     public partial class PKTResRoomEnter
     {
-        public int Result { get; set; }
+        public ERROR_CODE Result { get; set; }
     }
 
     [MemoryPackable]
@@ -52,7 +52,7 @@ namespace CSCommon
     [MemoryPackable]
     public partial class PKTResRoomLeave
     {
-        public int Result { get; set; }
+        public ERROR_CODE Result { get; set; }
     }
 
     [MemoryPackable]
@@ -79,12 +79,25 @@ namespace CSCommon
     [MemoryPackable]
     public partial class PKTResRoomChat
     {
-        public int Result { get; set; }
+        public ERROR_CODE Result { get; set; }
     }
     [MemoryPackable]
     public partial class PKTNTFRoomChat
     {
         public string UserId { get; set; }
         public string Message { get; set; }
+    }
+
+    // Game Ready
+    [MemoryPackable]
+    public partial class PKTReqGameReady
+    {
+
+    }
+
+    [MemoryPackable]
+    public partial class PKTResGameReady
+    {
+        public ERROR_CODE Result { get; set; }
     }
 }

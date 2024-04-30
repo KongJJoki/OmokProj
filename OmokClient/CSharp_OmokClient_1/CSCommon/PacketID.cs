@@ -15,7 +15,7 @@ namespace PacketDefine
         FullUser = 2002,
 
         // Room
-        RoomEnterRequset = 3000,
+        RoomEnterRequest = 3000,
         RoomEnterRespond = 3001,
         RoomLeaveRequest = 3002,
         RoomLeaveRespond = 3003,
@@ -25,5 +25,10 @@ namespace PacketDefine
         RoomChatRequest = 3007,
         RoomChatRespond = 3008,
         RoomChatNotify = 3009,
+
+        // Game Ready
+        GameReadyRequest = 4000,
+        GameReadyResponse = 4001,
+        GameStartNotify = 4002,
     }
 }

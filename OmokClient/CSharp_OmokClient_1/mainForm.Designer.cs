@@ -1,4 +1,4 @@
-﻿namespace csharp_test_client
+namespace csharp_test_client
 {
     partial class mainForm
     {
@@ -247,7 +247,7 @@
             this.button3.TabIndex = 57;
             this.button3.Text = "Game Ready";
             this.button3.UseVisualStyleBackColor = true;
-            //this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // btnMatching
             // 

@@ -25,6 +25,7 @@ namespace OmokGameServer
 
         ConnectionLoginPacketHandler loginPacketHandler = new ConnectionLoginPacketHandler();
         RoomPacketHandler roomPacketHandler = new RoomPacketHandler();
+        GameReadyStartPacketHandler gameReadyStartPacketHandler = new GameReadyStartPacketHandler();
 
         public void ProcessorStart(UserManager userManager, RoomManager roomManager, ILog mainLogger, ServerOption serverOption, Func<string, byte[], bool> sendFunc)
         {
@@ -59,6 +60,9 @@ namespace OmokGameServer
 
             roomPacketHandler.Init(userManager, roomManager, mainLogger, serverOption, sendFunc);
             roomPacketHandler.SetPacketHandler(packetHandlerDictionary);
+
+            gameReadyStartPacketHandler.Init(userManager, roomManager, mainLogger, serverOption, sendFunc);
+            gameReadyStartPacketHandler.SetPacketHandler(packetHandlerDictionary);
         }
 
         void Process()

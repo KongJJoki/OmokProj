@@ -15,7 +15,7 @@ namespace OmokGameServer
         {
             if(userDictionary.Count()>=maxUserNumber)
             {
-                return ERROR_CODE.Login_Fail_User_Count_Limit_Exceed;
+                return ERROR_CODE.LoginFailUserCountLimitExceed;
             }
 
             /*if(userDictionary.ContainsKey(sessionId))
@@ -36,7 +36,7 @@ namespace OmokGameServer
 
             if(!isRemoveSuccess)
             {
-                return ERROR_CODE.Remove_Fail_Not_Exist_Session;
+                return ERROR_CODE.RemoveFailNotExistSession;
             }
 
             return ERROR_CODE.None;
@@ -48,7 +48,7 @@ namespace OmokGameServer
             
             if(isUserExist)
             {
-                return ERROR_CODE.Login_Fail_Already_Exist_Session;
+                return ERROR_CODE.LoginFailAlreadyExistSession;
             }
 
             return ERROR_CODE.None;

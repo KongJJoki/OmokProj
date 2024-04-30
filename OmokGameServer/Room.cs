@@ -10,10 +10,12 @@ namespace OmokGameServer
 
         public int nowUserCount;
         int MaxUserNumber;
+        public bool isGameStart;
 
         public static Func<string, byte[], bool> sendFunc;
 
         List<User> userList = new List<User>();
+        Dictionary<User, bool> readyStatusDictionary = new Dictionary<User, bool>();
 
         public void Init(int roomNum, int maxUserNum)
         {
@@ -26,15 +28,16 @@ namespace OmokGameServer
         {
             if (nowUserCount >= MaxUserNumber)
             {
-                return ERROR_CODE.Room_Enter_Fail_User_Count_Limit_Exceed;
+                return ERROR_CODE.RoomEnterFailUserCountLimitExceed;
             }
 
             if (CheckUserExist(user))
             {
-                return ERROR_CODE.Room_Enter_Fail_Already_In_Room;
+                return ERROR_CODE.RoomEnterFailAlreadyInRoom;
             }
 
             userList.Add(user);
+            readyStatusDictionary[user] = false;
             nowUserCount++;
 
             return ERROR_CODE.None;
@@ -44,7 +47,7 @@ namespace OmokGameServer
         {
             if (!CheckUserExist(user))
             {
-                return ERROR_CODE.Room_Leave_Fail_Not_In_Room;
+                return ERROR_CODE.RoomLeaveFailNotInRoom;
             }
 
             userList.Remove(user);
@@ -53,6 +56,8 @@ namespace OmokGameServer
             {
                 nowUserCount--;
             }
+
+            readyStatusDictionary.Remove(user);
 
             return ERROR_CODE.None;
         }
@@ -84,6 +89,28 @@ namespace OmokGameServer
 
             return UserIds;
         }
+
+        public bool GetReadyStatus(User user)
+        {
+            return readyStatusDictionary[user];
+        }
+        public void SetReadyStatus(User user, bool isReady)
+        {
+            readyStatusDictionary[user] = isReady;
+        }
+        public bool CheckAllReady()
+        {
+            foreach(var readyStatus in readyStatusDictionary.Values)
+            {
+                if(!readyStatus)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public void NotifyNewUserRoomEnter(User user)
         {
             if (nowUserCount == 0)
@@ -141,6 +168,11 @@ namespace OmokGameServer
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomChatNotify, bodyData);
 
             Broadcast("", sendData);
+        }
+
+        public void NotifyGameStart()
+        {
+
         }
     }
 }

@@ -47,10 +47,10 @@ namespace OmokGameServer
 
             try
             {
-                if (userManager.CheckUserExist(sessionId) == ERROR_CODE.Login_Fail_Already_Exist_Session)
+                if (userManager.CheckUserExist(sessionId) == ERROR_CODE.LoginFailAlreadyExistSession)
                 {
-                    LoginRespond(ERROR_CODE.Login_Fail_Already_Exist_Session, sessionId);
-                    mainLogger.Debug($"sessionId({sessionId}) Login Fail : Error({ERROR_CODE.Login_Fail_Already_Exist_Session})");
+                    LoginRespond(ERROR_CODE.LoginFailAlreadyExistSession, sessionId);
+                    mainLogger.Debug($"sessionId({sessionId}) Login Fail : Error({ERROR_CODE.LoginFailAlreadyExistSession})");
                     return;
                 }
 
@@ -58,7 +58,7 @@ namespace OmokGameServer
 
                 ERROR_CODE errorCode = userManager.AddUser(sessionId, requestData.UserId);
 
-                if (errorCode == ERROR_CODE.Login_Fail_User_Count_Limit_Exceed)
+                if (errorCode == ERROR_CODE.LoginFailUserCountLimitExceed)
                 {
                     FullUserRespond(errorCode, sessionId);
                     mainLogger.Debug($"sessionId({sessionId}) Login Fail : Error({errorCode})");
@@ -76,7 +76,7 @@ namespace OmokGameServer
         void LoginRespond(ERROR_CODE errorCode, string sessionId)
         {
             PKTResLogin loginRes = new PKTResLogin();
-            loginRes.Result = (int)errorCode;
+            loginRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(loginRes);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.LoginRespond, bodyData);
@@ -87,7 +87,7 @@ namespace OmokGameServer
         public void FullUserRespond(ERROR_CODE errorCode, string sessionId)
         {
             PKTResFullUser userFullRes = new PKTResFullUser();
-            userFullRes.Result = (int)errorCode;
+            userFullRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(userFullRes);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.FullUser, bodyData);

@@ -1,4 +1,4 @@
-namespace OmokGameServer
+namespace CSCommon
 {
     public enum ERROR_CODE
     {
@@ -29,8 +29,7 @@ namespace OmokGameServer
         // 게임 준비
         GameReadyFailInvalidUser = 4000,
         GameReadyFailNotInRoom = 4001,
-        GameReadyFailAlreadyGameStart = 4002,
-        GameReadyFailAlreadyReadyStatus = 4003,
+
 
     }
 }

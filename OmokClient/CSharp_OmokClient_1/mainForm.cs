@@ -348,7 +348,7 @@ namespace csharp_test_client
             roomEnterReq.RoomNumber = textBoxRoomNumber.Text.ToInt16();
             var packet = MemoryPackSerializer.Serialize(roomEnterReq);
 
-            PostSendPacket((short)PACKET_ID.RoomEnterRequset, packet);
+            PostSendPacket((short)PACKET_ID.RoomEnterRequest, packet);
             DevLog.Write($"방 입장 요청:  {textBoxRoomNumber.Text} 번");
         }
 
@@ -378,13 +378,24 @@ namespace csharp_test_client
             DevLog.Write($"방 채팅 요청");
         }
 
+        // 게임 시작 요청
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var requestPkt = new PKTReqRoomChat();
+            var packet = MemoryPackSerializer.Serialize(requestPkt);
+
+            PostSendPacket((short)PACKET_ID.GameReadyRequest, packet);
+
+            DevLog.Write($"게임 준비 완료 요청");
+        }
+
         /*private void btnMatching_Click(object sender, EventArgs e)
         {
             //PostSendPacket(PACKET_ID.MATCH_USER_REQ, null);
             DevLog.Write($"매칭 요청");
         }
 */
-        
+
         private void listBoxRoomChatMsg_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -457,13 +468,5 @@ namespace csharp_test_client
             [Key(4)]
             public string Token;
         }
-
-        // 게임 시작 요청
-/*        private void button3_Click(object sender, EventArgs e)
-        {
-            PostSendPacket(PacketID.ReqReadyOmok, null);
-            
-            DevLog.Write($"게임 준비 완료 요청");
-        }*/
     }
 }

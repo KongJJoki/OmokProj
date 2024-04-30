@@ -19,7 +19,7 @@ namespace csharp_test_client
         void SetPacketHandler()
         {
             //PacketFuncDic.Add(PACKET_ID.PACKET_ID_ERROR_NTF, PacketProcess_ErrorNotify);
-            PacketFuncDic.Add((int)PACKET_ID.LoginRespond, PacketProcess_Loginin);
+            PacketFuncDic.Add((int)PACKET_ID.LoginRespond, PacketProcess_Login);
 
             PacketFuncDic.Add((int)PACKET_ID.RoomEnterRespond, PacketProcess_RoomEnterResponse);
             PacketFuncDic.Add((int)PACKET_ID.RoomEnterNotify, PacketProcess_RoomNewUserNotify);
@@ -28,7 +28,7 @@ namespace csharp_test_client
             PacketFuncDic.Add((int)PACKET_ID.RoomLeaveNotify, PacketProcess_RoomLeaveUserNotify);
             PacketFuncDic.Add((int)PACKET_ID.RoomChatRespond, PacketProcess_RoomChatResponse);
             PacketFuncDic.Add((int)PACKET_ID.RoomChatNotify, PacketProcess_RoomChatNotify);
-            //PacketFuncDic.Add(PacketID.ResReadyOmok, PacketProcess_ReadyOmokResponse);
+            PacketFuncDic.Add((int)PACKET_ID.GameReadyResponse, PacketProcess_ReadyOmokResponse);
             //PacketFuncDic.Add(PacketID.NtfReadyOmok, PacketProcess_ReadyOmokNotify);
             //PacketFuncDic.Add(PacketID.NtfStartOmok, PacketProcess_StartOmokNotify);
             //PacketFuncDic.Add(PacketID.ResPutMok, PacketProcess_PutMokResponse);
@@ -122,16 +122,16 @@ namespace csharp_test_client
         }
 
 
-        void PacketProcess_Loginin(byte[] packetData)
+        void PacketProcess_Login(byte[] packetData)
         {
             var responsePkt = MemoryPackSerializer.Deserialize<PKTResLogin>(packetData);
-            DevLog.Write($"로그인 결과: {(ErrorCode)responsePkt.Result}");
+            DevLog.Write($"로그인 결과: {responsePkt.Result}");
         }
 
         void PacketProcess_RoomEnterResponse(byte[] packetData)
         {
             var responsePkt = MemoryPackSerializer.Deserialize<PKTResRoomEnter>(packetData);
-            DevLog.Write($"방 입장 결과:  {(ErrorCode)responsePkt.Result}");
+            DevLog.Write($"방 입장 결과:  {responsePkt.Result}");
         }
 
         void PacketProcess_RoomUserListNotify(byte[] packetData)
@@ -163,7 +163,7 @@ namespace csharp_test_client
             listBoxRoomUserList.Items.Clear();
             listBoxRoomChatMsg.Items.Clear();
 
-            DevLog.Write($"방 나가기 결과:  {(ErrorCode)responsePkt.Result}");
+            DevLog.Write($"방 나가기 결과:  {responsePkt.Result}");
         }
 
         void PacketProcess_RoomLeaveUserNotify(byte[] packetData)
@@ -180,7 +180,7 @@ namespace csharp_test_client
         {
             var responsePkt = MemoryPackSerializer.Deserialize<PKTResRoomChat>(packetData);
 
-            DevLog.Write($"방 채팅 결과:  {(ErrorCode)responsePkt.Result}");
+            DevLog.Write($"방 채팅 결과:  {responsePkt.Result}");
         }
 
 
@@ -202,14 +202,14 @@ namespace csharp_test_client
             listBoxRoomChatMsg.SelectedIndex = listBoxRoomChatMsg.Items.Count - 1;
         }
 
-        /*void PacketProcess_ReadyOmokResponse(byte[] packetData)
+        void PacketProcess_ReadyOmokResponse(byte[] packetData)
         {
-            var responsePkt = MessagePackSerializer.Deserialize<PKTResReadyOmok>(packetData);
+            var responsePkt = MemoryPackSerializer.Deserialize<PKTResGameReady>(packetData);
 
-            DevLog.Write($"게임 준비 완료 요청 결과:  {(ErrorCode)responsePkt.Result}");
+            DevLog.Write($"게임 준비 완료 요청 결과:  {responsePkt.Result}");
         }
 
-        void PacketProcess_ReadyOmokNotify(byte[] packetData)
+        /*void PacketProcess_ReadyOmokNotify(byte[] packetData)
         {
             var notifyPkt = MessagePackSerializer.Deserialize<PKTNtfReadyOmok>(packetData);
 
