@@ -398,6 +398,7 @@ namespace csharp_test_client
             PostSendPacket((short)PACKET_ID.GameStartRequest, packet);
 
             DevLog.Write($"게임 시작 요청");
+            //textBoxUserID -> 자기 userID
             //StartGame(true, "My", "Other");
         }
 

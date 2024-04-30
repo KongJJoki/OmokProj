@@ -113,4 +113,10 @@ namespace CSCommon
     {
         public ERROR_CODE Result { get; set; }
     }
+
+    [MemoryPackable]
+    public partial class PKTNTFGameStart
+    {
+        public string StartUserId { get; set; }
+    }
 }

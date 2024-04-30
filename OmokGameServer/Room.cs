@@ -169,5 +169,18 @@ namespace OmokGameServer
 
             Broadcast("", sendData);
         }
+
+        public void NotifyGameStart(string startUserId)
+        {
+            isGameStart = true;
+
+            PKTNTFGameStart gameStartNTF = new PKTNTFGameStart();
+            gameStartNTF.StartUserId = startUserId;
+
+            var bodyData = MemoryPackSerializer.Serialize(gameStartNTF);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.GameStartNotify, bodyData);
+
+            Broadcast("", sendData);
+        }
     }
 }

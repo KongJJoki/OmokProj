@@ -33,5 +33,6 @@ namespace PacketDefine
         // Game Start
         GameStartRequest = 4002,
         GameStartResponse = 4003,
+        GameStartNotify = 4004,
     }
 }

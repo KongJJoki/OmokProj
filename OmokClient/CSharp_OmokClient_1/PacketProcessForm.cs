@@ -28,8 +28,9 @@ namespace csharp_test_client
             PacketFuncDic.Add((int)PACKET_ID.RoomLeaveNotify, PacketProcess_RoomLeaveUserNotify);
             PacketFuncDic.Add((int)PACKET_ID.RoomChatRespond, PacketProcess_RoomChatResponse);
             PacketFuncDic.Add((int)PACKET_ID.RoomChatNotify, PacketProcess_RoomChatNotify);
-            PacketFuncDic.Add((int)PACKET_ID.GameReadyResponse, PacketProcess_ReadyOmokResponse);
+            PacketFuncDic.Add((int)PACKET_ID.GameReadyResponse, PacketProcess_GameReadyResponse);
             PacketFuncDic.Add((int)PACKET_ID.GameStartResponse, PacketProcess_GameStartResultResponse);
+            PacketFuncDic.Add((int)PACKET_ID.GameStartNotify, PacketProcess_GameStartNotify);
             //PacketFuncDic.Add(PacketID.NtfReadyOmok, PacketProcess_ReadyOmokNotify);
             //PacketFuncDic.Add(PacketID.NtfStartOmok, PacketProcess_StartOmokNotify);
             //PacketFuncDic.Add(PacketID.ResPutMok, PacketProcess_PutMokResponse);
@@ -188,7 +189,7 @@ namespace csharp_test_client
             listBoxRoomChatMsg.SelectedIndex = listBoxRoomChatMsg.Items.Count - 1;
         }
 
-        void PacketProcess_ReadyOmokResponse(byte[] packetData)
+        void PacketProcess_GameReadyResponse(byte[] packetData)
         {
             var responsePkt = MemoryPackSerializer.Deserialize<PKTResGameReady>(packetData);
 
@@ -201,6 +202,23 @@ namespace csharp_test_client
 
             DevLog.Write($"게임 준비 완료 요청 결과:  {responsePkt.Result}");
         }
+
+        void PacketProcess_GameStartNotify(byte[] packetData)
+        {
+            var isMyTurn = false;
+
+            var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFGameStart>(packetData);
+
+            if (notifyPkt.StartUserId == textBoxUserID.Text)
+            {
+                isMyTurn = true;
+            }
+
+            StartGame(isMyTurn, textBoxUserID.Text, GetOtherPlayer(textBoxUserID.Text));
+
+            DevLog.Write($"게임 시작. 흑돌 플레이어: {notifyPkt.StartUserId}");
+        }
+
 
         /*void PacketProcess_ReadyOmokNotify(byte[] packetData)
         {
@@ -217,21 +235,7 @@ namespace csharp_test_client
 
         }
 
-        void PacketProcess_StartOmokNotify(byte[] packetData)
-        {
-            var isMyTurn = false;
-
-            var notifyPkt = MessagePackSerializer.Deserialize<PKTNtfStartOmok>(packetData);
-            
-            if(notifyPkt.FirstUserID == textBoxUserID.Text)
-            {
-                isMyTurn = true;
-            }
-
-            StartGame(isMyTurn, textBoxUserID.Text, GetOtherPlayer(textBoxUserID.Text));
-
-            DevLog.Write($"게임 시작. 흑돌 플레이어: {notifyPkt.FirstUserID}");
-        }
+        
         
 
         void PacketProcess_PutMokResponse(byte[] packetData)
