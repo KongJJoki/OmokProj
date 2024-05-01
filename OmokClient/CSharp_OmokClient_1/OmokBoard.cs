@@ -46,6 +46,7 @@ namespace csharp_test_client
         string MyPlayerName = "";        
         string 흑돌플레이어Name = "";
         string 백돌플레이어Name = "";
+        string MyStoneColor = "";
 
 
 
@@ -77,11 +78,13 @@ namespace csharp_test_client
             {
                 흑돌플레이어Name = myPlayerName;
                 백돌플레이어Name = otherPlayerName;
+                MyStoneColor = "black";
             }
             else
             {
                 흑돌플레이어Name = otherPlayerName;
                 백돌플레이어Name = myPlayerName;
+                MyStoneColor = "white";
             }
 
             IsMyTurn = isMyTurn;

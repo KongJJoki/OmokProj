@@ -235,6 +235,15 @@ namespace csharp_test_client
 
             플레이어_돌두기(notifyPkt.StoneColor, notifyPkt.PosX, notifyPkt.PosY);
 
+            if(notifyPkt.StoneColor != MyStoneColor)
+            {
+                IsMyTurn = true;
+            }
+            if(notifyPkt.StoneColor == MyStoneColor)
+            {
+                IsMyTurn = false;
+            }
+
             DevLog.Write($"오목 정보: X: {notifyPkt.PosX},  Y: {notifyPkt.PosY},   알:{notifyPkt.StoneColor}");
         }
 
