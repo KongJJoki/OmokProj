@@ -150,6 +150,10 @@ namespace OmokGameServer
                 omokBoard[posX, posY] = whiteStone;
             }
         }
+        public void GameFinish()
+        {
+            isGameStart = false;
+        }
 
         public void NotifyNewUserRoomEnter(User user)
         {
