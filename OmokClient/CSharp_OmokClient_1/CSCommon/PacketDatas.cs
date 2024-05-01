@@ -137,7 +137,7 @@ namespace CSCommon
     [MemoryPackable]
     public partial class PKTNTFOmokStonePlace
     {
-        public string StoneColor { get; set; }
+        public string NextTurnUserId { get; set; }
         public int PosX { get; set; }
         public int PosY { get; set; }
     }
@@ -146,5 +146,12 @@ namespace CSCommon
     public partial class PKTNTFOmokWin
     {
         public string WinUserId { get; set; }
+    }
+
+    // Turn Change
+    [MemoryPackable]
+    public partial class PKTNTFTurnChange
+    {
+        public string TurnGetUserId { get; set; }
     }
 }

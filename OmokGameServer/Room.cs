@@ -7,10 +7,15 @@ namespace OmokGameServer
     public class Room
     {
         public int RoomNumber { get; set; }
+        public string NowTurnUser { get; set; }
+        public string NextTurnUser { get; set; }
 
         public int nowUserCount;
         int maxUserNumber;
         public bool isGameStart;
+
+        Timer turnTimer;
+        TimeSpan turnTimeLimit;
 
         public static Func<string, byte[], bool> sendFunc;
 
@@ -19,11 +24,27 @@ namespace OmokGameServer
 
         OmokBoard omokBoard = new OmokBoard();
 
-        public void Init(int roomNum, int maxUserNum)
+        public void Init(int roomNum, int maxUserNum, int turnTimeLimitSecond)
         {
+            turnTimeLimit = TimeSpan.FromSeconds(turnTimeLimitSecond);
+
             RoomNumber = roomNum;
             maxUserNumber = maxUserNum;
             nowUserCount = 0;
+            turnTimer = new Timer(TimerCallback, null, Timeout.Infinite, Timeout.Infinite);
+        }
+
+        void TimerCallback(object state)
+        {
+            TimeOutTurnChangeNotify();
+        }
+        void StartResetTimer()
+        {
+            turnTimer.Change(turnTimeLimit, TimeSpan.Zero);
+        }
+        void StopTimer()
+        {
+            turnTimer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
         public ERROR_CODE AddUser(User user)
@@ -128,10 +149,26 @@ namespace OmokGameServer
         {
             return omokBoard;
         }
+        public void SwapNowNextTurnUser()
+        {
+            string tmp = NowTurnUser;
+            NowTurnUser = NextTurnUser;
+            NextTurnUser = tmp;
+        }
 
         public void GameFinish()
         {
+            StopTimer();
+            SetAllUserNotReady();
             isGameStart = false;
+        }
+
+        void SetAllUserNotReady()
+        {
+            foreach (var user in readyStatusDictionary.Keys)
+            {
+                readyStatusDictionary[user] = false;
+            }
         }
 
         public void NotifyNewUserRoomEnter(User user)
@@ -198,6 +235,8 @@ namespace OmokGameServer
             isGameStart = true;
             omokBoard.BlackUserId = startUserId;
             omokBoard.WhiteUserId = FindOtherUser(startUserId);
+            NowTurnUser = startUserId;
+            NextTurnUser = omokBoard.WhiteUserId;
 
             PKTNTFGameStart gameStartNTF = new PKTNTFGameStart();
             gameStartNTF.StartUserId = startUserId;
@@ -205,20 +244,17 @@ namespace OmokGameServer
             var bodyData = MemoryPackSerializer.Serialize(gameStartNTF);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.GameStartNotify, bodyData);
 
+            StartResetTimer();
+
             Broadcast("", sendData);
         }
 
-        public void NotifyOmokStonePlace(string userId, int posX, int posY)
+        public void NotifyOmokStonePlace(int posX, int posY)
         {
             PKTNTFOmokStonePlace omokStonePlaceNTF = new PKTNTFOmokStonePlace();
-            if(userId == omokBoard.BlackUserId)
-            {
-                omokStonePlaceNTF.StoneColor = "black";
-            }
-            else
-            {
-                omokStonePlaceNTF.StoneColor = "white";
-            }
+
+            omokStonePlaceNTF.NextTurnUserId = NextTurnUser;
+
             omokStonePlaceNTF.PosX = posX;
             omokStonePlaceNTF.PosY = posY;
 
@@ -226,6 +262,9 @@ namespace OmokGameServer
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokStonePlaceNotify, bodyData);
 
             Broadcast("", sendData);
+
+            SwapNowNextTurnUser();
+            StartResetTimer();
         }
 
         public void NotifyOmokWin(string winUserId)
@@ -238,6 +277,19 @@ namespace OmokGameServer
 
             var bodyData = MemoryPackSerializer.Serialize(omokWinNTF);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokWinNotify, bodyData);
+
+            Broadcast("", sendData);
+        }
+
+        public void TimeOutTurnChangeNotify()
+        {
+            PKTNTFTurnChange turnChangeNTF = new PKTNTFTurnChange();
+            turnChangeNTF.TurnGetUserId = NextTurnUser;
+
+            SwapNowNextTurnUser();
+
+            var bodyData = MemoryPackSerializer.Serialize(turnChangeNTF);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.TurnChangeNotify, bodyData);
 
             Broadcast("", sendData);
         }

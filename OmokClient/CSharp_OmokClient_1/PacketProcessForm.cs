@@ -34,6 +34,7 @@ namespace csharp_test_client
             PacketFuncDic.Add((int)PACKET_ID.OmokStonePlaceResponse, PacketProcess_PutMokResponse);
             PacketFuncDic.Add((int)PACKET_ID.OmokStonePlaceNotify, PacketProcess_PutMokNotify);
             PacketFuncDic.Add((int)PACKET_ID.OmokWinNotify, PacketProcess_EndOmokNotify);
+            PacketFuncDic.Add((int)PACKET_ID.TurnChangeNotify, PacketProcess_TurnChangeNotify);
             //PacketFuncDic.Add(PacketID.NtfReadyOmok, PacketProcess_ReadyOmokNotify);
             //PacketFuncDic.Add(PacketID.NtfStartOmok, PacketProcess_StartOmokNotify);
             //PacketFuncDic.Add(PacketID.ResPutMok, PacketProcess_PutMokResponse);
@@ -234,18 +235,19 @@ namespace csharp_test_client
         {
             var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFOmokStonePlace>(packetData);
 
-            플레이어_돌두기(notifyPkt.StoneColor, notifyPkt.PosX, notifyPkt.PosY);
+            플레이어_돌두기(notifyPkt.NextTurnUserId, notifyPkt.PosX, notifyPkt.PosY);
 
-            if(notifyPkt.StoneColor != MyStoneColor)
+            if(notifyPkt.NextTurnUserId == textBoxUserID.Text)
             {
                 IsMyTurn = true;
+                DevLog.Write($"오목 정보: {EnemyStoneColor}돌 X: {notifyPkt.PosX},  Y: {notifyPkt.PosY},   다음 턴:{notifyPkt.NextTurnUserId}");
             }
-            if(notifyPkt.StoneColor == MyStoneColor)
+            if(notifyPkt.NextTurnUserId != textBoxUserID.Text)
             {
                 IsMyTurn = false;
+                DevLog.Write($"오목 정보: {MyStoneColor}돌 X: {notifyPkt.PosX},  Y: {notifyPkt.PosY},   다음 턴:{notifyPkt.NextTurnUserId}");
             }
 
-            DevLog.Write($"오목 정보: X: {notifyPkt.PosX},  Y: {notifyPkt.PosY},   알:{notifyPkt.StoneColor}");
         }
 
         void PacketProcess_EndOmokNotify(byte[] packetData)
@@ -255,6 +257,22 @@ namespace csharp_test_client
             EndGame();
 
             DevLog.Write($"오목 GameOver: Win: {notifyPkt.WinUserId}");
+        }
+
+        void PacketProcess_TurnChangeNotify(byte[] packetData)
+        {
+            var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFTurnChange>(packetData);
+
+            if(notifyPkt.TurnGetUserId == textBoxUserID.Text)
+            {
+                IsMyTurn = true;
+            }
+            else
+            {
+                IsMyTurn = false;
+            }
+
+            DevLog.Write($"{notifyPkt.TurnGetUserId}의 턴으로 바뀌었습니다.");
         }
 
 

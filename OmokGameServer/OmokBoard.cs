@@ -6,6 +6,10 @@ namespace OmokGameServer
         public string BlackUserId { get; set; }
         public string WhiteUserId { get; set; }
 
+        int turnCount;
+
+
+
         const int blackStone = 10;
         const int whiteStone = 20;
 

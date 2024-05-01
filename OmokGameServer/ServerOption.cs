@@ -21,5 +21,7 @@ namespace OmokGameServer
         public int RoomMaxUserCount { get; set; } = 0;
 
         public int RoomStartNumber { get; set; } = 0;
+
+        public int TurnTimeLimitSecond { get; set; }
     }
 }

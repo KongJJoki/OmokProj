@@ -58,7 +58,7 @@ namespace OmokGameServer
 
                 omokBoard.OmokStonePlace(user.userId, requestData.PosX, requestData.PosY);
                 OmokStonePlaceRespond(ERROR_CODE.None, sessionId);
-                room.NotifyOmokStonePlace(user.userId, requestData.PosX, requestData.PosY);
+                room.NotifyOmokStonePlace(requestData.PosX, requestData.PosY);
 
                 if(omokBoard.OmokWinCheck(requestData.PosX, requestData.PosY))
                 {
@@ -80,6 +80,13 @@ namespace OmokGameServer
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokStonePlaceResponse, bodyData);
 
             sendFunc(sessionId, sendData);
+        }
+
+        public void TimeOutTurnChangeNotify(int roomNum)
+        {
+            var room = GetRoom(roomNum);
+
+            room.TimeOutTurnChangeNotify();
         }
     }
 }

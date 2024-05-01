@@ -47,6 +47,7 @@ namespace csharp_test_client
         string 흑돌플레이어Name = "";
         string 백돌플레이어Name = "";
         string MyStoneColor = "";
+        string EnemyStoneColor = "";
 
 
 
@@ -79,12 +80,14 @@ namespace csharp_test_client
                 흑돌플레이어Name = myPlayerName;
                 백돌플레이어Name = otherPlayerName;
                 MyStoneColor = "black";
+                EnemyStoneColor = "white";
             }
             else
             {
                 흑돌플레이어Name = otherPlayerName;
                 백돌플레이어Name = myPlayerName;
                 MyStoneColor = "white";
+                EnemyStoneColor = "black";
             }
 
             IsMyTurn = isMyTurn;
@@ -336,18 +339,26 @@ namespace csharp_test_client
             }
         }
 
-        void 플레이어_돌두기(string stoneColor, int x, int y)
+        void 플레이어_돌두기(string nextTurnUserId, int x, int y)
         {
-/*            var ret = OmokLogic.돌두기(x, y);
-            if (ret != CSCommon.돌두기_결과.Success)
-            {
-                //Rectangle r = new Rectangle(시작위치, 590, 시작위치 + 돌크기 + 160, 돌크기 + 10);
-                //panel1.Invalidate(r);
-                DevLog.Write($"돌 두기 실패: {(CSCommon.돌두기_결과)ret}");
-                return;
-            }*/
+            /*            var ret = OmokLogic.돌두기(x, y);
+                        if (ret != CSCommon.돌두기_결과.Success)
+                        {
+                            //Rectangle r = new Rectangle(시작위치, 590, 시작위치 + 돌크기 + 160, 돌크기 + 10);
+                            //panel1.Invalidate(r);
+                            DevLog.Write($"돌 두기 실패: {(CSCommon.돌두기_결과)ret}");
+                            return;
+                        }*/
 
-            돌그리기(stoneColor, x, y);
+            if(nextTurnUserId == textBoxUserID.Text)
+            {
+                돌그리기(EnemyStoneColor, x, y);
+            }
+            else
+            {
+                돌그리기(MyStoneColor, x, y);
+            }
+
             현재돌표시();
             //OmokLogic.오목확인(x, y);
 
