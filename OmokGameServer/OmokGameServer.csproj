@@ -8,6 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="CloudStructures" Version="3.3.0" />
 		<PackageReference Include="MemoryPack" Version="1.21.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
@@ -18,11 +19,16 @@
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+		<PackageReference Include="MySql.Data" Version="8.4.0" />
+		<PackageReference Include="MySqlConnector" Version="2.3.7" />
 		<PackageReference Include="NLog" Version="5.2.8" />
 		<PackageReference Include="NuGet.CommandLine" Version="6.9.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="SqlKata" Version="2.4.0" />
+		<PackageReference Include="SqlKata.Execution" Version="2.4.0" />
+		<PackageReference Include="StackExchange.Redis" Version="2.7.33" />
 		<PackageReference Include="SuperSocketLite" Version="0.17.0" />
 		<PackageReference Include="System.CommandLine.Parser" Version="0.1.1" />
 		<None Update="appsettings.json">

@@ -33,7 +33,8 @@ namespace csharp_test_client
             PacketFuncDic.Add((int)PACKET_ID.GameStartNotify, PacketProcess_GameStartNotify);
             PacketFuncDic.Add((int)PACKET_ID.OmokStonePlaceResponse, PacketProcess_PutMokResponse);
             PacketFuncDic.Add((int)PACKET_ID.OmokStonePlaceNotify, PacketProcess_PutMokNotify);
-            PacketFuncDic.Add((int)PACKET_ID.OmokWinNotify, PacketProcess_EndOmokNotify);
+            PacketFuncDic.Add((int)PACKET_ID.OmokWinNotify, PacketProcess_WinOmokNotify);
+            PacketFuncDic.Add((int)PACKET_ID.OmokLoseNotify, PacketProcess_LoseOmokNotify);
             PacketFuncDic.Add((int)PACKET_ID.TurnChangeNotify, PacketProcess_TurnChangeNotify);
             PacketFuncDic.Add((int)PACKET_ID.HeartBeatRequestToClient, PacketProcess_HeartbeatReqFromServer);
             //PacketFuncDic.Add(PacketID.NtfReadyOmok, PacketProcess_ReadyOmokNotify);
@@ -251,13 +252,22 @@ namespace csharp_test_client
 
         }
 
-        void PacketProcess_EndOmokNotify(byte[] packetData)
+        void PacketProcess_WinOmokNotify(byte[] packetData)
         {
             var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFOmokWin>(packetData);
 
             EndGame();
 
             DevLog.Write($"오목 GameOver: Win: {notifyPkt.WinUserId}");
+        }
+
+        void PacketProcess_LoseOmokNotify(byte[] packetData)
+        {
+            var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFOmokLose>(packetData);
+
+            EndGame();
+
+            DevLog.Write($"오목 GameOver: Lose: {notifyPkt.LoseUserId}");
         }
 
         void PacketProcess_TurnChangeNotify(byte[] packetData)

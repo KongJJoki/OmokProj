@@ -40,6 +40,7 @@ namespace PacketDefine
         OmokStonePlaceResponse = 5001,
         OmokStonePlaceNotify = 5002,
         OmokWinNotify = 5003,
+        OmokLoseNotify = 5004,
 
         // Turn Change
         TurnChangeNotify = 6000,

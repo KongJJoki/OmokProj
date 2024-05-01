@@ -1,6 +1,7 @@
 using MemoryPack;
 using PacketDefine;
 using PacketTypes;
+using SuperSocket.Common;
 
 namespace OmokGameServer
 {
@@ -46,6 +47,7 @@ namespace OmokGameServer
         {
             turnTimer.Change(Timeout.Infinite, Timeout.Infinite);
         }
+
 
         public ERROR_CODE AddUser(User user)
         {
@@ -94,7 +96,7 @@ namespace OmokGameServer
             for (int i = 0; i < userList.Count; i++)
             {
                 var user = userList[i];
-                if(user.sessionId == exceptSessionId)
+                if (user.sessionId == exceptSessionId)
                 {
                     continue;
                 }
@@ -105,7 +107,7 @@ namespace OmokGameServer
         {
             List<string> UserIds = new List<string>();
 
-            for(int i = 0; i < nowUserCount; i++)
+            for (int i = 0; i < nowUserCount; i++)
             {
                 UserIds.Add(userList[i].userId);
             }
@@ -123,9 +125,9 @@ namespace OmokGameServer
         }
         public bool CheckAllReady()
         {
-            foreach(var readyStatus in readyStatusDictionary.Values)
+            foreach (var readyStatus in readyStatusDictionary.Values)
             {
-                if(!readyStatus)
+                if (!readyStatus)
                 {
                     return false;
                 }
@@ -133,13 +135,25 @@ namespace OmokGameServer
 
             return true;
         }
-        string FindOtherUser(string userId)
+        string FindOtherUserId(string userId)
+        {
+            foreach (var user in userList)
+            {
+                if (user.userId != userId)
+                {
+                    return user.userId;
+                }
+            }
+
+            return null;
+        }
+        public User GetOtherUser(User myUser)
         {
             foreach(var user in userList)
             {
-                if(user.userId != userId)
+                if(user != myUser)
                 {
-                    return user.userId;
+                    return user;
                 }
             }
 
@@ -161,6 +175,7 @@ namespace OmokGameServer
             StopTimer();
             SetAllUserNotReady();
             isGameStart = false;
+            omokBoard.ClearOmokBoard();
         }
 
         void SetAllUserNotReady()
@@ -201,7 +216,7 @@ namespace OmokGameServer
 
             sendFunc(sessionId, sendData);
         }
-        
+
         public void NotifyRoomLeave(User user)
         {
             if (nowUserCount == 0)
@@ -234,7 +249,7 @@ namespace OmokGameServer
         {
             isGameStart = true;
             omokBoard.BlackUserId = startUserId;
-            omokBoard.WhiteUserId = FindOtherUser(startUserId);
+            omokBoard.WhiteUserId = FindOtherUserId(startUserId);
             NowTurnUser = startUserId;
             NextTurnUser = omokBoard.WhiteUserId;
 
@@ -267,18 +282,30 @@ namespace OmokGameServer
             StartResetTimer();
         }
 
-        public void NotifyOmokWin(string winUserId)
+        public void NotifyOmokWin(User winUser)
         {
-            isGameStart = false;
-            omokBoard.ClearOmokBoard();
+            GameFinish();
 
             PKTNTFOmokWin omokWinNTF = new PKTNTFOmokWin();
-            omokWinNTF.WinUserId = winUserId;
+            omokWinNTF.WinUserId = winUser.userId;
 
             var bodyData = MemoryPackSerializer.Serialize(omokWinNTF);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokWinNotify, bodyData);
 
-            Broadcast("", sendData);
+            sendFunc(winUser.sessionId, sendData);
+        }
+
+        public void NotifyOmokLose(User loseUser)
+        {
+            GameFinish();
+
+            PKTNTFOmokLose omokLoseNTF = new PKTNTFOmokLose();
+            omokLoseNTF.LoseUserId = loseUser.userId;
+
+            var bodyData = MemoryPackSerializer.Serialize(omokLoseNTF);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokLoseNotify, bodyData);
+
+            sendFunc(loseUser.sessionId, sendData);
         }
 
         public void TimeOutTurnChangeNotify()
@@ -292,6 +319,17 @@ namespace OmokGameServer
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.TurnChangeNotify, bodyData);
 
             Broadcast("", sendData);
+        }
+    }
+
+    public class GameWinEventArgs : EventArgs
+    {
+        public string WinUserId { get; }
+        public string LoseUserId { get; }
+        public GameWinEventArgs(string winUserId, string loseUserId)
+        {
+            WinUserId = winUserId;
+            LoseUserId = loseUserId;
         }
     }
 }

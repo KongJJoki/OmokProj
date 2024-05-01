@@ -146,6 +146,12 @@ namespace PacketTypes
         public string WinUserId { get; set; }
     }
 
+    [MemoryPackable]
+    public partial class PKTNTFOmokLose
+    {
+        public string LoseUserId { get; set; }
+    }
+
     // Turn Change
     [MemoryPackable]
     public partial class PKTNTFTurnChange

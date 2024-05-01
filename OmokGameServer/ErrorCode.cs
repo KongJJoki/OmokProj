@@ -44,5 +44,8 @@ namespace OmokGameServer
         OmokStonePlaceFailInvalidUser = 5000,
         OmokStonePlaceFailGameNotStart = 5001,
         OmokStonePlaceFailAlreadyStoneExist = 5002,
+
+        // 게임 결과 저장
+        GameResultSaveFailDBError = 6000,
     }
 }

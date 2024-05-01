@@ -1,15 +1,22 @@
 using MemoryPack;
 using PacketDefine;
 using PacketTypes;
+using SuperSocket.Common;
 
 namespace OmokGameServer
 {
     public class OmokGamePacketHandler : PacketHandler
     {
+        public event EventHandler<GameWinEventArgs> gameFinish;
+
+        void OnGameFinish(GameWinEventArgs eventArgs)
+        {
+            gameFinish.Invoke(this, eventArgs);
+        }
+
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
         {
             packetHandlerDictionary.Add((int)PACKET_ID.OmokStonePlaceRequest, OmokStonePlaceRequest);
-            //packetHandlerDictionary.Add((int)PACKET_ID.GameStartRequest, GameStartRequest);
         }
 
         public void OmokStonePlaceRequest(ServerPacketData packet)
@@ -27,8 +34,8 @@ namespace OmokGameServer
                     return;
                 }
 
-                var room = roomList[user.roomNumber];
-                if(!room.isGameStart)
+                var room = roomManager.GetRoom(user.roomNumber);
+                if (!room.isGameStart)
                 {
                     OmokStonePlaceRespond(ERROR_CODE.OmokStonePlaceFailGameNotStart, sessionId);
                     return;
@@ -50,7 +57,10 @@ namespace OmokGameServer
 
                 if(omokBoard.OmokWinCheck(requestData.PosX, requestData.PosY))
                 {
-                    room.NotifyOmokWin(user.userId);
+                    var otherUser = room.GetOtherUser(user);
+                    OnGameFinish(new GameWinEventArgs(user.userId, otherUser.userId));
+                    room.NotifyOmokWin(user);
+                    room.NotifyOmokLose(room.GetOtherUser(user));
                 }
             }
             catch (Exception ex)
@@ -68,13 +78,6 @@ namespace OmokGameServer
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokStonePlaceResponse, bodyData);
 
             sendFunc(sessionId, sendData);
-        }
-
-        public void TimeOutTurnChangeNotify(int roomNum)
-        {
-            var room = roomList[roomNum];
-
-            room.TimeOutTurnChangeNotify();
         }
     }
 }

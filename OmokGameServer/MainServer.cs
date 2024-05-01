@@ -14,19 +14,24 @@ namespace OmokGameServer
         ILog mainLogger;
 
         ServerOption serverOption;
+        DBConfig dbConfig;
         IServerConfig m_Config;
 
         private readonly IHostApplicationLifetime _appLifetime;
 
         PacketProcessor packetProcessor = new PacketProcessor();
         HeartbeatProcessor heartbeatProcessor = new HeartbeatProcessor();
+        GameDBProcessor gameDBProcessor = new GameDBProcessor();
         UserManager userManager = new UserManager();
         RoomManager roomManager = new RoomManager();
 
-        public MainServer(IHostApplicationLifetime appLifetime, IOptions<ServerOption> serverConfig)
+        GameDB gameDB;
+
+        public MainServer(IHostApplicationLifetime appLifetime, IOptions<ServerOption> serverConfig, IOptions<DBConfig> dbConfig)
             :base(new DefaultReceiveFilterFactory<ReceiveFilter, OmokBinaryRequestInfo>())
         {
             serverOption = serverConfig.Value;
+            this.dbConfig = dbConfig.Value;
             _appLifetime = appLifetime;
 
             NewSessionConnected += new SessionHandler<ClientSession>(OnClientConnect);
@@ -34,6 +39,7 @@ namespace OmokGameServer
             NewRequestReceived += new RequestHandler<ClientSession, OmokBinaryRequestInfo>(OnPacketReceived);
 
             packetProcessor.heartbeatPacketHandler.HeartbeatPacketReceived += heartbeatProcessor.HandleHeartbeatPacket;
+            packetProcessor.omokGamePacketHandler.gameFinish += gameDBProcessor.HandleGameResultUpdate;
         }
 
         public void InitConfig(ServerOption options)
@@ -70,8 +76,10 @@ namespace OmokGameServer
                     mainLogger.Info("서버 초기화 성공");
                 }
 
+                gameDB = new GameDB(mainLogger, dbConfig);
                 packetProcessor.ProcessorStart(userManager, roomManager, mainLogger, serverOption, SendData);
                 heartbeatProcessor.ProcessorStart(userManager, mainLogger, CloseConnection);
+                gameDBProcessor.ProcessorStart(mainLogger, gameDB);
                 Settings();
                 base.Start();
 

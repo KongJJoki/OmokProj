@@ -33,7 +33,7 @@ namespace OmokGameServer
             var user = userManager.GetUser(userSessionId);
             if (user.isInRoom)
             {
-                var room = roomList[user.roomNumber - serverOption.RoomStartNumber];
+                var room = roomManager.GetRoom(user.roomNumber);
                 room.GameFinish();
                 room.RemoveUser(user);
             }

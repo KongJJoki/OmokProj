@@ -29,6 +29,19 @@ namespace OmokGameServer
                 nowLastRoomNum++;
             }
         }
+
+        public Room GetRoom(int roomNum)
+        {
+            int roomIndex = roomNum - serverOption.RoomStartNumber;
+
+            if (roomIndex < serverOption.RoomStartNumber - 1 || roomIndex > serverOption.RoomMaxCount)
+            {
+                return null;
+            }
+
+            return roomList[roomIndex];
+        }
+
         public List<Room> GetRooms()
         {
             return roomList;

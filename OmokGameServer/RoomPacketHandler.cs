@@ -12,17 +12,6 @@ namespace OmokGameServer
             packetHandlerDictionary.Add((int)PACKET_ID.RoomLeaveRequest, RoomLeaveRequest);
             packetHandlerDictionary.Add((int)PACKET_ID.RoomChatRequest, RoomChatRequest);
         }
-        public Room GetRoom(int roomNum)
-        {
-            int roomIndex = roomNum - serverOption.RoomStartNumber;
-
-            if (roomIndex < serverOption.RoomStartNumber - 1 || roomIndex > serverOption.RoomMaxCount)
-            {
-                return null;
-            }
-
-            return roomList[roomIndex];
-        }
         public void RoomEnterRequest(ServerPacketData packet)
         {
             string sessionId = packet.sessionId;
@@ -46,7 +35,7 @@ namespace OmokGameServer
 
                 var requestData = MemoryPackSerializer.Deserialize<PKTReqRoomEnter>(packet.bodyData);
 
-                var room = GetRoom(requestData.RoomNumber);
+                var room = roomManager.GetRoom(requestData.RoomNumber);
 
                 if(room == null)
                 {
@@ -110,7 +99,7 @@ namespace OmokGameServer
 
                 var requestData = MemoryPackSerializer.Deserialize<PKTReqRoomEnter>(packet.bodyData);
 
-                var room = GetRoom(user.roomNumber);
+                var room = roomManager.GetRoom(user.roomNumber);
 
                 if(requestData.RoomNumber != user.roomNumber)
                 {
@@ -173,7 +162,7 @@ namespace OmokGameServer
 
                 var requestData = MemoryPackSerializer.Deserialize<PKTReqRoomChat>(packet.bodyData);
 
-                var room = GetRoom(user.roomNumber);
+                var room = roomManager.GetRoom(user.roomNumber);
 
                 room.NotifyRoomChat(user.userId, requestData.Message);
             }

@@ -32,7 +32,7 @@ namespace OmokGameServer
                     return;
                 }
 
-                var room = roomList[user.roomNumber];
+                var room = roomManager.GetRoom(user.roomNumber);
                 if(room.isGameStart)
                 {
                     GameReadyResponse(ERROR_CODE.GameReadyFailAlreadyGameStart, sessionId);
@@ -89,9 +89,9 @@ namespace OmokGameServer
                     return;
                 }
 
-                var room = roomList[user.roomNumber];
+                var room = roomManager.GetRoom(user.roomNumber);
 
-                if(room.nowUserCount < 2)
+                if (room.nowUserCount < 2)
                 {
                     GameStartResponse(ERROR_CODE.GameStartFailNotEnoughUserCount, sessionId);
                     return;
