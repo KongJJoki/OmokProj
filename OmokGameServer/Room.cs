@@ -11,25 +11,19 @@ namespace OmokGameServer
         public int nowUserCount;
         int maxUserNumber;
         public bool isGameStart;
-        string blackUserId;
-        string whiteUserId;
-
-        const int blackStone = 10;
-        const int whiteStone = 20;
 
         public static Func<string, byte[], bool> sendFunc;
 
         List<User> userList = new List<User>();
         Dictionary<User, bool> readyStatusDictionary = new Dictionary<User, bool>();
 
-        int[,] omokBoard;
+        OmokBoard omokBoard = new OmokBoard();
 
         public void Init(int roomNum, int maxUserNum)
         {
             RoomNumber = roomNum;
             maxUserNumber = maxUserNum;
             nowUserCount = 0;
-            omokBoard = new int[20, 20];
         }
 
         public ERROR_CODE AddUser(User user)
@@ -130,26 +124,11 @@ namespace OmokGameServer
 
             return null;
         }
-        public bool CheckStoneExist(int posX, int posY)
+        public OmokBoard GetOmokBoard()
         {
-            if (omokBoard[posX, posY] == 10 || omokBoard[posX, posY] == 20)
-            {
-                return true;
-            }
+            return omokBoard;
+        }
 
-            return false;
-        }
-        public void OmokStonePlace(string userId, int posX, int posY)
-        {
-            if (userId == blackUserId)
-            {
-                omokBoard[posX, posY] = blackStone;
-            }
-            else
-            {
-                omokBoard[posX, posY] = whiteStone;
-            }
-        }
         public void GameFinish()
         {
             isGameStart = false;
@@ -217,8 +196,8 @@ namespace OmokGameServer
         public void NotifyGameStart(string startUserId)
         {
             isGameStart = true;
-            blackUserId = startUserId;
-            whiteUserId = FindOtherUser(startUserId);
+            omokBoard.BlackUserId = startUserId;
+            omokBoard.WhiteUserId = FindOtherUser(startUserId);
 
             PKTNTFGameStart gameStartNTF = new PKTNTFGameStart();
             gameStartNTF.StartUserId = startUserId;
@@ -232,7 +211,7 @@ namespace OmokGameServer
         public void NotifyOmokStonePlace(string userId, int posX, int posY)
         {
             PKTNTFOmokStonePlace omokStonePlaceNTF = new PKTNTFOmokStonePlace();
-            if(userId == blackUserId)
+            if(userId == omokBoard.BlackUserId)
             {
                 omokStonePlaceNTF.StoneColor = "black";
             }
@@ -245,6 +224,20 @@ namespace OmokGameServer
 
             var bodyData = MemoryPackSerializer.Serialize(omokStonePlaceNTF);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokStonePlaceNotify, bodyData);
+
+            Broadcast("", sendData);
+        }
+
+        public void NotifyOmokWin(string winUserId)
+        {
+            isGameStart = false;
+            omokBoard.ClearOmokBoard();
+
+            PKTNTFOmokWin omokWinNTF = new PKTNTFOmokWin();
+            omokWinNTF.WinUserId = winUserId;
+
+            var bodyData = MemoryPackSerializer.Serialize(omokWinNTF);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokWinNotify, bodyData);
 
             Broadcast("", sendData);
         }

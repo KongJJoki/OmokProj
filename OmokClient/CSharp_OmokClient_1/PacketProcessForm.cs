@@ -33,6 +33,7 @@ namespace csharp_test_client
             PacketFuncDic.Add((int)PACKET_ID.GameStartNotify, PacketProcess_GameStartNotify);
             PacketFuncDic.Add((int)PACKET_ID.OmokStonePlaceResponse, PacketProcess_PutMokResponse);
             PacketFuncDic.Add((int)PACKET_ID.OmokStonePlaceNotify, PacketProcess_PutMokNotify);
+            PacketFuncDic.Add((int)PACKET_ID.OmokWinNotify, PacketProcess_EndOmokNotify);
             //PacketFuncDic.Add(PacketID.NtfReadyOmok, PacketProcess_ReadyOmokNotify);
             //PacketFuncDic.Add(PacketID.NtfStartOmok, PacketProcess_StartOmokNotify);
             //PacketFuncDic.Add(PacketID.ResPutMok, PacketProcess_PutMokResponse);
@@ -245,6 +246,15 @@ namespace csharp_test_client
             }
 
             DevLog.Write($"오목 정보: X: {notifyPkt.PosX},  Y: {notifyPkt.PosY},   알:{notifyPkt.StoneColor}");
+        }
+
+        void PacketProcess_EndOmokNotify(byte[] packetData)
+        {
+            var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFOmokWin>(packetData);
+
+            EndGame();
+
+            DevLog.Write($"오목 GameOver: Win: {notifyPkt.WinUserId}");
         }
 
 

@@ -39,5 +39,6 @@ namespace PacketDefine
         OmokStonePlaceRequest = 5000,
         OmokStonePlaceResponse = 5001,
         OmokStonePlaceNotify = 5002,
+        OmokWinNotify = 5003,
     }
 }

@@ -47,15 +47,23 @@ namespace OmokGameServer
                 }
 
                 var requestData = MemoryPackSerializer.Deserialize<PKTReqOmokStonePlace>(packet.bodyData);
-                if(room.CheckStoneExist(requestData.PosX, requestData.PosY))
+
+                var omokBoard = room.GetOmokBoard();
+
+                if(omokBoard.CheckStoneExist(requestData.PosX, requestData.PosY))
                 {
                     OmokStonePlaceRespond(ERROR_CODE.OmokStonePlaceFailAlreadyStoneExist, sessionId);
                     return;
                 }
 
-                room.OmokStonePlace(user.userId, requestData.PosX, requestData.PosY);
+                omokBoard.OmokStonePlace(user.userId, requestData.PosX, requestData.PosY);
                 OmokStonePlaceRespond(ERROR_CODE.None, sessionId);
                 room.NotifyOmokStonePlace(user.userId, requestData.PosX, requestData.PosY);
+
+                if(omokBoard.OmokWinCheck(requestData.PosX, requestData.PosY))
+                {
+                    room.NotifyOmokWin(user.userId);
+                }
             }
             catch (Exception ex)
             {

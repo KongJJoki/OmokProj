@@ -140,4 +140,10 @@ namespace PacketTypes
         public int PosX { get; set; }
         public int PosY { get; set; }
     }
+
+    [MemoryPackable]
+    public partial class PKTNTFOmokWin
+    {
+        public string WinUserId { get; set; }
+    }
 }
