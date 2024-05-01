@@ -202,7 +202,7 @@ namespace csharp_test_client
                 }
             }
 
-            if (OmokLogic.게임종료 == false)
+            /*if (OmokLogic.게임종료 == false)
             {
                 for (int i = 0; i < 바둑판크기; i++)
                 {
@@ -218,24 +218,33 @@ namespace csharp_test_client
                 }
 
                 현재턴_플레이어_정보();
-            }
+            }*/
         }
 
-        void 돌그리기(int x, int y)
+        void 돌그리기(string stoneColor, int x, int y)
         {
             Graphics g = panel1.CreateGraphics();
 
             Rectangle r = new Rectangle(시작위치 + 눈금크기 * x - 돌크기 / 2,
                 시작위치 + 눈금크기 * y - 돌크기 / 2, 돌크기, 돌크기);
 
-            if (OmokLogic.바둑판알(x, y) == (int)CSCommon.OmokRule.돌종류.흑돌)                              // 검은 돌
+            if(stoneColor == "black")
+            {
+                g.FillEllipse(검은색, r);
+            }
+            else
+            {
+                g.FillEllipse(흰색, r);
+            }
+
+/*            if (OmokLogic.바둑판알(x, y) == (int)CSCommon.OmokRule.돌종류.흑돌)                              // 검은 돌
             {
                 g.FillEllipse(검은색, r);
             }
             else if (OmokLogic.바둑판알(x, y) == (int)CSCommon.OmokRule.돌종류.백돌)                         // 흰 돌
             {
                 g.FillEllipse(흰색, r);
-            }
+            }*/
         }
 
         void 현재돌표시()
@@ -320,35 +329,24 @@ namespace csharp_test_client
             // 바둑판 해당 좌표에 아무것도 없고, 게임이 끝나지 않았으면
             else if (OmokLogic.바둑판알(x, y) == (int)CSCommon.OmokRule.돌종류.없음 && !OmokLogic.게임종료)             
             {
-                플레이어_돌두기(false, x, y);
+                //플레이어_돌두기(false, x, y);
             }
         }
 
-        void 플레이어_돌두기(bool isNotify, int x, int y)
+        void 플레이어_돌두기(string stoneColor, int x, int y)
         {
-            var ret = OmokLogic.돌두기(x, y);
+/*            var ret = OmokLogic.돌두기(x, y);
             if (ret != CSCommon.돌두기_결과.Success)
             {
                 //Rectangle r = new Rectangle(시작위치, 590, 시작위치 + 돌크기 + 160, 돌크기 + 10);
                 //panel1.Invalidate(r);
                 DevLog.Write($"돌 두기 실패: {(CSCommon.돌두기_결과)ret}");
                 return;
-            }
+            }*/
 
-            돌그리기(x, y);
+            돌그리기(stoneColor, x, y);
             현재돌표시();
-            OmokLogic.오목확인(x, y);
-                        
-            
-            if (isNotify == false)
-            {
-                IsMyTurn = false;
-                //SendPacketOmokPut(x, y);
-            }
-            else
-            {
-                IsMyTurn = true;
-            }
+            //OmokLogic.오목확인(x, y);
 
             Rectangle r = new Rectangle(시작위치, 590, 시작위치 + 돌크기 + 350, 돌크기 + 10);
             panel1.Invalidate(r);
@@ -417,7 +415,7 @@ namespace csharp_test_client
                 ret = OmokLogic.돌두기(x, y);
             } while (ret != CSCommon.돌두기_결과.Success);
 
-            돌그리기(x, y);
+            //돌그리기(x, y);
             현재돌표시();
             OmokLogic.오목확인(x, y);
         }

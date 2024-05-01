@@ -25,7 +25,7 @@ namespace OmokGameServer
         }
         public void RoomEnterRequest(ServerPacketData packet)
         {
-            string sessionId = packet.SessionId;
+            string sessionId = packet.sessionId;
             mainLogger.Debug($"SessionId({sessionId}) Request Room Enter");
 
             try
@@ -44,7 +44,7 @@ namespace OmokGameServer
                     return;
                 }
 
-                var requestData = MemoryPackSerializer.Deserialize<PKTReqRoomEnter>(packet.BodyData);
+                var requestData = MemoryPackSerializer.Deserialize<PKTReqRoomEnter>(packet.bodyData);
 
                 var room = GetRoom(requestData.RoomNumber);
 
@@ -89,7 +89,7 @@ namespace OmokGameServer
 
         public void RoomLeaveRequest(ServerPacketData packet)
         {
-            string sessionId = packet.SessionId;
+            string sessionId = packet.sessionId;
             mainLogger.Debug($"SessionId({sessionId}) Request Room Leave");
 
             try
@@ -108,7 +108,7 @@ namespace OmokGameServer
                     return;
                 }
 
-                var requestData = MemoryPackSerializer.Deserialize<PKTReqRoomEnter>(packet.BodyData);
+                var requestData = MemoryPackSerializer.Deserialize<PKTReqRoomEnter>(packet.bodyData);
 
                 var room = GetRoom(user.roomNumber);
 
@@ -151,7 +151,7 @@ namespace OmokGameServer
 
         public void RoomChatRequest(ServerPacketData packet)
         {
-            string sessionId = packet.SessionId;
+            string sessionId = packet.sessionId;
             mainLogger.Info($"sessionId({sessionId} send Chat)");
 
             try
@@ -171,7 +171,7 @@ namespace OmokGameServer
 
                 RoomChatRespond(ERROR_CODE.None, sessionId);
 
-                var requestData = MemoryPackSerializer.Deserialize<PKTReqRoomChat>(packet.BodyData);
+                var requestData = MemoryPackSerializer.Deserialize<PKTReqRoomChat>(packet.bodyData);
 
                 var room = GetRoom(user.roomNumber);
 

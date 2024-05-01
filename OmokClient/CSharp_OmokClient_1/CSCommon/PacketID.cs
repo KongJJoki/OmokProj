@@ -34,5 +34,10 @@ namespace PacketDefine
         GameStartRequest = 4002,
         GameStartResponse = 4003,
         GameStartNotify = 4004,
+
+        // Omok Game
+        OmokStonePlaceRequest = 5000,
+        OmokStonePlaceResponse = 5001,
+        OmokStonePlaceNotify = 5002,
     }
 }

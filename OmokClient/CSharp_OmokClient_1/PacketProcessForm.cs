@@ -31,6 +31,8 @@ namespace csharp_test_client
             PacketFuncDic.Add((int)PACKET_ID.GameReadyResponse, PacketProcess_GameReadyResponse);
             PacketFuncDic.Add((int)PACKET_ID.GameStartResponse, PacketProcess_GameStartResultResponse);
             PacketFuncDic.Add((int)PACKET_ID.GameStartNotify, PacketProcess_GameStartNotify);
+            PacketFuncDic.Add((int)PACKET_ID.OmokStonePlaceResponse, PacketProcess_PutMokResponse);
+            PacketFuncDic.Add((int)PACKET_ID.OmokStonePlaceNotify, PacketProcess_PutMokNotify);
             //PacketFuncDic.Add(PacketID.NtfReadyOmok, PacketProcess_ReadyOmokNotify);
             //PacketFuncDic.Add(PacketID.NtfStartOmok, PacketProcess_StartOmokNotify);
             //PacketFuncDic.Add(PacketID.ResPutMok, PacketProcess_PutMokResponse);
@@ -217,6 +219,23 @@ namespace csharp_test_client
             StartGame(isMyTurn, textBoxUserID.Text, GetOtherPlayer(textBoxUserID.Text));
 
             DevLog.Write($"게임 시작. 흑돌 플레이어: {notifyPkt.StartUserId}");
+        }
+
+        void PacketProcess_PutMokResponse(byte[] packetData)
+        {
+            var responsePkt = MemoryPackSerializer.Deserialize<PKTResOmokStonePlace>(packetData);
+            
+            DevLog.Write($"오목 돌 두기 요청 결과:  {responsePkt.Result}");
+        }
+
+
+        void PacketProcess_PutMokNotify(byte[] packetData)
+        {
+            var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFOmokStonePlace>(packetData);
+
+            플레이어_돌두기(notifyPkt.StoneColor, notifyPkt.PosX, notifyPkt.PosY);
+
+            DevLog.Write($"오목 정보: X: {notifyPkt.PosX},  Y: {notifyPkt.PosY},   알:{notifyPkt.StoneColor}");
         }
 
 

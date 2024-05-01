@@ -22,7 +22,7 @@ namespace OmokGameServer
         public void InterNTFClientDisconnect(ServerPacketData packetData)
         {
             // 패킷 데이터에서 유저 정보 가져오기
-            string userSessionId = packetData.SessionId;
+            string userSessionId = packetData.sessionId;
 
             ERROR_CODE userExistCheck = userManager.CheckUserExist(userSessionId);
             if (userExistCheck == ERROR_CODE.None)
@@ -42,7 +42,7 @@ namespace OmokGameServer
         // 로그인 요청
         public void LoginRequest(ServerPacketData packet)
         {
-            string sessionId = packet.SessionId;
+            string sessionId = packet.sessionId;
             mainLogger.Info($"Login Request : sessionId({sessionId})");
 
             try
@@ -54,7 +54,7 @@ namespace OmokGameServer
                     return;
                 }
 
-                var requestData = MemoryPackSerializer.Deserialize<PKTReqLogin>(packet.BodyData);
+                var requestData = MemoryPackSerializer.Deserialize<PKTReqLogin>(packet.bodyData);
 
                 ERROR_CODE errorCode = userManager.AddUser(sessionId, requestData.UserId);
 

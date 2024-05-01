@@ -9,24 +9,32 @@ namespace OmokGameServer
         public int RoomNumber { get; set; }
 
         public int nowUserCount;
-        int MaxUserNumber;
+        int maxUserNumber;
         public bool isGameStart;
+        string blackUserId;
+        string whiteUserId;
+
+        const int blackStone = 10;
+        const int whiteStone = 20;
 
         public static Func<string, byte[], bool> sendFunc;
 
         List<User> userList = new List<User>();
         Dictionary<User, bool> readyStatusDictionary = new Dictionary<User, bool>();
 
+        int[,] omokBoard;
+
         public void Init(int roomNum, int maxUserNum)
         {
             RoomNumber = roomNum;
-            MaxUserNumber = maxUserNum;
+            maxUserNumber = maxUserNum;
             nowUserCount = 0;
+            omokBoard = new int[20, 20];
         }
 
         public ERROR_CODE AddUser(User user)
         {
-            if (nowUserCount >= MaxUserNumber)
+            if (nowUserCount >= maxUserNumber)
             {
                 return ERROR_CODE.RoomEnterFailUserCountLimitExceed;
             }
@@ -110,6 +118,38 @@ namespace OmokGameServer
 
             return true;
         }
+        string FindOtherUser(string userId)
+        {
+            foreach(var user in userList)
+            {
+                if(user.userId != userId)
+                {
+                    return user.userId;
+                }
+            }
+
+            return null;
+        }
+        public bool CheckStoneExist(int posX, int posY)
+        {
+            if (omokBoard[posX, posY] == 10 || omokBoard[posX, posY] == 20)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        public void OmokStonePlace(string userId, int posX, int posY)
+        {
+            if (userId == blackUserId)
+            {
+                omokBoard[posX, posY] = blackStone;
+            }
+            else
+            {
+                omokBoard[posX, posY] = whiteStone;
+            }
+        }
 
         public void NotifyNewUserRoomEnter(User user)
         {
@@ -173,12 +213,34 @@ namespace OmokGameServer
         public void NotifyGameStart(string startUserId)
         {
             isGameStart = true;
+            blackUserId = startUserId;
+            whiteUserId = FindOtherUser(startUserId);
 
             PKTNTFGameStart gameStartNTF = new PKTNTFGameStart();
             gameStartNTF.StartUserId = startUserId;
 
             var bodyData = MemoryPackSerializer.Serialize(gameStartNTF);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.GameStartNotify, bodyData);
+
+            Broadcast("", sendData);
+        }
+
+        public void NotifyOmokStonePlace(string userId, int posX, int posY)
+        {
+            PKTNTFOmokStonePlace omokStonePlaceNTF = new PKTNTFOmokStonePlace();
+            if(userId == blackUserId)
+            {
+                omokStonePlaceNTF.StoneColor = "black";
+            }
+            else
+            {
+                omokStonePlaceNTF.StoneColor = "white";
+            }
+            omokStonePlaceNTF.PosX = posX;
+            omokStonePlaceNTF.PosY = posY;
+
+            var bodyData = MemoryPackSerializer.Serialize(omokStonePlaceNTF);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokStonePlaceNotify, bodyData);
 
             Broadcast("", sendData);
         }

@@ -26,7 +26,7 @@ namespace OmokGameServer
 
         public void GameReadyRequest(ServerPacketData packet)
         {
-            string sessionId = packet.SessionId;
+            string sessionId = packet.sessionId;
             mainLogger.Debug($"sessionId({sessionId}) request Game Ready");
 
             try
@@ -83,7 +83,7 @@ namespace OmokGameServer
 
         public void GameStartRequest(ServerPacketData packet)
         {
-            string sessionId = packet.SessionId;
+            string sessionId = packet.sessionId;
             mainLogger.Debug($"sessionId({sessionId}) requset Game Start");
 
             try

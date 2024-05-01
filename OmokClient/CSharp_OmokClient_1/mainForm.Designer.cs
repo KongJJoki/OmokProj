@@ -362,8 +362,8 @@ namespace csharp_test_client
             this.panel1.Size = new System.Drawing.Size(604, 657);
             this.panel1.TabIndex = 57;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
-            this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseDown);
-            this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseMove);
+            this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SendPacketOmokPut);
+            this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SendPacketOmokPut);
             // 
             // button1
             // 

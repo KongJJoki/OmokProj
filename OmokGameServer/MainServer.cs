@@ -147,10 +147,10 @@ namespace OmokGameServer
 
             // 받은 세션과 reqInfo로 ServerPacketData로 만들어서 프로세서에 전달
             ServerPacketData packet = new ServerPacketData();
-            packet.PacketSize = requestInfo.Size;
-            packet.SessionId = clientSession.SessionID;
-            packet.PacketId = requestInfo.PacketId;
-            packet.BodyData = requestInfo.Body;
+            packet.packetSize = requestInfo.Size;
+            packet.sessionId = clientSession.SessionID;
+            packet.packetId = requestInfo.PacketId;
+            packet.bodyData = requestInfo.Body;
 
             PassPacketToProcessor(packet);
         }

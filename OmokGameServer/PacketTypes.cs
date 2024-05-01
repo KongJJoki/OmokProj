@@ -118,4 +118,26 @@ namespace PacketTypes
     {
         public string StartUserId { get; set; }
     }
+
+    // Omok Game
+    [MemoryPackable]
+    public partial class PKTReqOmokStonePlace
+    {
+        public int PosX { get; set; }
+        public int PosY { get; set; }
+    }
+
+    [MemoryPackable]
+    public partial class PKTResOmokStonePlace
+    {
+        public ERROR_CODE Result { get; set; }
+    }
+
+    [MemoryPackable]
+    public partial class PKTNTFOmokStonePlace
+    {
+        public string StoneColor { get; set; }
+        public int PosX { get; set; }
+        public int PosY { get; set; }
+    }
 }

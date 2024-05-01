@@ -39,5 +39,10 @@ namespace CSCommon
         GameStartFailAlreadyGameStart = 4007,
         GameStartFailNotReady = 4008,
         GameStartFailNotAllReady = 4009,
+
+        // 오목 게임
+        OmokStonePlaceFailInvalidUser = 5000,
+        OmokStonePlaceFailGameNotStart = 5001,
+        OmokStonePlaceFailAlreadyStoneExist = 5002,
     }
 }

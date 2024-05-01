@@ -103,7 +103,7 @@ namespace csharp_test_client
             Network.Close();
         }
 
-        
+
 
         void NetworkReadProcess()
         {
@@ -128,7 +128,7 @@ namespace csharp_test_client
                         {
                             break;
                         }
-                        
+
                         RecvPacketQueue.Enqueue(data);
                     }
                     //DevLog.Write($"받은 데이터: {recvData.Item2}", LOG_LEVEL.INFO);
@@ -153,7 +153,7 @@ namespace csharp_test_client
                     continue;
                 }
 
-                
+
                 if (SendPacketQueue.TryDequeue(out var packet))
                 {
                     Network.Send(packet);
@@ -170,7 +170,7 @@ namespace csharp_test_client
             {
                 byte[] packet = null;
 
-                if(RecvPacketQueue.TryDequeue(out packet))
+                if (RecvPacketQueue.TryDequeue(out packet))
                 {
                     PacketProcess(packet);
                 }
@@ -295,9 +295,9 @@ namespace csharp_test_client
         {
             object removeItem = null;
 
-            foreach( var user in listBoxRoomUserList.Items)
+            foreach (var user in listBoxRoomUserList.Items)
             {
-                if((string)user == userID)
+                if ((string)user == userID)
                 {
                     removeItem = user;
                     break;
@@ -312,7 +312,7 @@ namespace csharp_test_client
 
         string GetOtherPlayer(string myName)
         {
-            if(listBoxRoomUserList.Items.Count != 2)
+            if (listBoxRoomUserList.Items.Count != 2)
             {
                 return null;
             }
@@ -322,7 +322,7 @@ namespace csharp_test_client
             {
                 return firstName;
             }
-            else 
+            else
             {
                 return (string)listBoxRoomUserList.Items[1];
             }
@@ -336,8 +336,8 @@ namespace csharp_test_client
             loginReq.UserId = textBoxUserID.Text;
             loginReq.AuthToken = textBoxUserPW.Text;
             var packet = MemoryPackSerializer.Serialize(loginReq);
-                        
-            PostSendPacket((short)PACKET_ID.LoginRequest, packet);            
+
+            PostSendPacket((short)PACKET_ID.LoginRequest, packet);
             DevLog.Write($"로그인 요청:  {textBoxUserID.Text}, {textBoxUserPW.Text}");
         }
 
@@ -364,7 +364,7 @@ namespace csharp_test_client
 
         private void btnRoomChat_Click(object sender, EventArgs e)
         {
-            if(textBoxRoomSendMsg.Text.IsEmpty())
+            if (textBoxRoomSendMsg.Text.IsEmpty())
             {
                 MessageBox.Show("채팅 메시지를 입력하세요");
                 return;
@@ -388,7 +388,7 @@ namespace csharp_test_client
 
             DevLog.Write($"게임 준비 완료 요청");
         }
-        
+
         // 게임 시작 요청
         private void btn_GameStartClick(object sender, EventArgs e)
         {
@@ -398,8 +398,41 @@ namespace csharp_test_client
             PostSendPacket((short)PACKET_ID.GameStartRequest, packet);
 
             DevLog.Write($"게임 시작 요청");
-            //textBoxUserID -> 자기 userID
-            //StartGame(true, "My", "Other");
+        }
+
+        // 돌 두기 요청
+        void SendPacketOmokPut(object sender, MouseEventArgs e)
+        {
+            if (OmokLogic.게임종료 || IsMyTurn == false)
+            {
+                return;
+            }
+
+            int x, y;
+
+            // 왼쪽클릭만 허용
+            if (e.Button != MouseButtons.Left)
+            {
+                return;
+            }
+
+            x = (e.X - 시작위치 + 10) / 눈금크기;
+            y = (e.Y - 시작위치 + 10) / 눈금크기;
+
+            // 바둑판 크기를 벗어나는지 확인
+            if (x < 0 || x >= 바둑판크기 || y < 0 || y >= 바둑판크기)
+            {
+                return;
+            }
+
+            var requestPkt = new PKTReqOmokStonePlace();
+            requestPkt.PosX = x;
+            requestPkt.PosY = y;
+            var packet = MemoryPackSerializer.Serialize(requestPkt);
+
+            PostSendPacket((short)PACKET_ID.OmokStonePlaceRequest, packet);
+
+            DevLog.Write($"put stone 요청 : x  [ {x} ], y: [ {y} ] ");
         }
 
         /*private void btnMatching_Click(object sender, EventArgs e)
@@ -418,21 +451,6 @@ namespace csharp_test_client
         {
 
         }
-
-       
-        /*void SendPacketOmokPut(int x, int y)
-        {
-            var requestPkt = new PKTReqPutMok
-            {
-                PosX = x,
-                PosY = y
-            };
-
-            var packet = MessagePackSerializer.Serialize(requestPkt);
-            PostSendPacket(PacketID.ReqPutMok, packet);
-
-            DevLog.Write($"put stone 요청 : x  [ {x} ], y: [ {y} ] ");
-        }*/
 
 
         private void button1_Click(object sender, EventArgs e)
