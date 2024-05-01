@@ -19,6 +19,7 @@ namespace OmokGameServer
         private readonly IHostApplicationLifetime _appLifetime;
 
         PacketProcessor packetProcessor = new PacketProcessor();
+        HeartbeatProcessor heartbeatProcessor = new HeartbeatProcessor();
         UserManager userManager = new UserManager();
         RoomManager roomManager = new RoomManager();
 
@@ -31,6 +32,8 @@ namespace OmokGameServer
             NewSessionConnected += new SessionHandler<ClientSession>(OnClientConnect);
             SessionClosed += new SessionHandler<ClientSession, CloseReason>(OnClientDisConnect);
             NewRequestReceived += new RequestHandler<ClientSession, OmokBinaryRequestInfo>(OnPacketReceived);
+
+            packetProcessor.heartbeatPacketHandler.HeartbeatPacketReceived += heartbeatProcessor.HandleHeartbeatPacket;
         }
 
         public void InitConfig(ServerOption options)
@@ -68,6 +71,7 @@ namespace OmokGameServer
                 }
 
                 packetProcessor.ProcessorStart(userManager, roomManager, mainLogger, serverOption, SendData);
+                heartbeatProcessor.ProcessorStart(userManager, mainLogger, CloseConnection);
                 Settings();
                 base.Start();
 
@@ -83,11 +87,13 @@ namespace OmokGameServer
             Stop();
 
             packetProcessor.ProcessorStop();
+            heartbeatProcessor.ProcessorStop();
         }
 
         public void Settings()
         {
             userManager.SetMaxUserNumber(serverOption.RoomMaxCount * serverOption.RoomMaxUserCount);
+            userManager.Init(heartbeatProcessor);
             roomManager.SetServerOption(serverOption);
             roomManager.CreateRooms();
             Room.sendFunc = SendData;
@@ -153,6 +159,25 @@ namespace OmokGameServer
             packet.bodyData = requestInfo.Body;
 
             PassPacketToProcessor(packet);
+        }
+
+        bool CloseConnection(string sessionId)
+        {
+            bool isCloseSuccess = false;
+
+            var sessions = GetAllSessions();
+
+            foreach(var session in sessions)
+            {
+                if(sessionId == session.SessionID)
+                {
+                    session.Close();
+                    isCloseSuccess = true;
+                    break;
+                }
+            }
+
+            return isCloseSuccess;
         }
 
         public void AppOnStarted()

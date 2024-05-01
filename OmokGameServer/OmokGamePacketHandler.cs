@@ -12,18 +12,6 @@ namespace OmokGameServer
             //packetHandlerDictionary.Add((int)PACKET_ID.GameStartRequest, GameStartRequest);
         }
 
-        public Room GetRoom(int roomNum)
-        {
-            int roomIndex = roomNum - serverOption.RoomStartNumber;
-
-            if (roomIndex < serverOption.RoomStartNumber - 1 || roomIndex > serverOption.RoomMaxCount)
-            {
-                return null;
-            }
-
-            return roomList[roomIndex];
-        }
-
         public void OmokStonePlaceRequest(ServerPacketData packet)
         {
             string sessionId = packet.sessionId;
@@ -39,7 +27,7 @@ namespace OmokGameServer
                     return;
                 }
 
-                var room = GetRoom(user.roomNumber);
+                var room = roomList[user.roomNumber];
                 if(!room.isGameStart)
                 {
                     OmokStonePlaceRespond(ERROR_CODE.OmokStonePlaceFailGameNotStart, sessionId);
@@ -84,7 +72,7 @@ namespace OmokGameServer
 
         public void TimeOutTurnChangeNotify(int roomNum)
         {
-            var room = GetRoom(roomNum);
+            var room = roomList[roomNum];
 
             room.TimeOutTurnChangeNotify();
         }

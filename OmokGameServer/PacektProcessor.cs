@@ -1,3 +1,4 @@
+using PacketDefine;
 using SuperSocket.SocketBase.Logging;
 using System.Threading.Tasks.Dataflow;
 
@@ -16,17 +17,13 @@ namespace OmokGameServer
         UserManager userManager;
         RoomManager roomManager;
 
-        // 방 번호 범위 튜플
-        // 방 객체 리스트
-
-        // 패킷 핸들러 맵 선언
-        // 모든 함수들이 ServerPacketData를 매개변수로 받아서 쓰기 때문에 value가 Action<ServerPacketData>
         Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary = new Dictionary<int, Action<ServerPacketData>>();
 
         ConnectionLoginPacketHandler loginPacketHandler = new ConnectionLoginPacketHandler();
         RoomPacketHandler roomPacketHandler = new RoomPacketHandler();
         GameReadyStartPacketHandler gameReadyStartPacketHandler = new GameReadyStartPacketHandler();
         OmokGamePacketHandler omokGamePacketHandler = new OmokGamePacketHandler();
+        public HeartbeatPacketHandler heartbeatPacketHandler = new HeartbeatPacketHandler();
 
         public void ProcessorStart(UserManager userManager, RoomManager roomManager, ILog mainLogger, ServerOption serverOption, Func<string, byte[], bool> sendFunc)
         {
@@ -67,17 +64,20 @@ namespace OmokGameServer
 
             omokGamePacketHandler.Init(userManager, roomManager, mainLogger, serverOption, sendFunc);
             omokGamePacketHandler.SetPacketHandler(packetHandlerDictionary);
+
+            heartbeatPacketHandler.Init(userManager, roomManager, mainLogger, serverOption, sendFunc);
+            heartbeatPacketHandler.SetPacketHandler(packetHandlerDictionary);
         }
 
         void Process()
         {
-            while(isProcessorRunning)
+            while (isProcessorRunning)
             {
                 try
                 {
                     var newPacket = packetBuffer.Receive();
 
-                    if(packetHandlerDictionary.ContainsKey(newPacket.packetId))
+                    if (packetHandlerDictionary.ContainsKey(newPacket.packetId))
                     {
                         packetHandlerDictionary[newPacket.packetId](newPacket);
                     }
@@ -86,12 +86,11 @@ namespace OmokGameServer
                         mainLogger.Debug($"Unknown PacketId : {newPacket.packetId}"); ;
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    mainLogger.Error($"PacketProcessor Error : {ex.ToString()}");
+                    mainLogger.Error($"PacketProcessor Error : {ex}");
                 }
             }
         }
-
     }
 }

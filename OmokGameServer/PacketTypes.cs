@@ -152,4 +152,17 @@ namespace PacketTypes
     {
         public string TurnGetUserId { get; set; }
     }
+
+    // Heart Beat
+    [MemoryPackable]
+    public partial class PKTHeartBeatToClient
+    {
+
+    }
+
+    [MemoryPackable]
+    public partial class PKTHeartBeatFromClient
+    {
+        
+    }
 }

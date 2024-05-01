@@ -5,6 +5,14 @@ namespace OmokGameServer
         int maxUserNumber;
         
         Dictionary<string, User> userDictionary = new Dictionary<string, User>();
+        List<User> nowConnectUserList = new List<User>();
+
+        HeartbeatProcessor heartbeatProcessor;
+
+        public void Init(HeartbeatProcessor heartbeatProcessor)
+        {
+            this.heartbeatProcessor = heartbeatProcessor;
+        }
 
         public void SetMaxUserNumber(int maxUserNumber)
         {
@@ -18,14 +26,11 @@ namespace OmokGameServer
                 return ERROR_CODE.LoginFailUserCountLimitExceed;
             }
 
-            /*if(userDictionary.ContainsKey(sessionId))
-            {
-                return ERROR_CODE.Already_Exist_Session;
-            }*/
-
             User newUser = new User();
             newUser.SetUser(sessionId, userId);
             userDictionary.Add(sessionId, newUser);
+            nowConnectUserList.Add(newUser);
+            heartbeatProcessor.AddUserHeartbeatDictionary(newUser);
 
             return ERROR_CODE.None;
         }
@@ -39,6 +44,8 @@ namespace OmokGameServer
                 return ERROR_CODE.RemoveFailNotExistSession;
             }
 
+            nowConnectUserList.Remove(GetUser(sessionId));
+            heartbeatProcessor.RemoveUserHeartbeatDictionary(GetUser(sessionId));
             return ERROR_CODE.None;
         }
 
@@ -56,6 +63,10 @@ namespace OmokGameServer
         public User GetUser(string sessionId)
         {
             return userDictionary[sessionId];
+        }
+        public List<User> GetNowConnectUsers()
+        {
+            return nowConnectUserList;
         }
     }
 }

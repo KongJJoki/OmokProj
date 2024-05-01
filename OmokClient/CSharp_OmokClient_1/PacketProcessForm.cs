@@ -19,14 +19,14 @@ namespace csharp_test_client
         void SetPacketHandler()
         {
             //PacketFuncDic.Add(PACKET_ID.PACKET_ID_ERROR_NTF, PacketProcess_ErrorNotify);
-            PacketFuncDic.Add((int)PACKET_ID.LoginRespond, PacketProcess_Login);
+            PacketFuncDic.Add((int)PACKET_ID.LoginResponse, PacketProcess_Login);
 
-            PacketFuncDic.Add((int)PACKET_ID.RoomEnterRespond, PacketProcess_RoomEnterResponse);
+            PacketFuncDic.Add((int)PACKET_ID.RoomEnterResponse, PacketProcess_RoomEnterResponse);
             PacketFuncDic.Add((int)PACKET_ID.RoomEnterNotify, PacketProcess_RoomNewUserNotify);
             PacketFuncDic.Add((int)PACKET_ID.RoomMemberNotify, PacketProcess_RoomUserListNotify);
-            PacketFuncDic.Add((int)PACKET_ID.RoomLeaveRespond, PacketProcess_RoomLeaveResponse);
+            PacketFuncDic.Add((int)PACKET_ID.RoomLeaveResponse, PacketProcess_RoomLeaveResponse);
             PacketFuncDic.Add((int)PACKET_ID.RoomLeaveNotify, PacketProcess_RoomLeaveUserNotify);
-            PacketFuncDic.Add((int)PACKET_ID.RoomChatRespond, PacketProcess_RoomChatResponse);
+            PacketFuncDic.Add((int)PACKET_ID.RoomChatResponse, PacketProcess_RoomChatResponse);
             PacketFuncDic.Add((int)PACKET_ID.RoomChatNotify, PacketProcess_RoomChatNotify);
             PacketFuncDic.Add((int)PACKET_ID.GameReadyResponse, PacketProcess_GameReadyResponse);
             PacketFuncDic.Add((int)PACKET_ID.GameStartResponse, PacketProcess_GameStartResultResponse);
@@ -35,6 +35,7 @@ namespace csharp_test_client
             PacketFuncDic.Add((int)PACKET_ID.OmokStonePlaceNotify, PacketProcess_PutMokNotify);
             PacketFuncDic.Add((int)PACKET_ID.OmokWinNotify, PacketProcess_EndOmokNotify);
             PacketFuncDic.Add((int)PACKET_ID.TurnChangeNotify, PacketProcess_TurnChangeNotify);
+            PacketFuncDic.Add((int)PACKET_ID.HeartBeatRequestToClient, PacketProcess_HeartbeatReqFromServer);
             //PacketFuncDic.Add(PacketID.NtfReadyOmok, PacketProcess_ReadyOmokNotify);
             //PacketFuncDic.Add(PacketID.NtfStartOmok, PacketProcess_StartOmokNotify);
             //PacketFuncDic.Add(PacketID.ResPutMok, PacketProcess_PutMokResponse);
@@ -273,6 +274,14 @@ namespace csharp_test_client
             }
 
             DevLog.Write($"{notifyPkt.TurnGetUserId}의 턴으로 바뀌었습니다.");
+        }
+
+        void PacketProcess_HeartbeatReqFromServer(byte[] packetData)
+        {
+            var heartbeatToServer = new PKTHeartBeatFromClient();
+            var packet = MemoryPackSerializer.Serialize(heartbeatToServer);
+
+            PostSendPacket((short)PACKET_ID.HeartBeatResponseFromClient, packet);
         }
 
 

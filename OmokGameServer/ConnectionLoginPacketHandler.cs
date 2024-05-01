@@ -80,7 +80,7 @@ namespace OmokGameServer
             loginRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(loginRes);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.LoginRespond, bodyData);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.LoginResponse, bodyData);
 
             sendFunc(sessionId, sendData);
         }
