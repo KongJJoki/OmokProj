@@ -5,6 +5,8 @@ namespace PacketDefine
         // Internal
         InNTFClientConnect = 1000,
         InNTFClientDisconnect = 1001,
+        InNTFCheckTurnTime = 1002,
+        InNTFCheckHeartBeat = 1003,
 
 
 

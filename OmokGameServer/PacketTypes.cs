@@ -4,7 +4,17 @@ using OmokGameServer;
 namespace PacketTypes
 {
     // Internal
+    [MemoryPackable]
+    public partial class InPKTCheckTurn
+    {
 
+    }
+
+    [MemoryPackable]
+    public partial class InPKTCheckHeartBeat
+    {
+
+    }
 
 
     // Common

@@ -23,5 +23,7 @@ namespace OmokGameServer
         public int RoomStartNumber { get; set; } = 0;
 
         public int TurnTimeLimitSecond { get; set; }
+
+        public int TotalDivideNumber { get; set; }
     }
 }

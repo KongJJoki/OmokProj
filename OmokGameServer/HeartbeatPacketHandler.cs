@@ -1,4 +1,3 @@
-using Antlr4.Runtime.Tree;
 using MemoryPack;
 using PacketDefine;
 using PacketTypes;
@@ -8,12 +7,12 @@ namespace OmokGameServer
     public class HeartbeatPacketHandler : PacketHandler
     {
         Timer heartbeatPacketTimer;
-        public event EventHandler<HeartbeatEventArgs> HeartbeatPacketReceived;
+        /*public event EventHandler<HeartbeatEventArgs> HeartbeatPacketReceived;
 
         void OnHeartbeatPacketReceived(HeartbeatEventArgs eventArgs)
         {
             HeartbeatPacketReceived.Invoke(this, eventArgs);
-        }
+        }*/
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
         {
             heartbeatPacketTimer = new Timer(HeartbeatRequestToClient, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
@@ -36,7 +35,7 @@ namespace OmokGameServer
         public void HeartbeatResponseFromClient(ServerPacketData packet)
         {
             User user = userManager.GetUser(packet.sessionId);
-            OnHeartbeatPacketReceived(new HeartbeatEventArgs(user));
+            //OnHeartbeatPacketReceived(new HeartbeatEventArgs(user));
         }
     }
     public class HeartbeatEventArgs : EventArgs

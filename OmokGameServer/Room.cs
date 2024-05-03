@@ -10,13 +10,11 @@ namespace OmokGameServer
         public int RoomNumber { get; set; }
         public string NowTurnUser { get; set; }
         public string NextTurnUser { get; set; }
+        public DateTime lastStonePlaceTime { get; set; }
 
         public int nowUserCount;
         int maxUserNumber;
         public bool isGameStart;
-
-        Timer turnTimer;
-        TimeSpan turnTimeLimit;
 
         public static Func<string, byte[], bool> sendFunc;
 
@@ -25,27 +23,11 @@ namespace OmokGameServer
 
         OmokBoard omokBoard = new OmokBoard();
 
-        public void Init(int roomNum, int maxUserNum, int turnTimeLimitSecond)
+        public void Init(int roomNum, int maxUserNum)
         {
-            turnTimeLimit = TimeSpan.FromSeconds(turnTimeLimitSecond);
-
             RoomNumber = roomNum;
             maxUserNumber = maxUserNum;
             nowUserCount = 0;
-            turnTimer = new Timer(TimerCallback, null, Timeout.Infinite, Timeout.Infinite);
-        }
-
-        void TimerCallback(object state)
-        {
-            TimeOutTurnChangeNotify();
-        }
-        void StartResetTimer()
-        {
-            turnTimer.Change(turnTimeLimit, TimeSpan.Zero);
-        }
-        void StopTimer()
-        {
-            turnTimer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
 
@@ -172,7 +154,6 @@ namespace OmokGameServer
 
         public void GameFinish()
         {
-            StopTimer();
             SetAllUserNotReady();
             isGameStart = false;
             omokBoard.ClearOmokBoard();
@@ -247,6 +228,7 @@ namespace OmokGameServer
 
         public void NotifyGameStart(string startUserId)
         {
+            lastStonePlaceTime = DateTime.Now;
             isGameStart = true;
             omokBoard.BlackUserId = startUserId;
             omokBoard.WhiteUserId = FindOtherUserId(startUserId);
@@ -259,13 +241,13 @@ namespace OmokGameServer
             var bodyData = MemoryPackSerializer.Serialize(gameStartNTF);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.GameStartNotify, bodyData);
 
-            StartResetTimer();
-
             Broadcast("", sendData);
         }
 
         public void NotifyOmokStonePlace(int posX, int posY)
         {
+            lastStonePlaceTime = DateTime.Now;
+
             PKTNTFOmokStonePlace omokStonePlaceNTF = new PKTNTFOmokStonePlace();
 
             omokStonePlaceNTF.NextTurnUserId = NextTurnUser;
@@ -279,7 +261,6 @@ namespace OmokGameServer
             Broadcast("", sendData);
 
             SwapNowNextTurnUser();
-            StartResetTimer();
         }
 
         public void NotifyOmokWin(User winUser)
@@ -310,6 +291,7 @@ namespace OmokGameServer
 
         public void TimeOutTurnChangeNotify()
         {
+            lastStonePlaceTime = DateTime.Now;
             PKTNTFTurnChange turnChangeNTF = new PKTNTFTurnChange();
             turnChangeNTF.TurnGetUserId = NextTurnUser;
 

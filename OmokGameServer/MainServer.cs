@@ -20,7 +20,6 @@ namespace OmokGameServer
         private readonly IHostApplicationLifetime _appLifetime;
 
         PacketProcessor packetProcessor = new PacketProcessor();
-        HeartbeatProcessor heartbeatProcessor = new HeartbeatProcessor();
         GameDBProcessor gameDBProcessor = new GameDBProcessor();
         UserManager userManager = new UserManager();
         RoomManager roomManager = new RoomManager();
@@ -38,7 +37,6 @@ namespace OmokGameServer
             SessionClosed += new SessionHandler<ClientSession, CloseReason>(OnClientDisConnect);
             NewRequestReceived += new RequestHandler<ClientSession, OmokBinaryRequestInfo>(OnPacketReceived);
 
-            packetProcessor.heartbeatPacketHandler.HeartbeatPacketReceived += heartbeatProcessor.HandleHeartbeatPacket;
             packetProcessor.omokGamePacketHandler.gameFinish += gameDBProcessor.HandleGameResultUpdate;
         }
 
@@ -78,7 +76,6 @@ namespace OmokGameServer
 
                 gameDB = new GameDB(mainLogger, dbConfig);
                 packetProcessor.ProcessorStart(userManager, roomManager, mainLogger, serverOption, SendData);
-                heartbeatProcessor.ProcessorStart(userManager, mainLogger, CloseConnection);
                 gameDBProcessor.ProcessorStart(mainLogger, gameDB);
                 Settings();
                 base.Start();
@@ -95,14 +92,12 @@ namespace OmokGameServer
             Stop();
 
             packetProcessor.ProcessorStop();
-            heartbeatProcessor.ProcessorStop();
         }
 
         public void Settings()
         {
             userManager.SetMaxUserNumber(serverOption.RoomMaxCount * serverOption.RoomMaxUserCount);
-            userManager.Init(heartbeatProcessor);
-            roomManager.SetServerOption(serverOption);
+            roomManager.Init(serverOption, PassPacketToProcessor);
             roomManager.CreateRooms();
             Room.sendFunc = SendData;
         }
@@ -159,7 +154,6 @@ namespace OmokGameServer
         {
             mainLogger.Info($"New Packet Received : sessionId : {clientSession.SessionID}");
 
-            // 받은 세션과 reqInfo로 ServerPacketData로 만들어서 프로세서에 전달
             ServerPacketData packet = new ServerPacketData();
             packet.packetSize = requestInfo.Size;
             packet.sessionId = clientSession.SessionID;

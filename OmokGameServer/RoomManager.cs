@@ -1,3 +1,5 @@
+using PacketDefine;
+
 namespace OmokGameServer
 {
     public class RoomManager
@@ -5,9 +7,27 @@ namespace OmokGameServer
         List<Room> roomList = new List<Room>();
         ServerOption serverOption;
 
-        public void SetServerOption(ServerOption serverOption)
+        Timer turnCheckTimer;
+        Action<ServerPacketData> pushPacketInProcessorFunc;
+
+        public void Init(ServerOption serverOption, Action<ServerPacketData> pushPacketInProcessorFunc)
         {
             this.serverOption = serverOption;
+            this.pushPacketInProcessorFunc = pushPacketInProcessorFunc;
+            SetTimer();
+        }
+
+        public void SetTimer()
+        {
+            turnCheckTimer = new Timer(SendTurnCheckPacket, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(1000/serverOption.TotalDivideNumber));
+        }
+
+        void SendTurnCheckPacket(object state)
+        {
+            ServerPacketData packet = new ServerPacketData();
+            packet.SetPacketNoBody("", (Int16)PACKET_ID.InNTFCheckTurnTime);
+
+            pushPacketInProcessorFunc(packet);
         }
 
         public void CreateRooms()
@@ -15,14 +35,13 @@ namespace OmokGameServer
             int maxRoomCount = serverOption.RoomMaxCount;
             int maxUserCount = serverOption.RoomMaxUserCount;
             int roomStartNum = serverOption.RoomStartNumber;
-            int turnTimeLimit = serverOption.TurnTimeLimitSecond;
 
             int nowLastRoomNum = roomStartNum;
 
             for(int i = 0; i< maxRoomCount; i++)
             {
                 Room room = new Room();
-                room.Init(nowLastRoomNum, maxUserCount, turnTimeLimit);
+                room.Init(nowLastRoomNum, maxUserCount);
 
                 roomList.Add(room);
 
@@ -45,6 +64,11 @@ namespace OmokGameServer
         public List<Room> GetRooms()
         {
             return roomList;
+        }
+
+        public TimeSpan CheckTurnTimeDiff(int roomIndex)
+        {
+            return DateTime.Now - roomList[roomIndex].lastStonePlaceTime;
         }
     }
 }
