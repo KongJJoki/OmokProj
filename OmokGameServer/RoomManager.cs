@@ -4,11 +4,11 @@ namespace OmokGameServer
 {
     public class RoomManager
     {
-        List<Room> roomList = new List<Room>();
         ServerOption serverOption;
+        Action<ServerPacketData> pushPacketInProcessorFunc;
 
         Timer turnCheckTimer;
-        Action<ServerPacketData> pushPacketInProcessorFunc;
+        List<Room> roomList = new List<Room>();
 
         public void Init(ServerOption serverOption, Action<ServerPacketData> pushPacketInProcessorFunc)
         {

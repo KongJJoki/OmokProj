@@ -24,6 +24,7 @@ namespace csharp_test_client
 
         System.Threading.Thread NetworkReadThread = null;
         System.Threading.Thread NetworkSendThread = null;
+        System.Threading.Timer heartBeatTimer;
 
         PacketBufferManager PacketBuffer = new PacketBufferManager();
         ConcurrentQueue<byte[]> RecvPacketQueue = new ConcurrentQueue<byte[]>();
@@ -88,6 +89,8 @@ namespace csharp_test_client
                 btnDisconnect.Enabled = true;
 
                 DevLog.Write($"서버에 접속 중", LOG_LEVEL.INFO);
+
+                heartBeatTimer = new System.Threading.Timer(HeartBeatToServer, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
             }
             else
             {
@@ -97,10 +100,19 @@ namespace csharp_test_client
             PacketBuffer.Clear();
         }
 
+        void HeartBeatToServer(object state)
+        {
+            var heartbeatToServer = new PKTHeartBeatFromClient();
+            var packet = MemoryPackSerializer.Serialize(heartbeatToServer);
+
+            PostSendPacket((short)PACKET_ID.HeartBeatResponseFromClient, packet);
+        }
+
         private void btnDisconnect_Click(object sender, EventArgs e)
         {
             SetDisconnectd();
             Network.Close();
+            heartBeatTimer.Dispose();
         }
 
 

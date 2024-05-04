@@ -51,14 +51,14 @@ namespace OmokGameServer
                     return;
                 }
 
-                omokBoard.OmokStonePlace(user.userId, requestData.PosX, requestData.PosY);
+                omokBoard.OmokStonePlace(user.userName, requestData.PosX, requestData.PosY);
                 OmokStonePlaceRespond(ERROR_CODE.None, sessionId);
                 room.NotifyOmokStonePlace(requestData.PosX, requestData.PosY);
 
                 if(omokBoard.OmokWinCheck(requestData.PosX, requestData.PosY))
                 {
                     var otherUser = room.GetOtherUser(user);
-                    OnGameFinish(new GameWinEventArgs(user.userId, otherUser.userId));
+                    OnGameFinish(new GameWinEventArgs(user.userName, otherUser.userName));
                     room.NotifyOmokWin(user);
                     room.NotifyOmokLose(room.GetOtherUser(user));
                 }

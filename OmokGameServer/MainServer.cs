@@ -96,7 +96,7 @@ namespace OmokGameServer
 
         public void Settings()
         {
-            userManager.SetMaxUserNumber(serverOption.RoomMaxCount * serverOption.RoomMaxUserCount);
+            userManager.Init(serverOption, PassPacketToProcessor, CloseConnection);
             roomManager.Init(serverOption, PassPacketToProcessor);
             roomManager.CreateRooms();
             Room.sendFunc = SendData;

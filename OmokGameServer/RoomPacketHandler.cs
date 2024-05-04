@@ -164,7 +164,7 @@ namespace OmokGameServer
 
                 var room = roomManager.GetRoom(user.roomNumber);
 
-                room.NotifyRoomChat(user.userId, requestData.Message);
+                room.NotifyRoomChat(user.userName, requestData.Message);
             }
             catch(Exception ex)
             {

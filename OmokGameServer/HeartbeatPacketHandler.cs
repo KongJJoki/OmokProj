@@ -1,49 +1,86 @@
 using MemoryPack;
 using PacketDefine;
 using PacketTypes;
+using SuperSocket.SocketBase.Logging;
 
 namespace OmokGameServer
 {
-    public class HeartbeatPacketHandler : PacketHandler
+    public class HeartBeatPacketHandler : PacketHandler
     {
-        Timer heartbeatPacketTimer;
-        /*public event EventHandler<HeartbeatEventArgs> HeartbeatPacketReceived;
+        TimeSpan heartBeatLimitTime;
+        public int heartBeatCheckUserIndexOffset;
+        public int oneCheckCount;
+        int maxConnectionCount;
 
-        void OnHeartbeatPacketReceived(HeartbeatEventArgs eventArgs)
+        public new void Init(UserManager userManager, RoomManager roomManager, ILog mainLogger, ServerOption serverOption, Func<string, byte[], bool> sendFunc)
         {
-            HeartbeatPacketReceived.Invoke(this, eventArgs);
-        }*/
+            base.Init(userManager, roomManager, mainLogger, serverOption, sendFunc);
+
+            heartBeatLimitTime = new TimeSpan(0, 0, 0, serverOption.HeartBeatTimeLimitSecond);
+            heartBeatCheckUserIndexOffset = 0;
+            maxConnectionCount = serverOption.MaxConnectionNumber;
+            oneCheckCount = (int)Math.Ceiling((double)maxConnectionCount / serverOption.TotalDivideNumber);
+        }
+
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
         {
-            heartbeatPacketTimer = new Timer(HeartbeatRequestToClient, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
-            packetHandlerDictionary.Add((int)PACKET_ID.HeartBeatResponseFromClient, HeartbeatResponseFromClient);
+            packetHandlerDictionary.Add((int)PACKET_ID.InNTFCheckHeartBeat, HeartBeatCheckRequest);
+            packetHandlerDictionary.Add((int)PACKET_ID.HeartBeatResponseFromClient, HeartBeatResponseFromClient);
         }
 
-        public void HeartbeatRequestToClient(object state)
+        public void HeartBeatRequestToClient(string sessionId)
         {
-            PKTHeartBeatToClient heartbeatToClient = new PKTHeartBeatToClient();
+            PKTHeartBeatToClient heartBeatToClient = new PKTHeartBeatToClient();
 
-            var bodyData = MemoryPackSerializer.Serialize(heartbeatToClient);
+            var bodyData = MemoryPackSerializer.Serialize(heartBeatToClient);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.HeartBeatRequestToClient, bodyData);
 
-            foreach(var user in userManager.GetNowConnectUsers())
-            {
-                sendFunc(user.sessionId, sendData);
-            }    
+            sendFunc(sessionId, sendData);
         }
 
-        public void HeartbeatResponseFromClient(ServerPacketData packet)
+        public void HeartBeatResponseFromClient(ServerPacketData packet)
         {
+            mainLogger.Debug($"{packet.sessionId} heartBeat Arrive");
             User user = userManager.GetUser(packet.sessionId);
-            //OnHeartbeatPacketReceived(new HeartbeatEventArgs(user));
+            user.lastHeartBeatTime = DateTime.Now;
         }
-    }
-    public class HeartbeatEventArgs : EventArgs
-    {
-        public User User { get; }
-        public HeartbeatEventArgs(User user)
+
+        public void HeartBeatCheckRequest(ServerPacketData packet)
         {
-            User = user;
+            for (int i = 0; i < oneCheckCount; i++)
+            {
+                if (heartBeatCheckUserIndexOffset == maxConnectionCount)
+                {
+                    break;
+                }
+
+                if(userManager.CheckUserArrayIsNull(heartBeatCheckUserIndexOffset))
+                {
+                    heartBeatCheckUserIndexOffset++;
+                    continue;
+                }
+
+                TimeSpan timeDiff = userManager.CheckHeartBeatTimeDiff(heartBeatCheckUserIndexOffset);
+                if (timeDiff > heartBeatLimitTime)
+                {
+                    // 하트비트 시간 넘은거 알리기
+                    // 일단 그냥 끊어버리기
+                    userManager.CloseUserConnection(heartBeatCheckUserIndexOffset);
+                    userManager.RemoveUserFromArray(heartBeatCheckUserIndexOffset);
+                    mainLogger.Debug($"force Disconnected");
+                }
+                else
+                {
+                    HeartBeatRequestToClient(packet.sessionId);
+                }
+
+                heartBeatCheckUserIndexOffset++;
+            }
+
+            if (heartBeatCheckUserIndexOffset >= maxConnectionCount)
+            {
+                heartBeatCheckUserIndexOffset = 0;
+            }
         }
     }
 }

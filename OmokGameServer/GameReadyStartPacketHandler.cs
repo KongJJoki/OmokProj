@@ -116,7 +116,7 @@ namespace OmokGameServer
                 }
 
                 GameStartResponse(ERROR_CODE.None, sessionId);
-                room.NotifyGameStart(user.userId);
+                room.NotifyGameStart(user.userName);
 
                 mainLogger.Info($"{room.RoomNumber} room Game Start");
             }

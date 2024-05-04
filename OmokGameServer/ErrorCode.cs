@@ -7,12 +7,16 @@ namespace OmokGameServer
         // 전송
         SendFailSessionNone = 1000,
 
+        // 접속
+        ConnectFailUserCountLimitExceed = 1500,
+        DisconnectFailUserNotExist = 1501,
 
         // 로그인
-        LoginFailUserCountLimitExceed = 2000,
-        LoginFailAlreadyExistSession = 2001,
+        LoginFailNotConnected = 2000,
+        LoginFailUserCountLimitExceed = 2001,
+        LoginFailAlreadyExistUser = 2002,
 
-        RemoveFailNotExistSession = 2002,
+        RemoveFailNotExistSession = 2003,
 
         // 방 입장, 퇴장
         RoomEnterFailInvalidUser = 3000,

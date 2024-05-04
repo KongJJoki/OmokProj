@@ -10,25 +10,21 @@ namespace OmokGameServer
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
         {
             packetHandlerDictionary.Add((int)PACKET_ID.InNTFClientConnect, InternalNTFClientConnect);
-            packetHandlerDictionary.Add((int)PACKET_ID.InNTFClientDisconnect, InterNTFClientDisconnect);
+            packetHandlerDictionary.Add((int)PACKET_ID.InNTFClientDisconnect, InternalNTFClientDisconnect);
             packetHandlerDictionary.Add((int)PACKET_ID.LoginRequest, LoginRequest);
         }
         // 클라이언트 연결
         public void InternalNTFClientConnect(ServerPacketData packetData)
         {
+            // MaxConnectionNumber을 넘은 세션 접속은 슈퍼소켓에서 차단
+            userManager.AddUserConnection(packetData.sessionId);
+
             mainLogger.Debug($"New Client Connect");
         }
-        // 클라이언트 연결 종료
-        public void InterNTFClientDisconnect(ServerPacketData packetData)
-        {
-            // 패킷 데이터에서 유저 정보 가져오기
-            string userSessionId = packetData.sessionId;
 
-            ERROR_CODE userExistCheck = userManager.CheckUserExist(userSessionId);
-            if (userExistCheck == ERROR_CODE.None)
-            {
-                userManager.RemoveUser(userSessionId);
-            }
+        public void InternalNTFClientDisconnect(ServerPacketData packetData)
+        {
+            string userSessionId = packetData.sessionId;
 
             var user = userManager.GetUser(userSessionId);
             if (user.isInRoom)
@@ -38,35 +34,46 @@ namespace OmokGameServer
                 room.RemoveUser(user);
             }
 
+            ERROR_CODE userConnectedCheck = userManager.CheckUserConnected(userSessionId);
+            if (userConnectedCheck == ERROR_CODE.None)
+            {
+                int userHeartBeatArrayIndex = userManager.GetUser(userSessionId).myUserArrayIndex;
+
+                userManager.RemoveUserFromArray(userHeartBeatArrayIndex);
+                userManager.RemoveUser(userSessionId);
+            }
+
             mainLogger.Debug($"Client DisConnect");
         }
         // 로그인 요청
         public void LoginRequest(ServerPacketData packet)
         {
             string sessionId = packet.sessionId;
-            mainLogger.Info($"Login Request : sessionId({sessionId})");
+            mainLogger.Debug($"Login Request : sessionId({sessionId})");
 
-            try
+            try 
             {
-                if (userManager.CheckUserExist(sessionId) == ERROR_CODE.LoginFailAlreadyExistSession)
+                ERROR_CODE errorCodeCheck = userManager.CheckUserLoginExist(sessionId);
+
+                if (errorCodeCheck != ERROR_CODE.None)
                 {
-                    LoginRespond(ERROR_CODE.LoginFailAlreadyExistSession, sessionId);
-                    mainLogger.Debug($"sessionId({sessionId}) Login Fail : Error({ERROR_CODE.LoginFailAlreadyExistSession})");
+                    LoginRespond(errorCodeCheck, sessionId);
+                    mainLogger.Debug($"sessionId({sessionId}) Login Fail : Error({ERROR_CODE.LoginFailAlreadyExistUser})");
                     return;
                 }
 
                 var requestData = MemoryPackSerializer.Deserialize<PKTReqLogin>(packet.bodyData);
 
-                ERROR_CODE errorCode = userManager.AddUser(sessionId, requestData.UserId);
+                ERROR_CODE errorCodeLogin = userManager.AddUserLogin(sessionId, requestData.UserId);
 
-                if (errorCode == ERROR_CODE.LoginFailUserCountLimitExceed)
+                if (errorCodeLogin == ERROR_CODE.LoginFailUserCountLimitExceed)
                 {
-                    FullUserRespond(errorCode, sessionId);
-                    mainLogger.Debug($"sessionId({sessionId}) Login Fail : Error({errorCode})");
+                    FullUserRespond(errorCodeLogin, sessionId);
+                    mainLogger.Debug($"sessionId({sessionId}) Login Fail : Error({errorCodeLogin})");
                 }
 
-                LoginRespond(errorCode, sessionId);
-                mainLogger.Debug($"sessionId({sessionId}) Login Success");
+                LoginRespond(errorCodeLogin, sessionId);
+                mainLogger.Info($"sessionId({sessionId}) Login Success");
             }
             catch (Exception ex)
             {

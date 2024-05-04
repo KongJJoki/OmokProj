@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PacketDefine;
 using MemoryPack;
+using System.Threading;
 
 #pragma warning disable CA1416
 
@@ -18,6 +19,7 @@ namespace csharp_test_client
 
         void SetPacketHandler()
         {
+            
             //PacketFuncDic.Add(PACKET_ID.PACKET_ID_ERROR_NTF, PacketProcess_ErrorNotify);
             PacketFuncDic.Add((int)PACKET_ID.LoginResponse, PacketProcess_Login);
 
@@ -113,7 +115,6 @@ namespace csharp_test_client
 
             DevLog.Write($"에러 통보 받음:  {notifyPkt.Error}");*/
         }
-
 
         void PacketProcess_Login(byte[] packetData)
         {

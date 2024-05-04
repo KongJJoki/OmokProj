@@ -91,7 +91,7 @@ namespace OmokGameServer
 
             for (int i = 0; i < nowUserCount; i++)
             {
-                UserIds.Add(userList[i].userId);
+                UserIds.Add(userList[i].userName);
             }
 
             return UserIds;
@@ -121,9 +121,9 @@ namespace OmokGameServer
         {
             foreach (var user in userList)
             {
-                if (user.userId != userId)
+                if (user.userName != userId)
                 {
-                    return user.userId;
+                    return user.userName;
                 }
             }
 
@@ -175,7 +175,7 @@ namespace OmokGameServer
             }
 
             PKTNTFRoomEnter roomEnterNTF = new PKTNTFRoomEnter();
-            roomEnterNTF.UserId = user.userId;
+            roomEnterNTF.UserId = user.userName;
 
             var bodyData = MemoryPackSerializer.Serialize(roomEnterNTF);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomEnterNotify, bodyData);
@@ -206,7 +206,7 @@ namespace OmokGameServer
             }
 
             PKTNTFRoomLeave roomLeaveNTF = new PKTNTFRoomLeave();
-            roomLeaveNTF.UserId = user.userId;
+            roomLeaveNTF.UserId = user.userName;
 
             var bodyData = MemoryPackSerializer.Serialize(roomLeaveNTF);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomLeaveNotify, bodyData);
@@ -268,7 +268,7 @@ namespace OmokGameServer
             GameFinish();
 
             PKTNTFOmokWin omokWinNTF = new PKTNTFOmokWin();
-            omokWinNTF.WinUserId = winUser.userId;
+            omokWinNTF.WinUserId = winUser.userName;
 
             var bodyData = MemoryPackSerializer.Serialize(omokWinNTF);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokWinNotify, bodyData);
@@ -281,7 +281,7 @@ namespace OmokGameServer
             GameFinish();
 
             PKTNTFOmokLose omokLoseNTF = new PKTNTFOmokLose();
-            omokLoseNTF.LoseUserId = loseUser.userId;
+            omokLoseNTF.LoseUserId = loseUser.userName;
 
             var bodyData = MemoryPackSerializer.Serialize(omokLoseNTF);
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokLoseNotify, bodyData);
