@@ -39,7 +39,11 @@ namespace OmokGameServer
             {
                 int userHeartBeatArrayIndex = userManager.GetUser(userSessionId).myUserArrayIndex;
 
-                userManager.RemoveUserFromArray(userHeartBeatArrayIndex);
+                if(userManager.CheckUserExistInHeartBeatArray(userHeartBeatArrayIndex))
+                {
+                    userManager.RemoveUserFromArray(userHeartBeatArrayIndex);
+                }
+
                 userManager.RemoveUser(userSessionId);
             }
 

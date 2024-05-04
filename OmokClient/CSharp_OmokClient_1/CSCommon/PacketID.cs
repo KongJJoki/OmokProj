@@ -2,13 +2,10 @@ namespace PacketDefine
 {
     public enum PACKET_ID
     {
-        // Internal
-        InNTFClientConnect = 1000,
-        InNTFClientDisconnect = 1001,
-
-
-
         // External
+        // Force DisConnect
+        ForceDisconnect = 1500,
+
         // Login
         LoginRequest = 2000,
         LoginResponse = 2001,

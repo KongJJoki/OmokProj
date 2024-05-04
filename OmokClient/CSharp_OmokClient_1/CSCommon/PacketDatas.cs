@@ -9,7 +9,12 @@ namespace CSCommon
         public short Result;
     }
 
+    // Force Disconnect
+    [MemoryPackable]
+    public partial class PKTNTFForceDisconnect
+    {
 
+    }
 
     // Login
     [MemoryPackable]
@@ -171,6 +176,6 @@ namespace CSCommon
     [MemoryPackable]
     public partial class PKTHeartBeatFromClient
     {
-        
+
     }
 }

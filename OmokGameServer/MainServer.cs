@@ -6,6 +6,8 @@ using SuperSocket.SocketBase.Config;
 using PacketDefine;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using MemoryPack;
+using PacketTypes;
 
 namespace OmokGameServer
 {
@@ -75,7 +77,7 @@ namespace OmokGameServer
                 }
 
                 gameDB = new GameDB(mainLogger, dbConfig);
-                packetProcessor.ProcessorStart(userManager, roomManager, mainLogger, serverOption, SendData);
+                packetProcessor.ProcessorStart(userManager, roomManager, mainLogger, serverOption, SendData, CloseConnection);
                 gameDBProcessor.ProcessorStart(mainLogger, gameDB);
                 Settings();
                 base.Start();
@@ -96,7 +98,7 @@ namespace OmokGameServer
 
         public void Settings()
         {
-            userManager.Init(serverOption, PassPacketToProcessor, CloseConnection);
+            userManager.Init(serverOption, PassPacketToProcessor);
             roomManager.Init(serverOption, PassPacketToProcessor);
             roomManager.CreateRooms();
             Room.sendFunc = SendData;
@@ -173,6 +175,8 @@ namespace OmokGameServer
             {
                 if(sessionId == session.SessionID)
                 {
+                    NTFForceDisconnection(sessionId);
+
                     session.Close();
                     isCloseSuccess = true;
                     break;
@@ -180,6 +184,16 @@ namespace OmokGameServer
             }
 
             return isCloseSuccess;
+        }
+
+        void NTFForceDisconnection(string sessionId)
+        {
+            PKTNTFForceDisconnect forceDisconnect = new PKTNTFForceDisconnect();
+
+            var bodyData = MemoryPackSerializer.Serialize(forceDisconnect);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.ForceDisconnect, bodyData);
+
+            SendData(sessionId, sendData);
         }
 
         public void AppOnStarted()

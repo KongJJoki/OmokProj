@@ -6,7 +6,6 @@ namespace OmokGameServer
     {
         ServerOption serverOption;
         Action<ServerPacketData> pushPacketInProcessorFunc;
-        Func<string, bool> closeConnectionFunc;
 
         Timer heartBeatCheckTimer;
         int maxLoginUserCount;
@@ -17,11 +16,10 @@ namespace OmokGameServer
 
         User[] userArrayForHeartBeatCheck;
 
-        public void Init(ServerOption serverOption, Action<ServerPacketData> pushPacketInProcessorFunc, Func<string, bool> closeConnectionFunc)
+        public void Init(ServerOption serverOption, Action<ServerPacketData> pushPacketInProcessorFunc)
         {
             this.serverOption = serverOption;
             this.pushPacketInProcessorFunc = pushPacketInProcessorFunc;
-            this.closeConnectionFunc = closeConnectionFunc;
             maxLoginUserCount = serverOption.RoomMaxCount * serverOption.RoomMaxUserCount;
             SetTimer();
             userArrayForHeartBeatCheck = new User[serverOption.MaxConnectionNumber];
@@ -121,6 +119,11 @@ namespace OmokGameServer
         {
             User user = userArrayForHeartBeatCheck[userIndex];
 
+            if(user == null)
+            {
+                return false;
+            }
+
             if (userArrayForHeartBeatCheck[user.myUserArrayIndex] == null)
             {
                 return false;
@@ -164,13 +167,29 @@ namespace OmokGameServer
 
             return ERROR_CODE.None;
         }
+
+        public bool CheckUserExistInHeartBeatArray(int index)
+        {
+            if (userArrayForHeartBeatCheck[index]==null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         public User GetUser(string sessionId)
         {
             return sessionIduserDictionary[sessionId];
         }
-        public List<User> GetNowConnectUsers()
+
+        public string GetUserSessionIdByheartBeatIndex(int index)
         {
-            return nowLoginUserList;
+            User user = userArrayForHeartBeatCheck[index];
+
+            return user.sessionId;
         }
 
         public bool CheckUserArrayIsNull(int index)
@@ -188,23 +207,6 @@ namespace OmokGameServer
         public TimeSpan CheckHeartBeatTimeDiff(int userIndex)
         {
             return DateTime.Now - userArrayForHeartBeatCheck[userIndex].lastHeartBeatTime;
-        }
-
-        public bool CloseUserConnection(int userIndex)
-        {
-            User user = userArrayForHeartBeatCheck[userIndex];
-            string sessionId = userSessionIdDictionary[user];
-
-            bool isClosed = closeConnectionFunc(sessionId);
-
-            if (isClosed)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
     }
 }

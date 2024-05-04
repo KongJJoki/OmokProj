@@ -11,6 +11,9 @@ namespace PacketDefine
 
 
         // External
+        // Force DisConnect
+        ForceDisconnect = 1500,
+
         // Login
         LoginRequest = 2000,
         LoginResponse = 2001,

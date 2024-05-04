@@ -11,8 +11,9 @@ namespace OmokGameServer
         public int heartBeatCheckUserIndexOffset;
         public int oneCheckCount;
         int maxConnectionCount;
+        Func<string, bool> closeConnectionFunc;
 
-        public new void Init(UserManager userManager, RoomManager roomManager, ILog mainLogger, ServerOption serverOption, Func<string, byte[], bool> sendFunc)
+        public new void Init(UserManager userManager, RoomManager roomManager, ILog mainLogger, ServerOption serverOption, Func<string, byte[], bool> sendFunc, Func<string, bool> closeConnectionFunc)
         {
             base.Init(userManager, roomManager, mainLogger, serverOption, sendFunc);
 
@@ -20,6 +21,7 @@ namespace OmokGameServer
             heartBeatCheckUserIndexOffset = 0;
             maxConnectionCount = serverOption.MaxConnectionNumber;
             oneCheckCount = (int)Math.Ceiling((double)maxConnectionCount / serverOption.TotalDivideNumber);
+            this.closeConnectionFunc = closeConnectionFunc;
         }
 
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
@@ -63,10 +65,11 @@ namespace OmokGameServer
                 TimeSpan timeDiff = userManager.CheckHeartBeatTimeDiff(heartBeatCheckUserIndexOffset);
                 if (timeDiff > heartBeatLimitTime)
                 {
+                    string sessionId = userManager.GetUserSessionIdByheartBeatIndex(heartBeatCheckUserIndexOffset);
                     // 하트비트 시간 넘은거 알리기
                     // 일단 그냥 끊어버리기
-                    userManager.CloseUserConnection(heartBeatCheckUserIndexOffset);
-                    userManager.RemoveUserFromArray(heartBeatCheckUserIndexOffset);
+                    closeConnectionFunc(sessionId);
+                    //userManager.RemoveUserFromArray(heartBeatCheckUserIndexOffset);
                     mainLogger.Debug($"force Disconnected");
                 }
                 else

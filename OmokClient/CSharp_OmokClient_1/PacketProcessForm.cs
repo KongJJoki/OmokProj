@@ -39,6 +39,7 @@ namespace csharp_test_client
             PacketFuncDic.Add((int)PACKET_ID.OmokLoseNotify, PacketProcess_LoseOmokNotify);
             PacketFuncDic.Add((int)PACKET_ID.TurnChangeNotify, PacketProcess_TurnChangeNotify);
             PacketFuncDic.Add((int)PACKET_ID.HeartBeatRequestToClient, PacketProcess_HeartbeatReqFromServer);
+            PacketFuncDic.Add((int)PACKET_ID.ForceDisconnect, PacketProcess_ForceDisconnected);
             //PacketFuncDic.Add(PacketID.NtfReadyOmok, PacketProcess_ReadyOmokNotify);
             //PacketFuncDic.Add(PacketID.NtfStartOmok, PacketProcess_StartOmokNotify);
             //PacketFuncDic.Add(PacketID.ResPutMok, PacketProcess_PutMokResponse);
@@ -73,39 +74,6 @@ namespace csharp_test_client
             }
         }
 
-        void PacketProcess_PutStoneInfoNotifyResponse(byte[] bodyData)
-        {
-            /*var responsePkt = new PutStoneNtfPacket();
-            responsePkt.FromBytes(bodyData);
-
-            DevLog.Write($"'{responsePkt.userID}' Put Stone  : [{responsePkt.xPos}] , [{responsePkt.yPos}] ");*/
-
-        }
-
-        void PacketProcess_GameEndResultResponse(byte[] bodyData)
-        {
-            /*var responsePkt = new GameResultResPacket();
-            responsePkt.FromBytes(bodyData);
-            
-            DevLog.Write($"'{responsePkt.UserID}' WIN , END GAME ");*/
-
-        }
-
-        void PacketProcess_PutStoneResponse(byte[] bodyData)
-        {
-            /*var responsePkt = new MatchUserResPacket();
-            responsePkt.FromBytes(bodyData);
-
-            if((ERROR_CODE)responsePkt.Result != ERROR_CODE.ERROR_NONE)
-            {
-                DevLog.Write($"Put Stone Error : {(ERROR_CODE)responsePkt.Result}");
-            }
-
-            DevLog.Write($"다음 턴 :  {(ERROR_CODE)responsePkt.Result}");*/
-
-        }
-
-
 
 
         void PacketProcess_ErrorNotify(byte[] packetData)
@@ -114,6 +82,11 @@ namespace csharp_test_client
             notifyPkt.FromBytes(bodyData);
 
             DevLog.Write($"에러 통보 받음:  {notifyPkt.Error}");*/
+        }
+
+        void PacketProcess_ForceDisconnected(byte[] packetData)
+        {
+            DevLog.Write("Force Disconnected");
         }
 
         void PacketProcess_Login(byte[] packetData)

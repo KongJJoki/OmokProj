@@ -4,6 +4,7 @@ using OmokGameServer;
 namespace PacketTypes
 {
     // Internal
+
     [MemoryPackable]
     public partial class InPKTCheckTurn
     {
@@ -18,6 +19,13 @@ namespace PacketTypes
 
 
     // Common
+
+    // Force Disconnect
+    [MemoryPackable]
+    public partial class PKTNTFForceDisconnect
+    {
+
+    }
 
     // Login
     [MemoryPackable]
