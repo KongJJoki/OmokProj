@@ -27,5 +27,7 @@ namespace OmokGameServer
         public int HeartBeatTimeLimitSecond { get; set; }
 
         public int TotalDivideNumber { get; set; }
+
+        public int MaxTurnChangeCount { get; set; }
     }
 }

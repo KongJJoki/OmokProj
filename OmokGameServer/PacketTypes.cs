@@ -3,7 +3,7 @@ using OmokGameServer;
 
 namespace PacketTypes
 {
-    // Internal
+    // Internal 
 
     [MemoryPackable]
     public partial class InPKTCheckTurn
@@ -175,6 +175,12 @@ namespace PacketTypes
     public partial class PKTNTFTurnChange
     {
         public string TurnGetUserId { get; set; }
+    }
+
+    [MemoryPackable]
+    public partial class PKTNTFForceGameFinish
+    {
+        
     }
 
     // Heart Beat

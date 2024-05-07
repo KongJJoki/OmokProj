@@ -40,6 +40,12 @@ namespace OmokGameServer
                     continue;
                 }
 
+                if (roomList[turnCheckRoomNumberOffset].ForceTurnChangeCount >= serverOption.MaxTurnChangeCount )
+                {
+                    roomList[turnCheckRoomNumberOffset].NotifyGameForceFinish();
+                    continue;
+                }
+
                 TimeSpan timeDiff = roomManager.CheckTurnTimeDiff(turnCheckRoomNumberOffset);
                 if(timeDiff > turnLimitTime)
                 {

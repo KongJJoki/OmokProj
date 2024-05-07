@@ -166,6 +166,12 @@ namespace CSCommon
         public string TurnGetUserId { get; set; }
     }
 
+    [MemoryPackable]
+    public partial class PKTNTFForceGameFinish
+    {
+
+    }
+
     // Heart Beat
     [MemoryPackable]
     public partial class PKTHeartBeatToClient

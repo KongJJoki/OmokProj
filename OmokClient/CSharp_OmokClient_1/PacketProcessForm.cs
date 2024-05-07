@@ -38,8 +38,9 @@ namespace csharp_test_client
             PacketFuncDic.Add((int)PACKET_ID.OmokWinNotify, PacketProcess_WinOmokNotify);
             PacketFuncDic.Add((int)PACKET_ID.OmokLoseNotify, PacketProcess_LoseOmokNotify);
             PacketFuncDic.Add((int)PACKET_ID.TurnChangeNotify, PacketProcess_TurnChangeNotify);
-            PacketFuncDic.Add((int)PACKET_ID.HeartBeatRequestToClient, PacketProcess_HeartbeatReqFromServer);
+            //PacketFuncDic.Add((int)PACKET_ID.HeartBeatRequestToClient, PacketProcess_HeartbeatReqFromServer);
             PacketFuncDic.Add((int)PACKET_ID.ForceDisconnect, PacketProcess_ForceDisconnected);
+            PacketFuncDic.Add((int)PACKET_ID.OmokForceFinish, PacketProcess_ForceGameFinish);
             //PacketFuncDic.Add(PacketID.NtfReadyOmok, PacketProcess_ReadyOmokNotify);
             //PacketFuncDic.Add(PacketID.NtfStartOmok, PacketProcess_StartOmokNotify);
             //PacketFuncDic.Add(PacketID.ResPutMok, PacketProcess_PutMokResponse);
@@ -260,12 +261,21 @@ namespace csharp_test_client
             DevLog.Write($"{notifyPkt.TurnGetUserId}의 턴으로 바뀌었습니다.");
         }
 
-        void PacketProcess_HeartbeatReqFromServer(byte[] packetData)
+/*        void PacketProcess_HeartbeatReqFromServer(byte[] packetData)
         {
             var heartbeatToServer = new PKTHeartBeatFromClient();
             var packet = MemoryPackSerializer.Serialize(heartbeatToServer);
 
             PostSendPacket((short)PACKET_ID.HeartBeatResponseFromClient, packet);
+        }*/
+
+        void PacketProcess_ForceGameFinish(byte[] packetData)
+        {
+            var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFForceGameFinish>(packetData);
+
+            EndGame();
+
+            DevLog.Write("턴이 6번 넘어가서 게임이 강제 종료되었습니다.");
         }
 
 

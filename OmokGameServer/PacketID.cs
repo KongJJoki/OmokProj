@@ -49,6 +49,7 @@ namespace PacketDefine
 
         // Turn Change
         TurnChangeNotify = 6000,
+        OmokForceFinish = 6001,
 
         // Heart Beat
         HeartBeatRequestToClient = 7000,

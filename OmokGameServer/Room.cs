@@ -11,6 +11,7 @@ namespace OmokGameServer
         public string NowTurnUser { get; set; }
         public string NextTurnUser { get; set; }
         public DateTime lastStonePlaceTime { get; set; }
+        public int ForceTurnChangeCount { get; set; }
 
         public int nowUserCount;
         int maxUserNumber;
@@ -28,6 +29,8 @@ namespace OmokGameServer
             RoomNumber = roomNum;
             maxUserNumber = maxUserNum;
             nowUserCount = 0;
+            isGameStart = false;
+            ForceTurnChangeCount = 0;
         }
 
 
@@ -289,9 +292,22 @@ namespace OmokGameServer
             sendFunc(loseUser.sessionId, sendData);
         }
 
+        public void NotifyGameForceFinish()
+        {
+            GameFinish();
+
+            PKTNTFForceGameFinish forceGameFinish = new PKTNTFForceGameFinish();
+
+            var bodyData = MemoryPackSerializer.Serialize(forceGameFinish);
+            var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokForceFinish, bodyData);
+
+            Broadcast("", sendData);
+        }
+
         public void TimeOutTurnChangeNotify()
         {
             lastStonePlaceTime = DateTime.Now;
+            ForceTurnChangeCount++;
             PKTNTFTurnChange turnChangeNTF = new PKTNTFTurnChange();
             turnChangeNTF.TurnGetUserId = NextTurnUser;
 
