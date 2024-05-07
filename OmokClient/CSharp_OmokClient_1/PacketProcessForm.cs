@@ -275,7 +275,7 @@ namespace csharp_test_client
 
             EndGame();
 
-            DevLog.Write("턴이 6번 넘어가서 게임이 강제 종료되었습니다.");
+            DevLog.Write("서버에 의해 게임이 강제 종료되었습니다.");
         }
 
 

@@ -70,5 +70,10 @@ namespace OmokGameServer
         {
             return DateTime.Now - roomList[roomIndex].lastStonePlaceTime;
         }
+
+        public TimeSpan CheckGameDuration(int roomIndex)
+        {
+            return DateTime.Now - roomList[roomIndex].gameStartTime;
+        }
     }
 }

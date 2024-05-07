@@ -24,7 +24,7 @@ namespace OmokGameServer
         RoomPacketHandler roomPacketHandler = new RoomPacketHandler();
         GameReadyStartPacketHandler gameReadyStartPacketHandler = new GameReadyStartPacketHandler();
         public OmokGamePacketHandler omokGamePacketHandler = new OmokGamePacketHandler();
-        TurnCheckPacketHandler turnCheckPacketHandler = new TurnCheckPacketHandler();
+        RoomCheckPacketHandler turnCheckPacketHandler = new RoomCheckPacketHandler();
         HeartBeatPacketHandler heartBeatPacketHandler = new HeartBeatPacketHandler();
 
         public void ProcessorStart(UserManager userManager, RoomManager roomManager, ILog mainLogger, ServerOption serverOption, Func<string, byte[], bool> sendFunc, Func<string, bool> closeConnectionFunc)

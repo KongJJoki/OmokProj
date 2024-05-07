@@ -11,6 +11,7 @@ namespace OmokGameServer
         public string NowTurnUser { get; set; }
         public string NextTurnUser { get; set; }
         public DateTime lastStonePlaceTime { get; set; }
+        public DateTime gameStartTime { get; set; }
         public int ForceTurnChangeCount { get; set; }
 
         public int nowUserCount;
@@ -232,6 +233,7 @@ namespace OmokGameServer
         public void NotifyGameStart(string startUserId)
         {
             lastStonePlaceTime = DateTime.Now;
+            gameStartTime = DateTime.Now;
             isGameStart = true;
             omokBoard.BlackUserId = startUserId;
             omokBoard.WhiteUserId = FindOtherUserId(startUserId);
@@ -304,7 +306,7 @@ namespace OmokGameServer
             Broadcast("", sendData);
         }
 
-        public void TimeOutTurnChangeNotify()
+        public void NotifyTimeOutTurnChange()
         {
             lastStonePlaceTime = DateTime.Now;
             ForceTurnChangeCount++;
