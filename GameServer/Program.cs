@@ -15,6 +15,7 @@ builder.Services.AddTransient<IGameDB, GameDB>();
 builder.Services.AddTransient<IRedisDB, RedisDB>();
 
 builder.Services.AddTransient<IGameLoginService, GameLoginService>();
+builder.Services.AddTransient<IGameResultSaveService, GameResultSaveService>();
 
 builder.Services.AddControllers();
 

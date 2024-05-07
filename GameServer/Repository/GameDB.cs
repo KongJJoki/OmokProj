@@ -41,5 +41,37 @@ namespace GameServer.Repository
                 loseCount = 0
             }); // 기본 데이터 insert
         }
+
+        public async Task<int> GetWinCount(Int32 userId)
+        {
+            return await queryFactory.Query("usergamedata")
+                .Select("winCount")
+                .Where("userId", userId)
+                .FirstOrDefaultAsync<int>();
+        }
+
+        public async Task<int> GetLoseCount(Int32 userId)
+        {
+            return await queryFactory.Query("usergamedata")
+                .Select("loseCount")
+                .Where("userId", userId)
+                .FirstOrDefaultAsync<int>();
+        }
+
+        public async Task<int> UpdateWinCount(Int32 userId, int originWinCount)
+        {
+            return await queryFactory.Query("usergamedata")
+                    .Where("userName", userId)
+                    .AsUpdate(new { winCount = originWinCount + 1 })
+                    .FirstOrDefaultAsync<int>();
+        }
+
+        public async Task<int> UpdateLoseCount(Int32 userId, int originLoseCount)
+        {
+            return await queryFactory.Query("usergamedata")
+                    .Where("userName", userId)
+                    .AsUpdate(new { loseCount = originLoseCount + 1 })
+                    .FirstOrDefaultAsync<int>();
+        }
     }
 }

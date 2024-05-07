@@ -12,5 +12,8 @@ namespace GameServer
         TokenVerifyFail = 12,
         HttpReqFail = 13,
         GameLoginFail = 14,
+        GameResultSaveFail = 15,
+        GameWinResultSaveFail = 16,
+        GameLoseResultSaveFail = 17
     }
 }
