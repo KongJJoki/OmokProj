@@ -1,12 +1,16 @@
 using PacketDefine;
+using SuperSocket.SocketBase.Logging;
 
 namespace OmokGameServer
 {
     public class UserManager
     {
         ServerOption serverOption;
+        ILog mainLogger;
         Action<ServerPacketData> pushPacketInProcessorFunc;
+        Func<string, bool> closeConnectionFunc;
 
+        TimeSpan heartBeatLimitTime;
         Timer heartBeatCheckTimer;
         int maxLoginUserCount;
         
@@ -16,10 +20,13 @@ namespace OmokGameServer
 
         User[] userArrayForHeartBeatCheck;
 
-        public void Init(ServerOption serverOption, Action<ServerPacketData> pushPacketInProcessorFunc)
+        public void Init(ServerOption serverOption, ILog mainLogger, Action<ServerPacketData> pushPacketInProcessorFunc, Func<string, bool> closeConnectionFunc)
         {
             this.serverOption = serverOption;
+            this.mainLogger = mainLogger;
             this.pushPacketInProcessorFunc = pushPacketInProcessorFunc;
+            this.closeConnectionFunc = closeConnectionFunc;
+            heartBeatLimitTime = new TimeSpan(0, 0, 0, serverOption.HeartBeatTimeLimitSecond);
             maxLoginUserCount = serverOption.RoomMaxCount * serverOption.RoomMaxUserCount;
             SetTimer();
             userArrayForHeartBeatCheck = new User[serverOption.MaxConnectionNumber];
@@ -207,6 +214,28 @@ namespace OmokGameServer
         public TimeSpan CheckHeartBeatTimeDiff(int userIndex)
         {
             return DateTime.Now - userArrayForHeartBeatCheck[userIndex].lastHeartBeatTime;
+        }
+
+        public bool CheckHeartBeatMeaningful(int userIndex)
+        {
+            if(CheckUserArrayIsNull(userIndex))
+            {
+                return false;
+            }
+
+            TimeSpan timeDiff = CheckHeartBeatTimeDiff(userIndex);
+            if (timeDiff > heartBeatLimitTime)
+            {
+                string sessionId = GetUserSessionIdByheartBeatIndex(userIndex);
+
+                closeConnectionFunc(sessionId);
+                RemoveUserFromArray(userIndex);
+                mainLogger.Debug($"force Disconnected");
+
+                return false;
+            }
+
+            return true;
         }
     }
 }

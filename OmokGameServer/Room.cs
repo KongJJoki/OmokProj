@@ -23,6 +23,7 @@ namespace OmokGameServer
         List<User> userList = new List<User>();
         Dictionary<User, bool> readyStatusDictionary = new Dictionary<User, bool>();
 
+        // 게임 관련들은 방말고 게임 안으로 넣기
         OmokBoard omokBoard = new OmokBoard();
 
         public void Init(int roomNum, int maxUserNum)

@@ -11,6 +11,7 @@ namespace OmokGameServer
 
         void OnGameFinish(GameWinEventArgs eventArgs)
         {
+            // Invoke는 Action이나 Func가 대체
             gameFinish.Invoke(this, eventArgs);
         }
 

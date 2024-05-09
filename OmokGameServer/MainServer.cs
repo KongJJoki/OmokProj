@@ -78,7 +78,7 @@ namespace OmokGameServer
                 }
 
                 gameDB = new GameDB(mainLogger, dbConfig);
-                packetProcessor.ProcessorStart(userManager, roomManager, mainLogger, serverOption, SendData, CloseConnection);
+                packetProcessor.ProcessorStart(userManager, roomManager, mainLogger, serverOption, SendData);
                 gameDBProcessor.ProcessorStart(mainLogger, gameDB);
                 Settings();
                 base.Start();
@@ -99,7 +99,7 @@ namespace OmokGameServer
 
         public void Settings()
         {
-            userManager.Init(serverOption, PassPacketToProcessor);
+            userManager.Init(serverOption, mainLogger, PassPacketToProcessor, CloseConnection);
             roomManager.Init(serverOption, PassPacketToProcessor);
             roomManager.CreateRooms();
             Room.sendFunc = SendData;

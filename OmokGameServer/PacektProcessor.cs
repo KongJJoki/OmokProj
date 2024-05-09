@@ -11,7 +11,6 @@ namespace OmokGameServer
         ILog mainLogger;
         ServerOption serverOption;
         Func<string, byte[], bool> sendFunc;
-        Func<string, bool> closeConnectionFunc;
 
         BufferBlock<ServerPacketData> packetBuffer = new BufferBlock<ServerPacketData>();
 
@@ -27,14 +26,13 @@ namespace OmokGameServer
         RoomCheckPacketHandler turnCheckPacketHandler = new RoomCheckPacketHandler();
         HeartBeatPacketHandler heartBeatPacketHandler = new HeartBeatPacketHandler();
 
-        public void ProcessorStart(UserManager userManager, RoomManager roomManager, ILog mainLogger, ServerOption serverOption, Func<string, byte[], bool> sendFunc, Func<string, bool> closeConnectionFunc)
+        public void ProcessorStart(UserManager userManager, RoomManager roomManager, ILog mainLogger, ServerOption serverOption, Func<string, byte[], bool> sendFunc)
         {
             this.userManager = userManager;
             this.roomManager = roomManager;
             this.mainLogger = mainLogger;
             this.serverOption = serverOption;
             this.sendFunc = sendFunc;
-            this.closeConnectionFunc = closeConnectionFunc;
 
             SetPacketHandlers();
 
@@ -71,7 +69,7 @@ namespace OmokGameServer
             turnCheckPacketHandler.Init(userManager, roomManager, mainLogger, serverOption, sendFunc);
             turnCheckPacketHandler.SetPacketHandler(packetHandlerDictionary);
 
-            heartBeatPacketHandler.Init(userManager, roomManager, mainLogger, serverOption, sendFunc, closeConnectionFunc);
+            heartBeatPacketHandler.Init(userManager, roomManager, mainLogger, serverOption, sendFunc);
             heartBeatPacketHandler.SetPacketHandler(packetHandlerDictionary);
         }
 
