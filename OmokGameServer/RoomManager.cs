@@ -53,7 +53,7 @@ namespace OmokGameServer
         {
             int roomIndex = roomNum - serverOption.RoomStartNumber;
 
-            if (roomIndex < serverOption.RoomStartNumber - 1 || roomIndex > serverOption.RoomMaxCount)
+            if (roomIndex < 0 || roomIndex > serverOption.RoomMaxCount)
             {
                 return null;
             }
