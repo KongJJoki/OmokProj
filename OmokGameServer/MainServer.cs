@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using MemoryPack;
 using PacketTypes;
+using MySqlX.XDevAPI;
 
 namespace OmokGameServer
 {
@@ -29,7 +30,7 @@ namespace OmokGameServer
         GameDB gameDB;
 
         public MainServer(IHostApplicationLifetime appLifetime, IOptions<ServerOption> serverConfig, IOptions<DBConfig> dbConfig)
-            :base(new DefaultReceiveFilterFactory<ReceiveFilter, OmokBinaryRequestInfo>())
+            : base(new DefaultReceiveFilterFactory<ReceiveFilter, OmokBinaryRequestInfo>())
         {
             serverOption = serverConfig.Value;
             this.dbConfig = dbConfig.Value;
@@ -65,7 +66,7 @@ namespace OmokGameServer
             {
                 bool isSuccess = Setup(new RootConfig(), m_Config, logFactory: new NLogLogFactory());
 
-                if(!isSuccess)
+                if (!isSuccess)
                 {
                     Console.WriteLine("[Error] 서버 네트워크 설정 실패");
                     return;
@@ -84,7 +85,7 @@ namespace OmokGameServer
 
                 mainLogger.Info("서버 생성 성공");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"[Error] 서버 생성 실패 : {ex}");
             }
@@ -169,18 +170,13 @@ namespace OmokGameServer
         {
             bool isCloseSuccess = false;
 
-            var sessions = GetAllSessions();
-
-            foreach(var session in sessions)
+            var session = GetAppSessionByID(sessionId);
+            if (sessionId == session.SessionID)
             {
-                if(sessionId == session.SessionID)
-                {
-                    NTFForceDisconnection(sessionId);
+                NTFForceDisconnection(sessionId);
 
-                    session.Close();
-                    isCloseSuccess = true;
-                    break;
-                }
+                session.Close();
+                isCloseSuccess = true;
             }
 
             return isCloseSuccess;
