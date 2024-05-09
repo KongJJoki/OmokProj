@@ -69,7 +69,7 @@ namespace OmokGameServer
                     // 하트비트 시간 넘은거 알리기
                     // 일단 그냥 끊어버리기
                     closeConnectionFunc(sessionId);
-                    userManager.RemoveUserFromArray(heartBeatCheckUserIndexOffset);
+                    //userManager.RemoveUserFromArray(heartBeatCheckUserIndexOffset);
                     mainLogger.Debug($"force Disconnected");
                 }
                 else
