@@ -90,7 +90,7 @@ namespace csharp_test_client
 
                 DevLog.Write($"서버에 접속 중", LOG_LEVEL.INFO);
 
-                heartBeatTimer = new System.Threading.Timer(HeartBeatToServer, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+                heartBeatTimer = new System.Threading.Timer(HeartBeatToServer, null, TimeSpan.Zero, TimeSpan.FromSeconds(11));
             }
             else
             {
