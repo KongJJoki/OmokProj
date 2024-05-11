@@ -56,11 +56,11 @@
 erDiagram
     Account {
         int userId
-        varchar(100) email
+        varchar(100) id
         varchar(255) password
     }
 ```
-- 인덱스 : PRIMARY(PK인 userId에 대한 클러스터 인덱스), email(email을 컬럼으로 갖는 보조인덱스)
+- 인덱스 : PRIMARY(PK인 userId에 대한 클러스터 인덱스), id(id를 컬럼으로 갖는 보조인덱스)
 ### Hive_Redis
 <hr>
 
@@ -73,18 +73,18 @@ Redis{
 
 ### 계정 생성
 - 클라이언트 → 서버 전송 데이터
-  - email : 이메일
+  - id : 이메일
   - password : 패스워드
-1. email이 이메일 형식인지 확인
-2. email가 accountDB에 이미 등록되어 있는지 확인
-3. DB에 email과 password 등록(계정 생성)
+1. id가 이메일 형식인지 확인
+2. id가 accountDB에 이미 등록되어 있는지 확인
+3. DB에 id과 password 등록(계정 생성)
 - 요청 예시
   ```csharp
         POST http://localhost:5115/accountcreate
         Content-Type: application.json
         
         {
-              "email" : "kong@gmail.com",
+              "id" : "kong@gmail.com",
               "password" : "1234"
         }
   ```
@@ -133,11 +133,11 @@ sequenceDiagram
 
 ### 클라이언트 - Hive 서버 로그인
 - 클라이언트 → 서버 전송 데이터
-  - email : 이메일
+  - id : 이메일
   - password : 패스워드
 1. 이메일 형식이 맞는지 확인
-2. email이 존재하는지 확인
-3. accountDB에서 email에 해당하는 데이터 얻어오기
+2. id가 존재하는지 확인
+3. accountDB에서 id에 해당하는 데이터 얻어오기
 4. 전달받은 password와 얻어온 password가 일치하는지 확인
 5. 인증토큰 생성
 6. Redis에 인증토큰 저장
@@ -149,7 +149,7 @@ sequenceDiagram
         Content-Type: application.json
         
         {
-              "email" : "kong@gmail.com",
+              "id" : "kong@gmail.com",
               "password" : "1234"
         }
   ```
