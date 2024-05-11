@@ -91,7 +91,7 @@ namespace OmokGameServer
             loginRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(loginRes);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.LoginResponse, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.LoginResponse, bodyData);
 
             sendFunc(sessionId, sendData);
         }
@@ -102,7 +102,7 @@ namespace OmokGameServer
             userFullRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(userFullRes);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.FullUser, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.FullUser, bodyData);
 
             sendFunc(sessionId, sendData);
         }

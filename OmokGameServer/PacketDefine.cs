@@ -8,7 +8,7 @@ namespace PacketDefine
     }
     public class PacketToBytes
     {
-        public static byte[] MakeBytes(PACKET_ID packetId, byte[] bodyData)
+        public static byte[] MakeToPacket(PACKET_ID packetId, byte[] bodyData)
         {
             Int16 pktId = (Int16)packetId;
             Int16 bodyDataSize = 0;

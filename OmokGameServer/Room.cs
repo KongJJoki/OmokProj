@@ -185,7 +185,7 @@ namespace OmokGameServer
             roomEnterNTF.UserId = user.userName;
 
             var bodyData = MemoryPackSerializer.Serialize(roomEnterNTF);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomEnterNotify, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.RoomEnterNotify, bodyData);
 
             Broadcast(user.sessionId, sendData);
         }
@@ -200,7 +200,7 @@ namespace OmokGameServer
             roomMemberNTF.UserIdList = GetUserIds();
 
             var bodyData = MemoryPackSerializer.Serialize(roomMemberNTF);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomMemberNotify, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.RoomMemberNotify, bodyData);
 
             sendFunc(sessionId, sendData);
         }
@@ -216,7 +216,7 @@ namespace OmokGameServer
             roomLeaveNTF.UserId = user.userName;
 
             var bodyData = MemoryPackSerializer.Serialize(roomLeaveNTF);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomLeaveNotify, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.RoomLeaveNotify, bodyData);
 
             Broadcast("", sendData);
         }
@@ -228,7 +228,7 @@ namespace OmokGameServer
             roomChatNTF.Message = message;
 
             var bodyData = MemoryPackSerializer.Serialize(roomChatNTF);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomChatNotify, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.RoomChatNotify, bodyData);
 
             Broadcast("", sendData);
         }
@@ -248,7 +248,7 @@ namespace OmokGameServer
             gameStartNTF.StartUserId = startUserId;
 
             var bodyData = MemoryPackSerializer.Serialize(gameStartNTF);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.GameStartNotify, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.GameStartNotify, bodyData);
 
             Broadcast("", sendData);
         }
@@ -265,7 +265,7 @@ namespace OmokGameServer
             omokStonePlaceNTF.PosY = posY;
 
             var bodyData = MemoryPackSerializer.Serialize(omokStonePlaceNTF);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokStonePlaceNotify, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.OmokStonePlaceNotify, bodyData);
 
             Broadcast("", sendData);
 
@@ -280,7 +280,7 @@ namespace OmokGameServer
             omokWinNTF.WinUserId = winUser.userName;
 
             var bodyData = MemoryPackSerializer.Serialize(omokWinNTF);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokWinNotify, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.OmokWinNotify, bodyData);
 
             sendFunc(winUser.sessionId, sendData);
         }
@@ -293,7 +293,7 @@ namespace OmokGameServer
             omokLoseNTF.LoseUserId = loseUser.userName;
 
             var bodyData = MemoryPackSerializer.Serialize(omokLoseNTF);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokLoseNotify, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.OmokLoseNotify, bodyData);
 
             sendFunc(loseUser.sessionId, sendData);
         }
@@ -310,7 +310,7 @@ namespace OmokGameServer
             PKTNTFForceGameFinish forceGameFinish = new PKTNTFForceGameFinish();
 
             var bodyData = MemoryPackSerializer.Serialize(forceGameFinish);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokForceFinish, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.OmokForceFinish, bodyData);
 
             Broadcast("", sendData);
         }
@@ -325,7 +325,7 @@ namespace OmokGameServer
             SwapNowNextTurnUser();
 
             var bodyData = MemoryPackSerializer.Serialize(turnChangeNTF);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.TurnChangeNotify, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.TurnChangeNotify, bodyData);
 
             Broadcast("", sendData);
         }

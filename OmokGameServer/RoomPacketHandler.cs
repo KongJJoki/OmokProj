@@ -71,7 +71,7 @@ namespace OmokGameServer
             roomEnterRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(roomEnterRes);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomEnterResponse, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.RoomEnterResponse, bodyData);
 
             sendFunc(sessionId, sendData);
         }
@@ -133,7 +133,7 @@ namespace OmokGameServer
             roomLeaveRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(roomLeaveRes);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomLeaveResponse, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.RoomLeaveResponse, bodyData);
 
             sendFunc(sessionId, sendData);
         }
@@ -177,7 +177,7 @@ namespace OmokGameServer
             roomEnterRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(roomEnterRes);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.RoomChatResponse, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.RoomChatResponse, bodyData);
 
             sendFunc(sessionId, sendData);
         }

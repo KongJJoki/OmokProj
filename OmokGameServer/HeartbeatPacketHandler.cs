@@ -30,7 +30,7 @@ namespace OmokGameServer
             PKTHeartBeatToClient heartBeatToClient = new PKTHeartBeatToClient();
 
             var bodyData = MemoryPackSerializer.Serialize(heartBeatToClient);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.HeartBeatRequestToClient, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.HeartBeatRequestToClient, bodyData);
 
             sendFunc(sessionId, sendData);
         }

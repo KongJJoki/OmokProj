@@ -69,7 +69,7 @@ namespace OmokGameServer
             omokStonePlaceRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(omokStonePlaceRes);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokStonePlaceResponse, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.OmokStonePlaceResponse, bodyData);
 
             sendFunc(sessionId, sendData);
         }

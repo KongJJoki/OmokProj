@@ -195,7 +195,7 @@ namespace OmokGameServer
             PKTNTFForceDisconnect forceDisconnect = new PKTNTFForceDisconnect();
 
             var bodyData = MemoryPackSerializer.Serialize(forceDisconnect);
-            var sendData = PacketToBytes.MakeBytes(PACKET_ID.ForceDisconnect, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.ForceDisconnect, bodyData);
 
             SendData(sessionId, sendData);
         }
