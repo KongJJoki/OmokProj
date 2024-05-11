@@ -24,28 +24,28 @@ namespace OmokGameServer
         {
             var requestData = MemoryPackSerializer.Deserialize<InPKTGameResult>(packet.bodyData);
 
-            int originWinCount = await GetWinCount(requestData.WinUserId, queryFactory);
+            int originWinCount = GetWinCount(requestData.WinUserId, queryFactory);
             if(originWinCount < 0)
             {
                 mainLogger.Debug($"userId({requestData.WinUserId})의 승리 횟수를 가져오는데 실패했습니다.");
                 return;
             }
 
-            int winSaveCheck = await UpdateWinCount(requestData.WinUserId, originWinCount, queryFactory);
+            int winSaveCheck = UpdateWinCount(requestData.WinUserId, originWinCount, queryFactory);
             if(winSaveCheck < 0)
             {
                 mainLogger.Debug($"userId({requestData.WinUserId})의 승리 횟수를 저장하는데 실패했습니다.");
                 return;
             }
 
-            int originLoseCount = await GetLoseCount(requestData.LoseUseId, queryFactory);
+            int originLoseCount = GetLoseCount(requestData.LoseUseId, queryFactory);
             if (originLoseCount < 0)
             {
                 mainLogger.Debug($"userId({requestData.LoseUseId})의 패배 횟수를 가져오는데 실패했습니다.");
                 return;
             }
 
-            int loseSaveCheck = await UpdateLoseCount(requestData.LoseUseId, originLoseCount, queryFactory);
+            int loseSaveCheck = UpdateLoseCount(requestData.LoseUseId, originLoseCount, queryFactory);
             if (loseSaveCheck < 0)
             {
                 mainLogger.Debug($"userId({requestData.LoseUseId})의 패배 횟수를 저장하는데 실패했습니다.");
@@ -53,14 +53,14 @@ namespace OmokGameServer
             }
         }
 
-        async Task<int> GetWinCount(string userId, QueryFactory queryFactory)
+        int GetWinCount(string userId, QueryFactory queryFactory)
         {
             try
             {
-                return await queryFactory.Query("usergamedata2")
+                return queryFactory.Query("usergamedata2")
                     .Select("winCount")
                     .Where("userName", userId)
-                    .FirstOrDefaultAsync<int>();
+                    .FirstOrDefault<int>();
             }
             catch (Exception ex)
             {
@@ -69,14 +69,14 @@ namespace OmokGameServer
             }
         }
 
-        async Task<int> GetLoseCount(string userId, QueryFactory queryFactory)
+        int GetLoseCount(string userId, QueryFactory queryFactory)
         {
             try
             {
-                return await queryFactory.Query("usergamedata2")
+                return queryFactory.Query("usergamedata2")
                     .Select("loseCount")
                     .Where("userName", userId)
-                    .FirstOrDefaultAsync<int>();
+                    .FirstOrDefault<int>();
             }
             catch (Exception ex)
             {
@@ -85,14 +85,14 @@ namespace OmokGameServer
             }
         }
 
-        async Task<int> UpdateWinCount(string userId, int originWinCount, QueryFactory queryFactory)
+        int UpdateWinCount(string userId, int originWinCount, QueryFactory queryFactory)
         {
             try
             {
-                return await queryFactory.Query("usergamedata2")
+                return queryFactory.Query("usergamedata2")
                         .Where("userName", userId)
                         .AsUpdate(new { winCount = originWinCount + 1 })
-                        .FirstOrDefaultAsync<int>();
+                        .FirstOrDefault<int>();
             }
             catch (Exception ex)
             {
@@ -102,14 +102,14 @@ namespace OmokGameServer
 
         }
 
-        async Task<int> UpdateLoseCount(string userId, int originLoseCount, QueryFactory queryFactory)
+        int UpdateLoseCount(string userId, int originLoseCount, QueryFactory queryFactory)
         {
             try
             {
-                return await queryFactory.Query("usergamedata2")
+                return queryFactory.Query("usergamedata2")
                         .Where("userName", userId)
                         .AsUpdate(new { loseCount = originLoseCount + 1 })
-                        .FirstOrDefaultAsync<int>();
+                        .FirstOrDefault<int>();
             }
             catch (Exception ex)
             {
