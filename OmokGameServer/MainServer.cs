@@ -164,7 +164,14 @@ namespace OmokGameServer
             packet.packetId = requestInfo.PacketId;
             packet.bodyData = requestInfo.Body;
 
-            PassPacketToProcessor(packet);
+            if (packet.packetId >= (int)PACKET_ID.FromClientStart && packet.packetId <= (int)PACKET_ID.FromClientEnd)
+            {
+                PassPacketToProcessor(packet);
+            }
+            else
+            {
+                mainLogger.Debug("PacketId Exceed 2000~5000");
+            }
         }
 
         bool CloseConnection(string sessionId)
