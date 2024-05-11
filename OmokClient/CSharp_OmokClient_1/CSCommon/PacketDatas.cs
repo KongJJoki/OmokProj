@@ -27,13 +27,13 @@ namespace CSCommon
     [MemoryPackable]
     public partial class PKTResLogin
     {
-        public ERROR_CODE Result { get; set; }
+        public SockErrorCode Result { get; set; }
     }
 
     [MemoryPackable]
     public partial class PKTResFullUser
     {
-        public ERROR_CODE Result { get; set; }
+        public SockErrorCode Result { get; set; }
     }
 
     // Room
@@ -46,7 +46,7 @@ namespace CSCommon
     [MemoryPackable]
     public partial class PKTResRoomEnter
     {
-        public ERROR_CODE Result { get; set; }
+        public SockErrorCode Result { get; set; }
     }
 
     [MemoryPackable]
@@ -57,7 +57,7 @@ namespace CSCommon
     [MemoryPackable]
     public partial class PKTResRoomLeave
     {
-        public ERROR_CODE Result { get; set; }
+        public SockErrorCode Result { get; set; }
     }
 
     [MemoryPackable]
@@ -84,7 +84,7 @@ namespace CSCommon
     [MemoryPackable]
     public partial class PKTResRoomChat
     {
-        public ERROR_CODE Result { get; set; }
+        public SockErrorCode Result { get; set; }
     }
     [MemoryPackable]
     public partial class PKTNTFRoomChat
@@ -103,7 +103,7 @@ namespace CSCommon
     [MemoryPackable]
     public partial class PKTResGameReady
     {
-        public ERROR_CODE Result { get; set; }
+        public SockErrorCode Result { get; set; }
     }
 
     // Game Start
@@ -116,7 +116,7 @@ namespace CSCommon
     [MemoryPackable]
     public partial class PKTResGameStart
     {
-        public ERROR_CODE Result { get; set; }
+        public SockErrorCode Result { get; set; }
     }
 
     [MemoryPackable]
@@ -136,7 +136,7 @@ namespace CSCommon
     [MemoryPackable]
     public partial class PKTResOmokStonePlace
     {
-        public ERROR_CODE Result { get; set; }
+        public SockErrorCode Result { get; set; }
     }
 
     [MemoryPackable]

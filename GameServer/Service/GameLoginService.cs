@@ -13,6 +13,8 @@ namespace GameServer.Services
     public class GameLoginService : IGameLoginService
     {
         private readonly string tokenVerifyUrl;
+        private readonly string socketIp;
+        private readonly string socketPort;
         private readonly IGameDB gameDB;
         private readonly IRedisDB redisDB;
         private readonly HttpClient httpClient;
@@ -20,12 +22,16 @@ namespace GameServer.Services
         public GameLoginService(IGameDB gameDB, IRedisDB redisDB, IConfiguration serverconfig)
         {
             this.tokenVerifyUrl = serverconfig.GetSection("HiveServer").Value + serverconfig.GetSection("TokenVerifyUrl").Value;
+            this.socketIp = serverconfig.GetSection("SocketServerIP").Value;
+            this.socketPort = serverconfig.GetSection("SocketServerPort").Value;
             this.gameDB = gameDB;
             this.redisDB = redisDB;
             this.httpClient = new HttpClient();
         }
 
-        public async Task<EErrorCode> GameLogin(Int32 userId, string authToken)
+        public record GameLoginResult(EErrorCode ErrorCode, string SocketIp, string SocketPort);
+
+        public async Task<GameLoginResult> GameLogin(Int32 userId, string authToken)
         {
             try
             {
@@ -33,14 +39,14 @@ namespace GameServer.Services
                 string verifyUrl = tokenVerifyUrl;
                 VerifyData verifyData = new VerifyData
                 {
-                    UserId = userId,
+                    Uid = userId,
                     AuthToken = authToken
                 };
 
                 EErrorCode httpRespond = await HttpRequest(verifyUrl, verifyData);
                 if(httpRespond!=EErrorCode.None)
                 {
-                    return httpRespond;
+                    return new GameLoginResult(ErrorCode: httpRespond, SocketIp: "", SocketPort: "");
                 }
 
                 // 인증토큰 유효성 검사 성공한 경우
@@ -48,7 +54,7 @@ namespace GameServer.Services
                 bool redisSaveSuccess = await redisDB.InsertAuthToken(userId.ToString(), authToken);
                 if(!redisSaveSuccess)
                 {
-                    return EErrorCode.RedisError;
+                    return new GameLoginResult(ErrorCode: EErrorCode.RedisError, SocketIp: "", SocketPort: "");
                 }
 
                 bool isUserDataExist = await gameDB.GetUserDataExist(userId);
@@ -57,19 +63,19 @@ namespace GameServer.Services
                     int insertCount = await gameDB.InsertBasicData(userId);
                     if(insertCount != 1)
                     {
-                        return EErrorCode.DBError;
+                        return new GameLoginResult(ErrorCode: EErrorCode.DBError, SocketIp: "", SocketPort: "");
                     }
                 }
 
-                return EErrorCode.None;
+                return new GameLoginResult(ErrorCode: EErrorCode.None, SocketIp: socketIp, SocketPort: socketPort);
             }
             catch (MySqlException dbEx)
             {
-                return EErrorCode.DBError;
+                return new GameLoginResult(ErrorCode: EErrorCode.DBError, SocketIp: "", SocketPort: "");
             }
             catch (Exception ex)
             {
-                return EErrorCode.GameLoginFail;
+                return new GameLoginResult(ErrorCode: EErrorCode.GameApiLoginFail, SocketIp: "", SocketPort: "");
             }
         }
 

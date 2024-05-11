@@ -350,7 +350,7 @@ namespace csharp_test_client
                             return;
                         }*/
 
-            if(nextTurnUserId == textBoxUserID.Text)
+            if(nextTurnUserId == textBoxSocketID.Text)
             {
                 돌그리기(EnemyStoneColor, x, y);
             }

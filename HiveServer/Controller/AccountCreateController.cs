@@ -20,7 +20,7 @@ namespace HiveServer.Controller
         public async Task<AccountCreateRes> AccountCreate(AccountCreateReq req)
         {
             AccountCreateRes res = new AccountCreateRes();
-            res.Result = await accountCreateService.AccountCreate(req.Email, req.Password);
+            res.Result = await accountCreateService.AccountCreate(req.Id, req.Password);
             return res;
         }
     }

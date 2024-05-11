@@ -22,27 +22,47 @@ namespace csharp_test_client
 
         #region Windows Form 디자이너에서 생성한 코드
 
+        const int defaultY = 50;
         /// <summary>
         /// 디자이너 지원에 필요한 메서드입니다. 
         /// 이 메서드의 내용을 코드 편집기로 수정하지 마세요.
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnDisconnect = new System.Windows.Forms.Button();
-            this.btnConnect = new System.Windows.Forms.Button();
+            this.btnHiveLogin = new System.Windows.Forms.Button();
+            this.btnRegister = new System.Windows.Forms.Button();
+            this.btnApiLogin = new System.Windows.Forms.Button();
+
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.textBoxPort = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.checkBoxLocalHostIP = new System.Windows.Forms.CheckBox();
-            this.textBoxIP = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
+            this.textBoxHivePW = new System.Windows.Forms.TextBox();
+            this.textBoxApiLoginUid = new System.Windows.Forms.TextBox();
+            this.textBoxApiLoginAuthToken = new System.Windows.Forms.TextBox();
+            this.labelApiLoginUid = new System.Windows.Forms.Label();
+            this.labelApiLoginAuthToken = new System.Windows.Forms.Label();
+
+            this.textBoxHiveIP = new System.Windows.Forms.TextBox();
+            this.labelHiveIP = new System.Windows.Forms.Label();
+            this.textBoxApiIP = new System.Windows.Forms.TextBox();
+            this.labelApiIP = new System.Windows.Forms.Label();
+
+            this.textBoxSocketIP = new System.Windows.Forms.TextBox();
+            this.labelSocketIP = new System.Windows.Forms.Label();
+            this.textBoxSocketPort = new System.Windows.Forms.TextBox();
+            this.labelSocketPort = new System.Windows.Forms.Label();
+            this.btnSocketConnect = new System.Windows.Forms.Button();
+
+            this.labelHivePW = new System.Windows.Forms.Label();
+            this.textBoxHiveID = new System.Windows.Forms.TextBox();
+            this.labelHiveID = new System.Windows.Forms.Label();
             this.labelStatus = new System.Windows.Forms.Label();
             this.listBoxLog = new System.Windows.Forms.ListBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBoxUserID = new System.Windows.Forms.TextBox();
-            this.textBoxUserPW = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
+
+            this.labelSocketID = new System.Windows.Forms.Label();
+            this.textBoxSocketID = new System.Windows.Forms.TextBox();
+            this.textBoxSocketToken = new System.Windows.Forms.TextBox();
+            this.labelSocketToken = new System.Windows.Forms.Label();
+            this.btnSocketLogin = new System.Windows.Forms.Button();
+
             this.Room = new System.Windows.Forms.GroupBox();
             this.button3 = new System.Windows.Forms.Button();
             this.btnMatching = new System.Windows.Forms.Button();
@@ -61,96 +81,178 @@ namespace csharp_test_client
             this.Room.SuspendLayout();
             this.SuspendLayout();
             // 
-            // btnDisconnect
+            // btnRegister
             // 
-            this.btnDisconnect.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnDisconnect.Location = new System.Drawing.Point(421, 44);
-            this.btnDisconnect.Name = "btnDisconnect";
-            this.btnDisconnect.Size = new System.Drawing.Size(88, 26);
-            this.btnDisconnect.TabIndex = 29;
-            this.btnDisconnect.Text = "접속 끊기";
-            this.btnDisconnect.UseVisualStyleBackColor = true;
-            this.btnDisconnect.Click += new System.EventHandler(this.btnDisconnect_Click);
+            this.btnRegister.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnRegister.Location = new System.Drawing.Point(420, 20);
+            this.btnRegister.Name = "btnRegister";
+            this.btnRegister.Size = new System.Drawing.Size(88, 26);
+            this.btnRegister.TabIndex = 28;
+            this.btnRegister.Text = "회원가입";
+            this.btnRegister.UseVisualStyleBackColor = true;
+            this.btnRegister.Click += new System.EventHandler(this.btnRegister_Click);
             // 
-            // btnConnect
+            // btnHiveLogin
             // 
-            this.btnConnect.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnConnect.Location = new System.Drawing.Point(420, 16);
-            this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(88, 26);
-            this.btnConnect.TabIndex = 28;
-            this.btnConnect.Text = "접속하기";
-            this.btnConnect.UseVisualStyleBackColor = true;
-            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            this.btnHiveLogin.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnHiveLogin.Location = new System.Drawing.Point(421, 50);
+            this.btnHiveLogin.Name = "btnHiveLogin";
+            this.btnHiveLogin.Size = new System.Drawing.Size(88, 26);
+            this.btnHiveLogin.TabIndex = 29;
+            this.btnHiveLogin.Text = "Hive 로그인";
+            this.btnHiveLogin.UseVisualStyleBackColor = true;
+            this.btnHiveLogin.Click += new System.EventHandler(this.btnHiveLogin_Click);
+            // 
+            // btnApiLogin
+            // 
+            this.btnApiLogin.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnApiLogin.Location = new System.Drawing.Point(421, 80);
+            this.btnApiLogin.Name = "btnApiLogin";
+            this.btnApiLogin.Size = new System.Drawing.Size(88, 26);
+            this.btnApiLogin.TabIndex = 29;
+            this.btnApiLogin.Text = "Api 로그인";
+            this.btnApiLogin.UseVisualStyleBackColor = true;
+            this.btnApiLogin.Click += new System.EventHandler(this.btnApiLogin_Click);
             // 
             // groupBox5
             // 
-            this.groupBox5.Controls.Add(this.textBoxPort);
-            this.groupBox5.Controls.Add(this.label10);
-            this.groupBox5.Controls.Add(this.checkBoxLocalHostIP);
-            this.groupBox5.Controls.Add(this.textBoxIP);
-            this.groupBox5.Controls.Add(this.label9);
-            this.groupBox5.Location = new System.Drawing.Point(12, 12);
+            this.groupBox5.Controls.Add(this.textBoxHiveIP);
+            this.groupBox5.Controls.Add(this.labelHiveIP);
+            this.groupBox5.Controls.Add(this.textBoxApiIP);
+            this.groupBox5.Controls.Add(this.labelApiIP);
+            this.groupBox5.Controls.Add(this.textBoxHivePW);
+            this.groupBox5.Controls.Add(this.labelHivePW);
+            this.groupBox5.Controls.Add(this.textBoxHiveID);
+            this.groupBox5.Controls.Add(this.labelHiveID);
+            this.groupBox5.Controls.Add(this.textBoxApiLoginUid);
+            this.groupBox5.Controls.Add(this.textBoxApiLoginAuthToken);
+            this.groupBox5.Controls.Add(this.labelApiLoginUid);
+            this.groupBox5.Controls.Add(this.labelApiLoginAuthToken);
+            this.groupBox5.Location = new System.Drawing.Point(12, 5);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(403, 52);
+            this.groupBox5.Size = new System.Drawing.Size(403, 110);
             this.groupBox5.TabIndex = 27;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Socket 더미 클라이언트 설정";
+            this.groupBox5.Text = "API Test";
             // 
-            // textBoxPort
+            // textBoxHiveIP
             // 
-            this.textBoxPort.Location = new System.Drawing.Point(225, 20);
-            this.textBoxPort.MaxLength = 6;
-            this.textBoxPort.Name = "textBoxPort";
-            this.textBoxPort.Size = new System.Drawing.Size(51, 21);
-            this.textBoxPort.TabIndex = 18;
-            this.textBoxPort.Text = "32452";
-            this.textBoxPort.WordWrap = false;
+            this.textBoxHiveIP.Location = new System.Drawing.Point(55, 23);
+            this.textBoxHiveIP.MaxLength = 20;
+            this.textBoxHiveIP.Name = "textBoxHiveIP";
+            this.textBoxHiveIP.Size = new System.Drawing.Size(140, 21);
+            this.textBoxHiveIP.TabIndex = 18;
+            this.textBoxHiveIP.Text = "http://127.0.0.1:5115";
+            this.textBoxHiveIP.WordWrap = false;
             // 
-            // label10
+            // labelHiveIP
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(163, 24);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(61, 12);
-            this.label10.TabIndex = 17;
-            this.label10.Text = "포트 번호:";
+            this.labelHiveIP.AutoSize = true;
+            this.labelHiveIP.Location = new System.Drawing.Point(10, 26);
+            this.labelHiveIP.Name = "labelHiveIP";
+            this.labelHiveIP.Size = new System.Drawing.Size(61, 12);
+            this.labelHiveIP.TabIndex = 17;
+            this.labelHiveIP.Text = "Hive IP";
             // 
-            // checkBoxLocalHostIP
+            // textBoxApiIP
             // 
-            this.checkBoxLocalHostIP.AutoSize = true;
-            this.checkBoxLocalHostIP.Checked = true;
-            this.checkBoxLocalHostIP.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxLocalHostIP.Location = new System.Drawing.Point(282, 18);
-            this.checkBoxLocalHostIP.Name = "checkBoxLocalHostIP";
-            this.checkBoxLocalHostIP.Size = new System.Drawing.Size(103, 16);
-            this.checkBoxLocalHostIP.TabIndex = 15;
-            this.checkBoxLocalHostIP.Text = "localhost 사용";
-            this.checkBoxLocalHostIP.UseVisualStyleBackColor = true;
+            this.textBoxApiIP.Location = new System.Drawing.Point(55, 60);
+            this.textBoxApiIP.MaxLength = 20;
+            this.textBoxApiIP.Name = "textBoxApiIP";
+            this.textBoxApiIP.Size = new System.Drawing.Size(140, 21);
+            this.textBoxApiIP.TabIndex = 18;
+            this.textBoxApiIP.Text = "http://127.0.0.1:5261";
+            this.textBoxApiIP.WordWrap = false;
             // 
-            // textBoxIP
+            // labelApiIP
             // 
-            this.textBoxIP.Location = new System.Drawing.Point(68, 18);
-            this.textBoxIP.MaxLength = 50;
-            this.textBoxIP.Name = "textBoxIP";
-            this.textBoxIP.Size = new System.Drawing.Size(87, 21);
-            this.textBoxIP.TabIndex = 11;
-            this.textBoxIP.Text = "0.0.0.0";
-            this.textBoxIP.WordWrap = false;
+            this.labelApiIP.AutoSize = true;
+            this.labelApiIP.Location = new System.Drawing.Point(10, 63);
+            this.labelApiIP.Name = "labelApiIP";
+            this.labelApiIP.Size = new System.Drawing.Size(61, 12);
+            this.labelApiIP.TabIndex = 17;
+            this.labelApiIP.Text = "API IP";
             // 
-            // label9
+            // textBoxHivePW
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 23);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(61, 12);
-            this.label9.TabIndex = 10;
-            this.label9.Text = "서버 주소:";
+            this.textBoxHivePW.Location = new System.Drawing.Point(250, 38);
+            this.textBoxHivePW.MaxLength = 20;
+            this.textBoxHivePW.Name = "textBoxHivePW";
+            this.textBoxHivePW.Size = new System.Drawing.Size(120, 21);
+            this.textBoxHivePW.TabIndex = 18;
+            this.textBoxHivePW.Text = "test1234!@";
+            this.textBoxHivePW.WordWrap = false;
+            // 
+            // labelHivePW
+            // 
+            this.labelHivePW.AutoSize = true;
+            this.labelHivePW.Location = new System.Drawing.Point(200, 40);
+            this.labelHivePW.Name = "labelHivePW";
+            this.labelHivePW.Size = new System.Drawing.Size(61, 12);
+            this.labelHivePW.TabIndex = 17;
+            this.labelHivePW.Text = "Hive PW";
+            // 
+            // textBoxHiveID
+            // 
+            this.textBoxHiveID.Location = new System.Drawing.Point(250, 18);
+            this.textBoxHiveID.MaxLength = 20;
+            this.textBoxHiveID.Name = "textBoxHiveID";
+            this.textBoxHiveID.Size = new System.Drawing.Size(120, 21);
+            this.textBoxHiveID.TabIndex = 11;
+            this.textBoxHiveID.Text = "test@naver.com";
+            this.textBoxHiveID.WordWrap = false;
+            // 
+            // labelHiveID
+            // 
+            this.labelHiveID.AutoSize = true;
+            this.labelHiveID.Location = new System.Drawing.Point(200, 23);
+            this.labelHiveID.Name = "labelHiveID";
+            this.labelHiveID.Size = new System.Drawing.Size(61, 12);
+            this.labelHiveID.TabIndex = 10;
+            this.labelHiveID.Text = "Hive ID";
+            // 
+            // textBoxApiID
+            // 
+            this.textBoxApiLoginUid.Location = new System.Drawing.Point(250, 60);
+            this.textBoxApiLoginUid.MaxLength = 20;
+            this.textBoxApiLoginUid.Name = "textBoxApiLoginUid";
+            this.textBoxApiLoginUid.Size = new System.Drawing.Size(120, 21);
+            this.textBoxApiLoginUid.TabIndex = 18;
+            this.textBoxApiLoginUid.Text = "";
+            this.textBoxApiLoginUid.WordWrap = false;
+            // 
+            // labelApiLoginID
+            // 
+            this.labelApiLoginUid.AutoSize = true;
+            this.labelApiLoginUid.Location = new System.Drawing.Point(200, 62);
+            this.labelApiLoginUid.Name = "labelApiLoginUid";
+            this.labelApiLoginUid.Size = new System.Drawing.Size(61, 12);
+            this.labelApiLoginUid.TabIndex = 10;
+            this.labelApiLoginUid.Text = "API Uid";
+            // 
+            // textBoxApiLoginPW
+            // 
+            this.textBoxApiLoginAuthToken.Location = new System.Drawing.Point(250, 82);
+            this.textBoxApiLoginAuthToken.MaxLength = 20;
+            this.textBoxApiLoginAuthToken.Name = "textBoxApiLoginAuthToken";
+            this.textBoxApiLoginAuthToken.Size = new System.Drawing.Size(120, 21);
+            this.textBoxApiLoginAuthToken.TabIndex = 18;
+            this.textBoxApiLoginAuthToken.Text = "";
+            this.textBoxApiLoginAuthToken.WordWrap = false;
+            // 
+            // labelApiLoginPW
+            // 
+            this.labelApiLoginAuthToken.AutoSize = true;
+            this.labelApiLoginAuthToken.Location = new System.Drawing.Point(200, 83);
+            this.labelApiLoginAuthToken.Name = "labelApiLoginAuthToken";
+            this.labelApiLoginAuthToken.Size = new System.Drawing.Size(61, 12);
+            this.labelApiLoginAuthToken.TabIndex = 10;
+            this.labelApiLoginAuthToken.Text = "API AuthToken";
             // 
             // labelStatus
             // 
             this.labelStatus.AutoSize = true;
-            this.labelStatus.Location = new System.Drawing.Point(18, 645);
+            this.labelStatus.Location = new System.Drawing.Point(18, defaultY + 645);
             this.labelStatus.Name = "labelStatus";
             this.labelStatus.Size = new System.Drawing.Size(111, 12);
             this.labelStatus.TabIndex = 40;
@@ -161,59 +263,107 @@ namespace csharp_test_client
             this.listBoxLog.FormattingEnabled = true;
             this.listBoxLog.HorizontalScrollbar = true;
             this.listBoxLog.ItemHeight = 12;
-            this.listBoxLog.Location = new System.Drawing.Point(12, 388);
+            this.listBoxLog.Location = new System.Drawing.Point(12, defaultY + 388);
             this.listBoxLog.Name = "listBoxLog";
             this.listBoxLog.Size = new System.Drawing.Size(496, 148);
             this.listBoxLog.TabIndex = 41;
             // 
-            // label1
+            // textBoxSocketIP
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 71);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(46, 12);
-            this.label1.TabIndex = 42;
-            this.label1.Text = "UserID:";
+            this.textBoxSocketIP.Location = new System.Drawing.Point(62, defaultY + 70);
+            this.textBoxSocketIP.MaxLength = 100;
+            this.textBoxSocketIP.Name = "textBoxSocketIP";
+            this.textBoxSocketIP.Size = new System.Drawing.Size(87, 21);
+            this.textBoxSocketIP.TabIndex = 45;
+            this.textBoxSocketIP.Text = "";
+            this.textBoxSocketIP.WordWrap = false;
             // 
-            // textBoxUserID
+            // labelSocketIP
             // 
-            this.textBoxUserID.Location = new System.Drawing.Point(62, 67);
-            this.textBoxUserID.MaxLength = 6;
-            this.textBoxUserID.Name = "textBoxUserID";
-            this.textBoxUserID.Size = new System.Drawing.Size(87, 21);
-            this.textBoxUserID.TabIndex = 43;
-            this.textBoxUserID.Text = "test1";
-            this.textBoxUserID.WordWrap = false;
+            this.labelSocketIP.AutoSize = true;
+            this.labelSocketIP.Location = new System.Drawing.Point(12, defaultY + 73);
+            this.labelSocketIP.Name = "labelSocketIP";
+            this.labelSocketIP.Size = new System.Drawing.Size(56, 12);
+            this.labelSocketIP.TabIndex = 44;
+            this.labelSocketIP.Text = "IP :";
             // 
-            // textBoxUserPW
+            // textBoxSocketPort
             // 
-            this.textBoxUserPW.Location = new System.Drawing.Point(220, 68);
-            this.textBoxUserPW.MaxLength = 6;
-            this.textBoxUserPW.Name = "textBoxUserPW";
-            this.textBoxUserPW.Size = new System.Drawing.Size(87, 21);
-            this.textBoxUserPW.TabIndex = 45;
-            this.textBoxUserPW.Text = "123qwe";
-            this.textBoxUserPW.WordWrap = false;
+            this.textBoxSocketPort.Location = new System.Drawing.Point(230, defaultY + 70);
+            this.textBoxSocketPort.MaxLength = 20;
+            this.textBoxSocketPort.Name = "textBoxSocketPort";
+            this.textBoxSocketPort.Size = new System.Drawing.Size(87, 21);
+            this.textBoxSocketPort.TabIndex = 18;
+            this.textBoxSocketPort.Text = "";
+            this.textBoxSocketPort.WordWrap = false;
             // 
-            // label2
+            // labelSocketPort
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(162, 71);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(56, 12);
-            this.label2.TabIndex = 44;
-            this.label2.Text = "PassWD:";
+            this.labelSocketPort.Location = new System.Drawing.Point(162, defaultY + 75);
+            this.labelSocketPort.Name = "labelSocketPort";
+            this.labelSocketPort.Size = new System.Drawing.Size(61, 12);
+            this.labelSocketPort.TabIndex = 10;
+            this.labelSocketPort.Text = "Port : ";
             // 
-            // button2
+            // btnSocketConnect
             // 
-            this.button2.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.button2.Location = new System.Drawing.Point(317, 67);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(69, 26);
-            this.button2.TabIndex = 46;
-            this.button2.Text = "Login";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnSocketConnect.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnSocketConnect.Location = new System.Drawing.Point(330, defaultY + 64);
+            this.btnSocketConnect.Name = "btnSocketConnect";
+            this.btnSocketConnect.Size = new System.Drawing.Size(69, 26);
+            this.btnSocketConnect.TabIndex = 46;
+            this.btnSocketConnect.Text = "Connect";
+            this.btnSocketConnect.UseVisualStyleBackColor = true;
+            this.btnSocketConnect.Click += new System.EventHandler(this.btnSocketConnect_Click);
+            //
+            // labelSocketID
+            // 
+            this.labelSocketID.AutoSize = true;
+            this.labelSocketID.Location = new System.Drawing.Point(12, defaultY + 101);
+            this.labelSocketID.Name = "labelSocketID";
+            this.labelSocketID.Size = new System.Drawing.Size(46, 12);
+            this.labelSocketID.TabIndex = 42;
+            this.labelSocketID.Text = "UserID:";
+            // 
+            // textBoxSocketID
+            // 
+            this.textBoxSocketID.Location = new System.Drawing.Point(62, defaultY + 100);
+            this.textBoxSocketID.MaxLength = 30;
+            this.textBoxSocketID.Name = "textBoxSocketID";
+            this.textBoxSocketID.Size = new System.Drawing.Size(87, 21);
+            this.textBoxSocketID.TabIndex = 43;
+            this.textBoxSocketID.Text = "";
+            this.textBoxSocketID.WordWrap = false;
+            //
+            // textBoxSocketToken
+            // 
+            this.textBoxSocketToken.Location = new System.Drawing.Point(230, defaultY + 100);
+            this.textBoxSocketToken.MaxLength = 100;
+            this.textBoxSocketToken.Name = "textBoxSocketToken";
+            this.textBoxSocketToken.Size = new System.Drawing.Size(87, 21);
+            this.textBoxSocketToken.TabIndex = 45;
+            this.textBoxSocketToken.Text = "";
+            this.textBoxSocketToken.WordWrap = false;
+            // 
+            // labelSocketToken
+            // 
+            this.labelSocketToken.AutoSize = true;
+            this.labelSocketToken.Location = new System.Drawing.Point(162, defaultY + 105);
+            this.labelSocketToken.Name = "labelSocketToken";
+            this.labelSocketToken.Size = new System.Drawing.Size(56, 12);
+            this.labelSocketToken.TabIndex = 44;
+            this.labelSocketToken.Text = "AuthToken:";
+            // 
+            // btnSocketLogin
+            // 
+            this.btnSocketLogin.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnSocketLogin.Location = new System.Drawing.Point(330, defaultY + 94);
+            this.btnSocketLogin.Name = "btnSocketLogin";
+            this.btnSocketLogin.Size = new System.Drawing.Size(69, 26);
+            this.btnSocketLogin.TabIndex = 46;
+            this.btnSocketLogin.Text = "Login";
+            this.btnSocketLogin.UseVisualStyleBackColor = true;
+            //this.btnSocketLogin.Click += new System.EventHandler(this.btnSocketLogin_Click);
             // 
             // Room
             // 
@@ -229,7 +379,7 @@ namespace csharp_test_client
             this.Room.Controls.Add(this.btn_RoomEnter);
             this.Room.Controls.Add(this.textBoxRoomNumber);
             this.Room.Controls.Add(this.label3);
-            this.Room.Location = new System.Drawing.Point(14, 119);
+            this.Room.Location = new System.Drawing.Point(14, defaultY + 119);
             this.Room.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Room.Name = "Room";
             this.Room.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -267,7 +417,7 @@ namespace csharp_test_client
             this.GameStartBtn.Name = "GameStartBtn";
             this.GameStartBtn.Size = new System.Drawing.Size(148, 28);
             this.GameStartBtn.TabIndex = 55;
-            this.GameStartBtn.Text = "GameStart";
+            this.GameStartBtn.Text = "dummy - GameStart";
             this.GameStartBtn.UseVisualStyleBackColor = true;
             this.GameStartBtn.Click += new System.EventHandler(this.btn_GameStartClick);
             // 
@@ -342,7 +492,7 @@ namespace csharp_test_client
             this.textBoxRoomNumber.Name = "textBoxRoomNumber";
             this.textBoxRoomNumber.Size = new System.Drawing.Size(38, 21);
             this.textBoxRoomNumber.TabIndex = 44;
-            this.textBoxRoomNumber.Text = "0";
+            this.textBoxRoomNumber.Text = "1";
             this.textBoxRoomNumber.WordWrap = false;
             // 
             // label3
@@ -362,8 +512,8 @@ namespace csharp_test_client
             this.panel1.Size = new System.Drawing.Size(604, 657);
             this.panel1.TabIndex = 57;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
-            this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SendPacketOmokPut);
-            //this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SendPacketOmokPut);
+            this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseDown);
+            this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseMove);
             // 
             // button1
             // 
@@ -383,15 +533,21 @@ namespace csharp_test_client
             this.ClientSize = new System.Drawing.Size(1135, 680);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.Room);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.textBoxUserPW);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBoxUserID);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.btnSocketLogin);
+            this.Controls.Add(this.textBoxSocketToken);
+            this.Controls.Add(this.labelSocketToken);
+            this.Controls.Add(this.textBoxSocketID);
+            this.Controls.Add(this.labelSocketID);
             this.Controls.Add(this.labelStatus);
             this.Controls.Add(this.listBoxLog);
-            this.Controls.Add(this.btnDisconnect);
-            this.Controls.Add(this.btnConnect);
+            this.Controls.Add(this.btnHiveLogin);
+            this.Controls.Add(this.btnRegister);
+            this.Controls.Add(this.btnApiLogin);
+            this.Controls.Add(this.btnSocketConnect);
+            this.Controls.Add(this.textBoxSocketPort);
+            this.Controls.Add(this.labelSocketPort);
+            this.Controls.Add(this.textBoxSocketIP);
+            this.Controls.Add(this.labelSocketIP);
             this.Controls.Add(this.groupBox5);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Name = "mainForm";
@@ -404,26 +560,43 @@ namespace csharp_test_client
             this.Room.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
-
-        private System.Windows.Forms.Button btnDisconnect;
-        private System.Windows.Forms.Button btnConnect;
+        private System.Windows.Forms.Button btnHiveLogin;
+        private System.Windows.Forms.Button btnRegister;
+        private System.Windows.Forms.Button btnApiLogin;
         private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.TextBox textBoxPort;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.CheckBox checkBoxLocalHostIP;
-        private System.Windows.Forms.TextBox textBoxIP;
-        private System.Windows.Forms.Label label9;
+
+        private System.Windows.Forms.Label labelHiveIP;
+        private System.Windows.Forms.TextBox textBoxHiveIP;
+        private System.Windows.Forms.Label labelApiIP;
+        private System.Windows.Forms.TextBox textBoxApiIP;
+
+        private System.Windows.Forms.TextBox textBoxApiLoginUid;
+        private System.Windows.Forms.TextBox textBoxApiLoginAuthToken;
+        private System.Windows.Forms.Label labelApiLoginUid;
+        private System.Windows.Forms.Label labelApiLoginAuthToken;
+
+        private System.Windows.Forms.TextBox textBoxSocketIP;
+        private System.Windows.Forms.Label labelSocketIP;
+        private System.Windows.Forms.TextBox textBoxSocketPort;
+        private System.Windows.Forms.Label labelSocketPort;
+        private System.Windows.Forms.Button btnSocketConnect;
+
+        private System.Windows.Forms.TextBox textBoxHivePW;
+        private System.Windows.Forms.Label labelHivePW;
+        private System.Windows.Forms.TextBox textBoxHiveID;
+        private System.Windows.Forms.Label labelHiveID;
+
         private System.Windows.Forms.Label labelStatus;
         private System.Windows.Forms.ListBox listBoxLog;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBoxUserID;
-        private System.Windows.Forms.TextBox textBoxUserPW;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label labelSocketID;
+        private System.Windows.Forms.TextBox textBoxSocketID;
+        private System.Windows.Forms.TextBox textBoxSocketToken;
+        private System.Windows.Forms.Label labelSocketToken;
+        private System.Windows.Forms.Button btnSocketLogin;
+
         private System.Windows.Forms.GroupBox Room;
         private System.Windows.Forms.Button btn_RoomLeave;
         private System.Windows.Forms.Button btn_RoomEnter;

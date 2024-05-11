@@ -9,6 +9,12 @@ using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using PacketDefine;
+using System.Net.Http;
+using OmokClient.DTO;
+using System.Text.Json;
+using System.Text;
+using OmokClient.CSCommon;
+using Windows.Services.Maps;
 
 #pragma warning disable CA1416
 
@@ -32,7 +38,7 @@ namespace csharp_test_client
 
         System.Windows.Forms.Timer dispatcherUITimer = new();
 
-
+        HttpClient httpClient;
 
         public mainForm()
         {
@@ -54,7 +60,9 @@ namespace csharp_test_client
             dispatcherUITimer.Interval = 100;
             dispatcherUITimer.Start();
 
-            btnDisconnect.Enabled = false;
+            httpClient = new HttpClient();
+
+            //btnDisconnect.Enabled = false;
 
             SetPacketHandler();
 
@@ -71,22 +79,15 @@ namespace csharp_test_client
             Network.Close();
         }
 
-        private void btnConnect_Click(object sender, EventArgs e)
+        private void btnSocketConnect_Click(object sender, EventArgs e)
         {
-            string address = textBoxIP.Text;
+            string address = textBoxSocketIP.Text;
 
-            if (checkBoxLocalHostIP.Checked)
-            {
-                address = "127.0.0.1";
-            }
-
-            int port = Convert.ToInt32(textBoxPort.Text);
+            int port = Convert.ToInt32(textBoxSocketPort.Text);
 
             if (Network.Connect(address, port))
             {
                 labelStatus.Text = string.Format("{0}. 서버에 접속 중", DateTime.Now);
-                btnConnect.Enabled = false;
-                btnDisconnect.Enabled = true;
 
                 DevLog.Write($"서버에 접속 중", LOG_LEVEL.INFO);
 
@@ -108,12 +109,12 @@ namespace csharp_test_client
             PostSendPacket((short)PACKET_ID.HeartBeatResponseFromClient, packet);
         }
 
-        private void btnDisconnect_Click(object sender, EventArgs e)
+        /*private void btnDisconnect_Click(object sender, EventArgs e)
         {
             SetDisconnectd();
             Network.Close();
             heartBeatTimer.Dispose();
-        }
+        }*/
 
 
 
@@ -148,7 +149,7 @@ namespace csharp_test_client
                 else
                 {
                     Network.Close();
-                    SetDisconnectd();
+                    //SetDisconnectd();
                     DevLog.Write("서버와 접속 종료 !!!", LOG_LEVEL.INFO);
                 }
             }
@@ -229,7 +230,7 @@ namespace csharp_test_client
         }
 
 
-        public void SetDisconnectd()
+        /*public void SetDisconnectd()
         {
             if (btnConnect.Enabled == false)
             {
@@ -251,7 +252,7 @@ namespace csharp_test_client
             EndGame();
 
             labelStatus.Text = "서버 접속이 끊어짐";
-        }
+        }*/
 
         void PostSendPacket(short packetID, byte[] packetData)
         {
@@ -340,17 +341,194 @@ namespace csharp_test_client
             }
         }
 
+        public async Task<HiveErrorCode> HiveAccountCreateHttpRequest(string httpUrl, string requestBody)
+        {
+            HttpResponseMessage response = await httpClient.PostAsync(httpUrl,
+                new StringContent(requestBody, Encoding.UTF8, "application/json")); // 요청 본문의 문자 인코딩 + 미디어 타입 지정
+
+            if (response.IsSuccessStatusCode) // 성공해서 응답 받은 경우
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                // JsonDoument : JSON 데이터 읽고 파싱 JsonElemnt : JSON 데이터 접근 및 값 가져오기
+                JsonDocument jsonDocument = JsonDocument.Parse(responseBody);
+                JsonElement jsonResult = jsonDocument.RootElement;
+
+                int resultValue = jsonResult.GetProperty("result").GetInt32();
+
+                if (resultValue != 0) // 인증토큰 유효성 검사 결과가 성공이 아닌 경우
+                {
+                    return (HiveErrorCode)resultValue;
+                }
+                else
+                {
+                    return HiveErrorCode.None;
+                }
+            }
+            else
+            {
+                return HiveErrorCode.HiveHttpReqFail;
+            }
+        }
+
+        public async Task<HiveLoginRes> HiveLoginHttpRequest(string httpUrl, string requestBody)
+        {
+            HttpResponseMessage response = await httpClient.PostAsync(httpUrl,
+                new StringContent(requestBody, Encoding.UTF8, "application/json")); // 요청 본문의 문자 인코딩 + 미디어 타입 지정
+
+            HiveLoginRes res = new HiveLoginRes();
+
+            if (response.IsSuccessStatusCode) // 성공해서 응답 받은 경우
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                // JsonDoument : JSON 데이터 읽고 파싱 JsonElemnt : JSON 데이터 접근 및 값 가져오기
+                JsonDocument jsonDocument = JsonDocument.Parse(responseBody);
+                JsonElement jsonResult = jsonDocument.RootElement;
+
+                int resultValue = jsonResult.GetProperty("result").GetInt32();
+
+                if(resultValue != 0)
+                {
+                    res.Result = (HiveErrorCode)resultValue;
+                    res.Uid = 0;
+                    res.AuthToken = "";
+                }
+                else
+                {
+                    res.Result = HiveErrorCode.None;
+                    res.Uid = jsonResult.GetProperty("uid").GetInt32();
+                    res.AuthToken = jsonResult.GetProperty("authToken").GetString();
+                }
+            }
+            else
+            {
+                res.Result = HiveErrorCode.HiveHttpReqFail;
+                res.Uid = 0;
+                res.AuthToken = "";
+            }
+
+            return res;
+        }
+
+        // Hive 서버에 계정 생성
+        private async void btnRegister_Click(object sender, EventArgs e)
+        {
+            string accountCreateURL = textBoxHiveIP.Text + "/accountcreate";
+
+            CreateAccountReq req = new CreateAccountReq
+            {
+                Id = textBoxHiveID.Text,
+                password = textBoxHivePW.Text
+            };
+
+            string requestBody = JsonSerializer.Serialize(req);
+
+            CreateAccountRes res = new CreateAccountRes();
+            res.Result = await HiveAccountCreateHttpRequest(accountCreateURL, requestBody);
+
+            DevLog.Write($"계정 생성 요청 결과 : {res.Result}");
+        }
+
+        // Hive 서버에 로그인 요청
+        private async void btnHiveLogin_Click(object sender, EventArgs e)
+        {
+            string hiveLoginURL = textBoxHiveIP.Text + "/HiveLogin";
+
+            HiveLoginReq req = new HiveLoginReq
+            {
+                Id = textBoxHiveID.Text,
+                password = textBoxHivePW.Text
+            };
+
+            string requestBody = JsonSerializer.Serialize(req);
+
+            HiveLoginRes res = await HiveLoginHttpRequest(hiveLoginURL, requestBody);
+            if(res.Result == HiveErrorCode.None)
+            {
+                textBoxApiLoginUid.Text = res.Uid.ToString();
+                textBoxApiLoginAuthToken.Text = res.AuthToken;
+            }
+
+            DevLog.Write($"Hive 로그인 요청 결과 : {res.Result}");
+        }
+
+
+        public async Task<ApiLoginRes> ApiLoginHttpRequest(string httpUrl, string requestBody)
+        {
+            HttpResponseMessage response = await httpClient.PostAsync(httpUrl,
+                new StringContent(requestBody, Encoding.UTF8, "application/json"));
+
+            ApiLoginRes res = new ApiLoginRes();
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                // JsonDoument : JSON 데이터 읽고 파싱 JsonElemnt : JSON 데이터 접근 및 값 가져오기
+                JsonDocument jsonDocument = JsonDocument.Parse(responseBody);
+                JsonElement jsonResult = jsonDocument.RootElement;
+
+                int resultValue = jsonResult.GetProperty("result").GetInt32();
+
+                if (resultValue != 0)
+                {
+                    res.Result = (ApiErrorCode)resultValue;
+                    res.SockIP = "";
+                    res.SockPort = "";
+                }
+                else
+                {
+                    res.Result = ApiErrorCode.None;
+                    res.SockIP = jsonResult.GetProperty("sockIP").GetString();
+                    res.SockPort = jsonResult.GetProperty("sockPort").GetString();
+                }
+            }
+            else
+            {
+                res.Result = ApiErrorCode.GameApiHttpReqFail;
+            }
+
+            return res;
+        }
+
+
+
+        // GameApi 서버에 로그인 요청
+        private async void btnApiLogin_Click(object sender, EventArgs e)
+        {
+            string apiLoginURL = textBoxApiIP.Text + "/GameLogin";
+
+            ApiLoginReq req = new ApiLoginReq
+            {
+                Uid = textBoxApiLoginUid.Text.ToInt32(),
+                AuthToken = textBoxApiLoginAuthToken.Text
+            };
+
+            string requestBody = JsonSerializer.Serialize(req);
+
+            ApiLoginRes res = await ApiLoginHttpRequest(apiLoginURL, requestBody);
+            if (res.Result == ApiErrorCode.None)
+            {
+                textBoxSocketIP.Text = res.SockIP;
+                textBoxSocketPort.Text = res.SockPort;
+            }
+
+            DevLog.Write($"Game API 로그인 요청 결과 : {res.Result}");
+        }
+
+
 
         // 로그인 요청
         private void button2_Click(object sender, EventArgs e)
         {
             var loginReq = new PKTReqLogin();
-            loginReq.UserId = textBoxUserID.Text;
-            loginReq.AuthToken = textBoxUserPW.Text;
+            loginReq.UserId = textBoxSocketID.Text;
+            loginReq.AuthToken = textBoxSocketToken.Text;
             var packet = MemoryPackSerializer.Serialize(loginReq);
 
             PostSendPacket((short)PACKET_ID.LoginRequest, packet);
-            DevLog.Write($"로그인 요청:  {textBoxUserID.Text}, {textBoxUserPW.Text}");
+            DevLog.Write($"로그인 요청:  {textBoxSocketID.Text}, {textBoxSocketToken.Text}");
         }
 
         // 방 입장 요청

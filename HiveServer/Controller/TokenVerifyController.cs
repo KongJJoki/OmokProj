@@ -20,7 +20,7 @@ namespace HiveServer.Controller
         public async Task<TokenVerifyRes> TokenVerify(TokenVerifyReq req)
         {
             TokenVerifyRes res = new TokenVerifyRes();
-            res.Result = await tokenVerifyService.TokenVerify(req.UserId.ToString(), req.AuthToken);
+            res.Result = await tokenVerifyService.TokenVerify(req.Uid.ToString(), req.AuthToken);
             return res;
         }
     }

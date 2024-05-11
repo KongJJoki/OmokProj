@@ -1,6 +1,6 @@
 namespace CSCommon
 {
-    public enum ERROR_CODE
+    public enum SockErrorCode
     {
         None = 0,
 

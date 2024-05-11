@@ -20,7 +20,7 @@ namespace GameServer.Controller
         public async Task<GameLoginRes> GameLogin(GameLoginReq req)
         {
             GameLoginRes res = new GameLoginRes();
-            res.Result = await gameLoginService.GameLogin(req.UserId, req.AuthToken);
+            (res.Result, res.SockIP, res.SockPort) = await gameLoginService.GameLogin(req.Uid, req.AuthToken);
             return res;
         }
     }

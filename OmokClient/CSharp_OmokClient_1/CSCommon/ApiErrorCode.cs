@@ -1,6 +1,6 @@
-namespace GameServer
+namespace OmokClient.CSCommon
 {
-    public enum EErrorCode
+    public enum ApiErrorCode
     {
         None = 0,
 
@@ -13,5 +13,6 @@ namespace GameServer
         HttpReqFail = 13,
         GameApiLoginFail = 14,
 
+        GameApiHttpReqFail = 20,
     }
 }

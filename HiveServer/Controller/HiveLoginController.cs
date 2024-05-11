@@ -20,7 +20,7 @@ namespace HiveServer.Controller
         public async Task<HiveLoginRes> HiveLogin(HiveLoginReq req)
         {
             HiveLoginRes res = new HiveLoginRes();
-            (res.Result, res.UserId, res.AuthToken) = await hiveLoginService.HiveLogin(req.Email, req.Password);
+            (res.Result, res.Uid, res.AuthToken) = await hiveLoginService.HiveLogin(req.Id, req.Password);
             return res;
         }
     }

@@ -190,12 +190,12 @@ namespace csharp_test_client
 
             var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFGameStart>(packetData);
 
-            if (notifyPkt.StartUserId == textBoxUserID.Text)
+            if (notifyPkt.StartUserId == textBoxSocketID.Text)
             {
                 isMyTurn = true;
             }
 
-            StartGame(isMyTurn, textBoxUserID.Text, GetOtherPlayer(textBoxUserID.Text));
+            StartGame(isMyTurn, textBoxSocketID.Text, GetOtherPlayer(textBoxSocketID.Text));
 
             DevLog.Write($"게임 시작. 흑돌 플레이어: {notifyPkt.StartUserId}");
         }
@@ -214,12 +214,12 @@ namespace csharp_test_client
 
             플레이어_돌두기(notifyPkt.NextTurnUserId, notifyPkt.PosX, notifyPkt.PosY);
 
-            if(notifyPkt.NextTurnUserId == textBoxUserID.Text)
+            if(notifyPkt.NextTurnUserId == textBoxSocketID.Text)
             {
                 IsMyTurn = true;
                 DevLog.Write($"오목 정보: {EnemyStoneColor}돌 X: {notifyPkt.PosX},  Y: {notifyPkt.PosY},   다음 턴:{notifyPkt.NextTurnUserId}");
             }
-            if(notifyPkt.NextTurnUserId != textBoxUserID.Text)
+            if(notifyPkt.NextTurnUserId != textBoxSocketID.Text)
             {
                 IsMyTurn = false;
                 DevLog.Write($"오목 정보: {MyStoneColor}돌 X: {notifyPkt.PosX},  Y: {notifyPkt.PosY},   다음 턴:{notifyPkt.NextTurnUserId}");
@@ -249,7 +249,7 @@ namespace csharp_test_client
         {
             var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFTurnChange>(packetData);
 
-            if(notifyPkt.TurnGetUserId == textBoxUserID.Text)
+            if(notifyPkt.TurnGetUserId == textBoxSocketID.Text)
             {
                 IsMyTurn = true;
             }
