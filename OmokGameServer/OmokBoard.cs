@@ -1,3 +1,7 @@
+using MemoryPack;
+using PacketDefine;
+using PacketTypes;
+
 namespace OmokGameServer
 {
     public class OmokBoard
@@ -8,10 +12,17 @@ namespace OmokGameServer
 
         int turnCount;
 
-
+        Action<ServerPacketData> pushPacketInProcessorFunc;
 
         const int blackStone = 10;
         const int whiteStone = 20;
+
+        public void Init(string blackUserId, string whiteUserId, Action<ServerPacketData> pushPacketInProcessorFunc)
+        {
+            this.BlackUserId = blackUserId;
+            this.WhiteUserId = whiteUserId;
+            this.pushPacketInProcessorFunc = pushPacketInProcessorFunc;
+        }
 
         public void ClearOmokBoard()
         {
@@ -212,6 +223,20 @@ namespace OmokGameServer
             {
                 return false;
             }
+        }
+
+        public void GameResultSave(string winUserId, string loseUserId)
+        {
+            InPKTGameResult gameResult = new InPKTGameResult();
+            gameResult.WinUserId = winUserId;
+            gameResult.LoseUseId = loseUserId;
+
+            var bodyData = MemoryPackSerializer.Serialize(gameResult);
+
+            ServerPacketData packet = new ServerPacketData();
+            packet.SetPacket("", (Int16)PACKET_ID.InSaveGameResult, bodyData);
+
+            pushPacketInProcessorFunc(packet);
         }
     }
 }

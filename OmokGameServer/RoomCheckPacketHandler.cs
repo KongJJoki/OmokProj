@@ -27,7 +27,7 @@ namespace OmokGameServer
             packetHandlerDictionary.Add((int)PACKET_ID.InNTFCheckTurnTime, RoomCheckRequest);
         }
 
-        public void RoomCheckRequest(ServerPacketData packet)
+        void RoomCheckRequest(ServerPacketData packet)
         {
             for (int i = 0; i < oneCheckCount; i++)
             {

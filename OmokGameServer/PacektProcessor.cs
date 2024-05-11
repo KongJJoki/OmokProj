@@ -11,6 +11,7 @@ namespace OmokGameServer
         ILog mainLogger;
         ServerOption serverOption;
         Func<string, byte[], bool> sendFunc;
+        Action<ServerPacketData> passPacketToDBProcessor;
 
         BufferBlock<ServerPacketData> packetBuffer = new BufferBlock<ServerPacketData>();
 
@@ -22,17 +23,18 @@ namespace OmokGameServer
         ConnectionLoginPacketHandler loginPacketHandler = new ConnectionLoginPacketHandler();
         RoomPacketHandler roomPacketHandler = new RoomPacketHandler();
         GameReadyStartPacketHandler gameReadyStartPacketHandler = new GameReadyStartPacketHandler();
-        public OmokGamePacketHandler omokGamePacketHandler = new OmokGamePacketHandler();
+        OmokGamePacketHandler omokGamePacketHandler = new OmokGamePacketHandler();
         RoomCheckPacketHandler turnCheckPacketHandler = new RoomCheckPacketHandler();
         HeartBeatPacketHandler heartBeatPacketHandler = new HeartBeatPacketHandler();
 
-        public void ProcessorStart(UserManager userManager, RoomManager roomManager, ILog mainLogger, ServerOption serverOption, Func<string, byte[], bool> sendFunc)
+        public void ProcessorStart(UserManager userManager, RoomManager roomManager, ILog mainLogger, ServerOption serverOption, Func<string, byte[], bool> sendFunc, Action<ServerPacketData> passPacketToDBProcessor)
         {
             this.userManager = userManager;
             this.roomManager = roomManager;
             this.mainLogger = mainLogger;
             this.serverOption = serverOption;
             this.sendFunc = sendFunc;
+            this.passPacketToDBProcessor = passPacketToDBProcessor;
 
             SetPacketHandlers();
 
@@ -80,6 +82,12 @@ namespace OmokGameServer
                 try
                 {
                     var newPacket = packetBuffer.Receive();
+
+                    if(newPacket.packetId == (int)PACKET_ID.InSaveGameResult)
+                    {
+                        passPacketToDBProcessor(newPacket);
+                        continue;
+                    }
 
                     if (packetHandlerDictionary.ContainsKey(newPacket.packetId))
                     {

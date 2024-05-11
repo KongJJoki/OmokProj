@@ -7,14 +7,6 @@ namespace OmokGameServer
 {
     public class OmokGamePacketHandler : PacketHandler
     {
-        public event EventHandler<GameWinEventArgs> gameFinish;
-
-        void OnGameFinish(GameWinEventArgs eventArgs)
-        {
-            // Invoke는 Action이나 Func가 대체
-            gameFinish.Invoke(this, eventArgs);
-        }
-
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
         {
             packetHandlerDictionary.Add((int)PACKET_ID.OmokStonePlaceRequest, OmokStonePlaceRequest);
@@ -59,9 +51,10 @@ namespace OmokGameServer
                 if(omokBoard.OmokWinCheck(requestData.PosX, requestData.PosY))
                 {
                     var otherUser = room.GetOtherUser(user);
-                    OnGameFinish(new GameWinEventArgs(user.userName, otherUser.userName));
                     room.NotifyOmokWin(user);
                     room.NotifyOmokLose(room.GetOtherUser(user));
+
+                    room.SaveGameResult(user, otherUser);
                 }
             }
             catch (Exception ex)

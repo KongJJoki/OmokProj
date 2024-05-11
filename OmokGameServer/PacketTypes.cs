@@ -17,6 +17,13 @@ namespace PacketTypes
 
     }
 
+    [MemoryPackable]
+    public partial class InPKTGameResult
+    {
+        public string WinUserId { get; set; }
+        public string LoseUseId { get; set; }
+    }
+
 
     // Common
 

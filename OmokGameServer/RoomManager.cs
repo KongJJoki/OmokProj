@@ -41,7 +41,7 @@ namespace OmokGameServer
             for(int i = 0; i< maxRoomCount; i++)
             {
                 Room room = new Room();
-                room.Init(nowLastRoomNum, maxUserCount);
+                room.Init(nowLastRoomNum, maxUserCount, pushPacketInProcessorFunc);
 
                 roomList.Add(room);
 

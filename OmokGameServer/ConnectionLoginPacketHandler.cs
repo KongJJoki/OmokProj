@@ -14,7 +14,7 @@ namespace OmokGameServer
             packetHandlerDictionary.Add((int)PACKET_ID.LoginRequest, LoginRequest);
         }
         // 클라이언트 연결
-        public void InternalNTFClientConnect(ServerPacketData packetData)
+        void InternalNTFClientConnect(ServerPacketData packetData)
         {
             // MaxConnectionNumber을 넘은 세션 접속은 슈퍼소켓에서 차단
             userManager.AddUserConnection(packetData.sessionId);
@@ -22,7 +22,7 @@ namespace OmokGameServer
             mainLogger.Debug($"New Client Connect");
         }
 
-        public void InternalNTFClientDisconnect(ServerPacketData packetData)
+        void InternalNTFClientDisconnect(ServerPacketData packetData)
         {
             string userSessionId = packetData.sessionId;
 
@@ -50,7 +50,7 @@ namespace OmokGameServer
             mainLogger.Debug($"Client DisConnect");
         }
         // 로그인 요청
-        public void LoginRequest(ServerPacketData packet)
+        void LoginRequest(ServerPacketData packet)
         {
             string sessionId = packet.sessionId;
             mainLogger.Debug($"Login Request : sessionId({sessionId})");
@@ -96,7 +96,7 @@ namespace OmokGameServer
             sendFunc(sessionId, sendData);
         }
         // 유저 다 찬 경우 보낼 응답
-        public void FullUserRespond(ERROR_CODE errorCode, string sessionId)
+        void FullUserRespond(ERROR_CODE errorCode, string sessionId)
         {
             PKTResFullUser userFullRes = new PKTResFullUser();
             userFullRes.Result = errorCode;

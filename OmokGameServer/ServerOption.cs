@@ -29,6 +29,9 @@ namespace OmokGameServer
         public int TotalDivideNumber { get; set; }
 
         public int MaxTurnChangeCount { get; set; }
+
         public int MaxGameTimeHour { get; set; }
+
+        public int DBProcessThreadCount { get; set; }
     }
 }

@@ -8,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using MemoryPack;
 using PacketTypes;
-using MySqlX.XDevAPI;
 
 namespace OmokGameServer
 {
@@ -23,11 +22,9 @@ namespace OmokGameServer
         private readonly IHostApplicationLifetime _appLifetime;
 
         PacketProcessor packetProcessor = new PacketProcessor();
-        GameDBProcessor gameDBProcessor = new GameDBProcessor();
+        DBProcessor dbProcessor = new DBProcessor();
         UserManager userManager = new UserManager();
         RoomManager roomManager = new RoomManager();
-
-        GameDB gameDB;
 
         public MainServer(IHostApplicationLifetime appLifetime, IOptions<ServerOption> serverConfig, IOptions<DBConfig> dbConfig)
             : base(new DefaultReceiveFilterFactory<ReceiveFilter, OmokBinaryRequestInfo>())
@@ -39,8 +36,6 @@ namespace OmokGameServer
             NewSessionConnected += new SessionHandler<ClientSession>(OnClientConnect);
             SessionClosed += new SessionHandler<ClientSession, CloseReason>(OnClientDisConnect);
             NewRequestReceived += new RequestHandler<ClientSession, OmokBinaryRequestInfo>(OnPacketReceived);
-
-            packetProcessor.omokGamePacketHandler.gameFinish += gameDBProcessor.HandleGameResultUpdate;
         }
 
         public void InitConfig(ServerOption options)
@@ -77,9 +72,9 @@ namespace OmokGameServer
                     mainLogger.Info("서버 초기화 성공");
                 }
 
-                gameDB = new GameDB(mainLogger, dbConfig);
-                packetProcessor.ProcessorStart(userManager, roomManager, mainLogger, serverOption, SendData);
-                gameDBProcessor.ProcessorStart(mainLogger, gameDB);
+                packetProcessor.ProcessorStart(userManager, roomManager, mainLogger, serverOption, SendData, PassPacketToDBProcessor);
+                dbProcessor.ProcessorStart(mainLogger, dbConfig, serverOption);
+
                 Settings();
                 base.Start();
 
@@ -95,6 +90,7 @@ namespace OmokGameServer
             Stop();
 
             packetProcessor.ProcessorStop();
+            dbProcessor.ProcessorStop();
         }
 
         public void Settings()
@@ -131,6 +127,11 @@ namespace OmokGameServer
         public void PassPacketToProcessor(ServerPacketData packet)
         {
             packetProcessor.InsertPacket(packet);
+        }
+
+        public void PassPacketToDBProcessor(ServerPacketData packet)
+        {
+            dbProcessor.InsertPacket(packet);
         }
 
         void OnClientConnect(ClientSession clientSession)

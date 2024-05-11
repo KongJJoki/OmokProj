@@ -19,6 +19,7 @@ namespace OmokGameServer
         public bool isGameStart;
 
         public static Func<string, byte[], bool> sendFunc;
+        public Action<ServerPacketData> pushPacketInProcessorFunc;
 
         List<User> userList = new List<User>();
         Dictionary<User, bool> readyStatusDictionary = new Dictionary<User, bool>();
@@ -26,13 +27,14 @@ namespace OmokGameServer
         // 게임 관련들은 방말고 게임 안으로 넣기
         OmokBoard omokBoard = new OmokBoard();
 
-        public void Init(int roomNum, int maxUserNum)
+        public void Init(int roomNum, int maxUserNum, Action<ServerPacketData> pushPacketInProcessorFunc)
         {
             RoomNumber = roomNum;
             maxUserNumber = maxUserNum;
             nowUserCount = 0;
             isGameStart = false;
             ForceTurnChangeCount = 0;
+            this.pushPacketInProcessorFunc = pushPacketInProcessorFunc;
         }
 
 
@@ -236,8 +238,9 @@ namespace OmokGameServer
             lastStonePlaceTime = DateTime.Now;
             gameStartTime = DateTime.Now;
             isGameStart = true;
-            omokBoard.BlackUserId = startUserId;
-            omokBoard.WhiteUserId = FindOtherUserId(startUserId);
+
+            omokBoard.Init(startUserId, FindOtherUserId(startUserId), pushPacketInProcessorFunc);
+
             NowTurnUser = startUserId;
             NextTurnUser = omokBoard.WhiteUserId;
 
@@ -293,6 +296,11 @@ namespace OmokGameServer
             var sendData = PacketToBytes.MakeBytes(PACKET_ID.OmokLoseNotify, bodyData);
 
             sendFunc(loseUser.sessionId, sendData);
+        }
+
+        public void SaveGameResult(User winUser, User loseUser)
+        {
+            omokBoard.GameResultSave(winUser.userName, loseUser.userName);
         }
 
         public void NotifyGameForceFinish()

@@ -2,57 +2,79 @@ namespace PacketDefine
 {
     public enum PACKET_ID
     {
-        // Internal
+        // Internal 1000~1999
         InNTFClientConnect = 1000,
         InNTFClientDisconnect = 1001,
         InNTFCheckTurnTime = 1002,
         InNTFCheckHeartBeat = 1003,
+        InSaveGameResult = 1004,
 
 
 
         // External
-        // Force DisConnect
-        ForceDisconnect = 1500,
+
+        //From Client 2000~5000
+        FromClientStart = 2000,
 
         // Login
-        LoginRequest = 2000,
-        LoginResponse = 2001,
-        FullUser = 2002,
+        LoginRequest = 2100,
 
         // Room
-        RoomEnterRequest = 3000,
-        RoomEnterResponse = 3001,
-        RoomLeaveRequest = 3002,
-        RoomLeaveResponse = 3003,
-        RoomEnterNotify = 3004,
-        RoomLeaveNotify = 3005,
-        RoomMemberNotify = 3006,
-        RoomChatRequest = 3007,
-        RoomChatResponse = 3008,
-        RoomChatNotify = 3009,
+        RoomEnterRequest = 2200,
+        RoomLeaveRequest = 2201,
+        RoomChatRequest = 2202,
 
         // Game Ready
-        GameReadyRequest = 4000,
-        GameReadyResponse = 4001,
+        GameReadyRequest = 2300,
 
         // Game Start
-        GameStartRequest = 4002,
-        GameStartResponse = 4003,
-        GameStartNotify = 4004,
+        GameStartRequest = 2401,
 
         // Omok Game
-        OmokStonePlaceRequest = 5000,
-        OmokStonePlaceResponse = 5001,
-        OmokStonePlaceNotify = 5002,
-        OmokWinNotify = 5003,
-        OmokLoseNotify = 5004,
-
-        // Turn Change
-        TurnChangeNotify = 6000,
-        OmokForceFinish = 6001,
+        OmokStonePlaceRequest = 2500,
 
         // Heart Beat
-        HeartBeatRequestToClient = 7000,
-        HeartBeatResponseFromClient = 7001,
+        HeartBeatResponseFromClient = 2600,
+
+        FromClientEnd = 5000,
+
+
+
+        // To Client 6000~
+        // Force DisConnect
+        ForceDisconnect = 6000,
+
+        // Login
+        LoginResponse = 6100,
+        FullUser = 6102,
+
+        // Room
+        RoomEnterResponse = 6200,
+        RoomLeaveResponse = 6201,
+        RoomEnterNotify = 6203,
+        RoomLeaveNotify = 6204,
+        RoomMemberNotify = 6205,
+        RoomChatResponse = 6206,
+        RoomChatNotify = 6207,
+
+        // Game Ready
+        GameReadyResponse = 6300,
+
+        // Game Start
+        GameStartResponse = 6400,
+        GameStartNotify = 6401,
+
+        // Omok Game
+        OmokStonePlaceResponse = 6500,
+        OmokStonePlaceNotify = 6501,
+        OmokWinNotify = 6502,
+        OmokLoseNotify = 6503,
+
+        // Turn Change
+        TurnChangeNotify = 6600,
+        OmokForceFinish = 6601,
+
+        // Heart Beat
+        HeartBeatRequestToClient = 6700,
     }
 }
