@@ -195,7 +195,7 @@ namespace csharp_test_client
                 isMyTurn = true;
             }
 
-            StartGame(isMyTurn, textBoxSocketID.Text, GetOtherPlayer(textBoxSocketID.Text));
+            StartGame(isMyTurn, textBoxSocketID.Text.ToInt32(), GetOtherPlayer(textBoxSocketID.Text.ToInt32()));
 
             DevLog.Write($"게임 시작. 흑돌 플레이어: {notifyPkt.StartUserUid}");
         }

@@ -43,9 +43,9 @@ namespace csharp_test_client
         private bool AI모드 = true;
         private CSCommon.OmokRule.돌종류 컴퓨터돌;
 
-        string MyPlayerName = "";        
-        string 흑돌플레이어Name = "";
-        string 백돌플레이어Name = "";
+        int MyPlayerName;        
+        int 흑돌플레이어Name;
+        int 백돌플레이어Name;
         string MyStoneColor = "";
         string EnemyStoneColor = "";
 
@@ -71,7 +71,7 @@ namespace csharp_test_client
         }
 
         //오목 게임 시작
-        void StartGame(bool isMyTurn, string myPlayerName, string otherPlayerName)
+        void StartGame(bool isMyTurn, int myPlayerName, int otherPlayerName)
         {
             MyPlayerName = myPlayerName;
 
@@ -107,9 +107,9 @@ namespace csharp_test_client
         {
             OmokLogic.EndGame();
 
-            MyPlayerName = "";
-            백돌플레이어Name = "";
-            흑돌플레이어Name = "";
+            MyPlayerName = 0;
+            백돌플레이어Name = 0;
+            흑돌플레이어Name = 0;
         }
 
 

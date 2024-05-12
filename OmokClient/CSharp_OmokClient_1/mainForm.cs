@@ -326,21 +326,21 @@ namespace csharp_test_client
             }
         }
 
-        string GetOtherPlayer(string myName)
+        int GetOtherPlayer(int myName)
         {
             if (listBoxRoomUserList.Items.Count != 2)
             {
-                return null;
+                return 0;
             }
 
-            var firstName = (string)listBoxRoomUserList.Items[0];
+            var firstName = (int)listBoxRoomUserList.Items[0];
             if (firstName == myName)
             {
                 return firstName;
             }
             else
             {
-                return (string)listBoxRoomUserList.Items[1];
+                return (int)listBoxRoomUserList.Items[1];
             }
         }
 
