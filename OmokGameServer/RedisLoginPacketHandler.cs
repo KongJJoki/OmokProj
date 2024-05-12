@@ -49,7 +49,7 @@ namespace OmokGameServer
             var bodyData = MemoryPackSerializer.Serialize(verifiedLoginReq);
 
             ServerPacketData newPacket = new ServerPacketData();
-            packet.SetPacket("", (Int16)PACKET_ID.InVerifiedLoginRequest, bodyData);
+            newPacket.SetPacket(packet.sessionId, (Int16)PACKET_ID.InVerifiedLoginRequest, bodyData);
 
             passPacketToPacketProcessor(newPacket);
         }

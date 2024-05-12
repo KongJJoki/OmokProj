@@ -11,7 +11,7 @@ namespace OmokGameServer
         {
             packetHandlerDictionary.Add((int)PACKET_ID.InNTFClientConnect, InternalNTFClientConnect);
             packetHandlerDictionary.Add((int)PACKET_ID.InNTFClientDisconnect, InternalNTFClientDisconnect);
-            packetHandlerDictionary.Add((int)PACKET_ID.LoginRequest, LoginRequest);
+            packetHandlerDictionary.Add((int)PACKET_ID.InVerifiedLoginRequest, LoginRequest);
         }
         // 클라이언트 연결
         void InternalNTFClientConnect(ServerPacketData packetData)
