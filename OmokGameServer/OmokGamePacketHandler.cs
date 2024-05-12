@@ -44,7 +44,7 @@ namespace OmokGameServer
                     return;
                 }
 
-                omokBoard.OmokStonePlace(user.userName, requestData.PosX, requestData.PosY);
+                omokBoard.OmokStonePlace(user.uid, requestData.PosX, requestData.PosY);
                 OmokStonePlaceRespond(ERROR_CODE.None, sessionId);
                 room.NotifyOmokStonePlace(requestData.PosX, requestData.PosY);
 

@@ -66,7 +66,7 @@ namespace OmokGameServer
 
         }
 
-        public ERROR_CODE AddUserLogin(string sessionId, string userName)
+        public ERROR_CODE AddUserLogin(string sessionId, Int32 uid)
         {
             if (nowLoginUserList.Count > maxLoginUserCount)
             {
@@ -77,7 +77,7 @@ namespace OmokGameServer
                 User newUser = sessionIduserDictionary[sessionId];
 
                 nowLoginUserList.Add(newUser);
-                SetUserName(sessionId, userName);
+                SetUserName(sessionId, uid);
 
                 return ERROR_CODE.None;
             }
@@ -98,10 +98,10 @@ namespace OmokGameServer
             return false;
         }
 
-        public void SetUserName(string sessionId, string userName)
+        public void SetUserName(string sessionId, Int32 uid)
         {
             User user = sessionIduserDictionary[sessionId];
-            user.SetUserName(userName);
+            user.SetUserName(uid);
         }
 
         public ERROR_CODE RemoveUser(string sessionId)

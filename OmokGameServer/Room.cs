@@ -8,8 +8,8 @@ namespace OmokGameServer
     public class Room
     {
         public int RoomNumber { get; set; }
-        public string NowTurnUser { get; set; }
-        public string NextTurnUser { get; set; }
+        public Int32 NowTurnUserUid { get; set; }
+        public Int32 NextTurnUserUid { get; set; }
         public DateTime lastStonePlaceTime { get; set; }
         public DateTime gameStartTime { get; set; }
         public int ForceTurnChangeCount { get; set; }
@@ -92,13 +92,13 @@ namespace OmokGameServer
                 sendFunc(user.sessionId, packet);
             }
         }
-        public List<string> GetUserIds()
+        public List<Int32> GetUserIds()
         {
-            List<string> UserIds = new List<string>();
+            List<Int32> UserIds = new List<Int32>();
 
             for (int i = 0; i < nowUserCount; i++)
             {
-                UserIds.Add(userList[i].userName);
+                UserIds.Add(userList[i].uid);
             }
 
             return UserIds;
@@ -124,17 +124,17 @@ namespace OmokGameServer
 
             return true;
         }
-        string FindOtherUserId(string userId)
+        Int32 FindOtherUserId(Int32 uid)
         {
             foreach (var user in userList)
             {
-                if (user.userName != userId)
+                if (user.uid != uid)
                 {
-                    return user.userName;
+                    return user.uid;
                 }
             }
 
-            return null;
+            return 0;
         }
         public User GetOtherUser(User myUser)
         {
@@ -154,9 +154,9 @@ namespace OmokGameServer
         }
         public void SwapNowNextTurnUser()
         {
-            string tmp = NowTurnUser;
-            NowTurnUser = NextTurnUser;
-            NextTurnUser = tmp;
+            Int32 tmp = NowTurnUserUid;
+            NowTurnUserUid = NextTurnUserUid;
+            NextTurnUserUid = tmp;
         }
 
         public void GameFinish()
@@ -182,7 +182,7 @@ namespace OmokGameServer
             }
 
             PKTNTFRoomEnter roomEnterNTF = new PKTNTFRoomEnter();
-            roomEnterNTF.UserId = user.userName;
+            roomEnterNTF.Uid = user.uid;
 
             var bodyData = MemoryPackSerializer.Serialize(roomEnterNTF);
             var sendData = PacketToBytes.MakeToPacket(PACKET_ID.RoomEnterNotify, bodyData);
@@ -197,7 +197,7 @@ namespace OmokGameServer
             }
 
             PKTNTFRoomMember roomMemberNTF = new PKTNTFRoomMember();
-            roomMemberNTF.UserIdList = GetUserIds();
+            roomMemberNTF.UidList = GetUserIds();
 
             var bodyData = MemoryPackSerializer.Serialize(roomMemberNTF);
             var sendData = PacketToBytes.MakeToPacket(PACKET_ID.RoomMemberNotify, bodyData);
@@ -213,7 +213,7 @@ namespace OmokGameServer
             }
 
             PKTNTFRoomLeave roomLeaveNTF = new PKTNTFRoomLeave();
-            roomLeaveNTF.UserId = user.userName;
+            roomLeaveNTF.Uid = user.uid;
 
             var bodyData = MemoryPackSerializer.Serialize(roomLeaveNTF);
             var sendData = PacketToBytes.MakeToPacket(PACKET_ID.RoomLeaveNotify, bodyData);
@@ -221,10 +221,10 @@ namespace OmokGameServer
             Broadcast("", sendData);
         }
 
-        public void NotifyRoomChat(string userId, string message)
+        public void NotifyRoomChat(Int32 uid, string message)
         {
             PKTNTFRoomChat roomChatNTF = new PKTNTFRoomChat();
-            roomChatNTF.UserId = userId;
+            roomChatNTF.Uid = uid;
             roomChatNTF.Message = message;
 
             var bodyData = MemoryPackSerializer.Serialize(roomChatNTF);
@@ -233,7 +233,7 @@ namespace OmokGameServer
             Broadcast("", sendData);
         }
 
-        public void NotifyGameStart(string startUserId)
+        public void NotifyGameStart(Int32 startUserId)
         {
             lastStonePlaceTime = DateTime.Now;
             gameStartTime = DateTime.Now;
@@ -241,11 +241,11 @@ namespace OmokGameServer
 
             omokBoard.Init(startUserId, FindOtherUserId(startUserId), pushPacketInProcessorFunc);
 
-            NowTurnUser = startUserId;
-            NextTurnUser = omokBoard.WhiteUserId;
+            NowTurnUserUid = startUserId;
+            NextTurnUserUid = omokBoard.WhiteUserUid;
 
             PKTNTFGameStart gameStartNTF = new PKTNTFGameStart();
-            gameStartNTF.StartUserId = startUserId;
+            gameStartNTF.StartUserUid = startUserId;
 
             var bodyData = MemoryPackSerializer.Serialize(gameStartNTF);
             var sendData = PacketToBytes.MakeToPacket(PACKET_ID.GameStartNotify, bodyData);
@@ -259,7 +259,7 @@ namespace OmokGameServer
 
             PKTNTFOmokStonePlace omokStonePlaceNTF = new PKTNTFOmokStonePlace();
 
-            omokStonePlaceNTF.NextTurnUserId = NextTurnUser;
+            omokStonePlaceNTF.NextTurnUserUid = NextTurnUserUid;
 
             omokStonePlaceNTF.PosX = posX;
             omokStonePlaceNTF.PosY = posY;
@@ -277,7 +277,7 @@ namespace OmokGameServer
             GameFinish();
 
             PKTNTFOmokWin omokWinNTF = new PKTNTFOmokWin();
-            omokWinNTF.WinUserId = winUser.userName;
+            omokWinNTF.WinUserUid = winUser.uid;
 
             var bodyData = MemoryPackSerializer.Serialize(omokWinNTF);
             var sendData = PacketToBytes.MakeToPacket(PACKET_ID.OmokWinNotify, bodyData);
@@ -290,7 +290,7 @@ namespace OmokGameServer
             GameFinish();
 
             PKTNTFOmokLose omokLoseNTF = new PKTNTFOmokLose();
-            omokLoseNTF.LoseUserId = loseUser.userName;
+            omokLoseNTF.LoseUserUid = loseUser.uid;
 
             var bodyData = MemoryPackSerializer.Serialize(omokLoseNTF);
             var sendData = PacketToBytes.MakeToPacket(PACKET_ID.OmokLoseNotify, bodyData);
@@ -300,7 +300,7 @@ namespace OmokGameServer
 
         public void SaveGameResult(User winUser, User loseUser)
         {
-            omokBoard.GameResultSave(winUser.userName, loseUser.userName);
+            omokBoard.GameResultSave(winUser.uid, loseUser.uid);
         }
 
         public void NotifyGameForceFinish()
@@ -320,7 +320,7 @@ namespace OmokGameServer
             lastStonePlaceTime = DateTime.Now;
             ForceTurnChangeCount++;
             PKTNTFTurnChange turnChangeNTF = new PKTNTFTurnChange();
-            turnChangeNTF.TurnGetUserId = NextTurnUser;
+            turnChangeNTF.TurnGetUserUid = NextTurnUserUid;
 
             SwapNowNextTurnUser();
 

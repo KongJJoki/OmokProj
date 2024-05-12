@@ -8,6 +8,7 @@ namespace PacketDefine
         InNTFCheckTurnTime = 1002,
         InNTFCheckHeartBeat = 1003,
         InSaveGameResult = 1004,
+        InVerifiedLoginRequest = 1005,
 
 
 

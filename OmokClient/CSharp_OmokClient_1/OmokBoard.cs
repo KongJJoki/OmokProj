@@ -339,7 +339,7 @@ namespace csharp_test_client
             }
         }
 
-        void 플레이어_돌두기(string nextTurnUserId, int x, int y)
+        void 플레이어_돌두기(Int32 nextTurnUserUid, int x, int y)
         {
             /*            var ret = OmokLogic.돌두기(x, y);
                         if (ret != CSCommon.돌두기_결과.Success)
@@ -350,7 +350,7 @@ namespace csharp_test_client
                             return;
                         }*/
 
-            if(nextTurnUserId == textBoxSocketID.Text)
+            if(nextTurnUserUid.ToString() == textBoxSocketID.Text)
             {
                 돌그리기(EnemyStoneColor, x, y);
             }

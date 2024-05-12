@@ -20,8 +20,16 @@ namespace PacketTypes
     [MemoryPackable]
     public partial class InPKTGameResult
     {
-        public string WinUserId { get; set; }
-        public string LoseUseId { get; set; }
+        public Int32 WinUserUid { get; set; }
+        public Int32 LoseUseUid { get; set; }
+    }
+
+    [MemoryPackable]
+    public partial class InPKTVerifiedLoginReq
+    {
+        public ERROR_CODE ErrorCode { get; set; }
+        public Int32 Uid { get; set; }
+        public string AuthToken { get; set; }
     }
 
 
@@ -38,7 +46,7 @@ namespace PacketTypes
     [MemoryPackable]
     public partial class PKTReqLogin
     {
-        public string UserId { get; set; }
+        public Int32 Uid { get; set; }
         public string AuthToken { get; set; }
     }
 
@@ -81,17 +89,17 @@ namespace PacketTypes
     [MemoryPackable]
     public partial class PKTNTFRoomEnter
     {
-        public string UserId { get; set; }
+        public Int32 Uid { get; set; }
     }
     [MemoryPackable]
     public partial class PKTNTFRoomLeave
     {
-        public string UserId { get; set; }
+        public Int32 Uid { get; set; }
     }
     [MemoryPackable]
     public partial class PKTNTFRoomMember
     {
-        public List<string> UserIdList { get; set; } = new List<string>();
+        public List<Int32> UidList { get; set; } = new List<Int32>();
     }
 
     [MemoryPackable]
@@ -107,7 +115,7 @@ namespace PacketTypes
     [MemoryPackable]
     public partial class PKTNTFRoomChat
     {
-        public string UserId { get; set; }
+        public Int32 Uid { get; set; }
         public string Message { get; set; }
     }
 
@@ -140,7 +148,7 @@ namespace PacketTypes
     [MemoryPackable]
     public partial class PKTNTFGameStart
     {
-        public string StartUserId { get; set; }
+        public Int32 StartUserUid { get; set; }
     }
 
     // Omok Game
@@ -160,7 +168,7 @@ namespace PacketTypes
     [MemoryPackable]
     public partial class PKTNTFOmokStonePlace
     {
-        public string NextTurnUserId { get; set; }
+        public Int32 NextTurnUserUid { get; set; }
         public int PosX { get; set; }
         public int PosY { get; set; }
     }
@@ -168,20 +176,20 @@ namespace PacketTypes
     [MemoryPackable]
     public partial class PKTNTFOmokWin
     {
-        public string WinUserId { get; set; }
+        public Int32 WinUserUid { get; set; }
     }
 
     [MemoryPackable]
     public partial class PKTNTFOmokLose
     {
-        public string LoseUserId { get; set; }
+        public Int32 LoseUserUid { get; set; }
     }
 
     // Turn Change
     [MemoryPackable]
     public partial class PKTNTFTurnChange
     {
-        public string TurnGetUserId { get; set; }
+        public Int32 TurnGetUserUid { get; set; }
     }
 
     [MemoryPackable]

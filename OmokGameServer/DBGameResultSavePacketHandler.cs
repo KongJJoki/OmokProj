@@ -6,7 +6,7 @@ using SuperSocket.SocketBase.Logging;
 
 namespace OmokGameServer
 {
-    public class DBPacketHandler
+    public class DBGameResultSavePacketHandler
     {
         ILog mainLogger;
 
@@ -20,46 +20,46 @@ namespace OmokGameServer
             dbPacketHandlerDictionary.Add((int)PACKET_ID.InSaveGameResult, UpdateGameResult);
         }
 
-        async void UpdateGameResult(ServerPacketData packet, QueryFactory queryFactory)
+        void UpdateGameResult(ServerPacketData packet, QueryFactory queryFactory)
         {
             var requestData = MemoryPackSerializer.Deserialize<InPKTGameResult>(packet.bodyData);
 
-            int originWinCount = GetWinCount(requestData.WinUserId, queryFactory);
+            int originWinCount = GetWinCount(requestData.WinUserUid, queryFactory);
             if(originWinCount < 0)
             {
-                mainLogger.Debug($"userId({requestData.WinUserId})의 승리 횟수를 가져오는데 실패했습니다.");
+                mainLogger.Debug($"userId({requestData.WinUserUid})의 승리 횟수를 가져오는데 실패했습니다.");
                 return;
             }
 
-            int winSaveCheck = UpdateWinCount(requestData.WinUserId, originWinCount, queryFactory);
+            int winSaveCheck = UpdateWinCount(requestData.WinUserUid, originWinCount, queryFactory);
             if(winSaveCheck < 0)
             {
-                mainLogger.Debug($"userId({requestData.WinUserId})의 승리 횟수를 저장하는데 실패했습니다.");
+                mainLogger.Debug($"userId({requestData.WinUserUid})의 승리 횟수를 저장하는데 실패했습니다.");
                 return;
             }
 
-            int originLoseCount = GetLoseCount(requestData.LoseUseId, queryFactory);
+            int originLoseCount = GetLoseCount(requestData.LoseUseUid, queryFactory);
             if (originLoseCount < 0)
             {
-                mainLogger.Debug($"userId({requestData.LoseUseId})의 패배 횟수를 가져오는데 실패했습니다.");
+                mainLogger.Debug($"userId({requestData.LoseUseUid})의 패배 횟수를 가져오는데 실패했습니다.");
                 return;
             }
 
-            int loseSaveCheck = UpdateLoseCount(requestData.LoseUseId, originLoseCount, queryFactory);
+            int loseSaveCheck = UpdateLoseCount(requestData.LoseUseUid, originLoseCount, queryFactory);
             if (loseSaveCheck < 0)
             {
-                mainLogger.Debug($"userId({requestData.LoseUseId})의 패배 횟수를 저장하는데 실패했습니다.");
+                mainLogger.Debug($"userId({requestData.LoseUseUid})의 패배 횟수를 저장하는데 실패했습니다.");
                 return;
             }
         }
 
-        int GetWinCount(string userId, QueryFactory queryFactory)
+        int GetWinCount(Int32 uid, QueryFactory queryFactory)
         {
             try
             {
                 return queryFactory.Query("usergamedata2")
                     .Select("winCount")
-                    .Where("userName", userId)
+                    .Where("userName", uid)
                     .FirstOrDefault<int>();
             }
             catch (Exception ex)
@@ -69,13 +69,13 @@ namespace OmokGameServer
             }
         }
 
-        int GetLoseCount(string userId, QueryFactory queryFactory)
+        int GetLoseCount(Int32 uid, QueryFactory queryFactory)
         {
             try
             {
                 return queryFactory.Query("usergamedata2")
                     .Select("loseCount")
-                    .Where("userName", userId)
+                    .Where("userName", uid)
                     .FirstOrDefault<int>();
             }
             catch (Exception ex)
@@ -85,12 +85,12 @@ namespace OmokGameServer
             }
         }
 
-        int UpdateWinCount(string userId, int originWinCount, QueryFactory queryFactory)
+        int UpdateWinCount(Int32 uid, int originWinCount, QueryFactory queryFactory)
         {
             try
             {
                 return queryFactory.Query("usergamedata2")
-                        .Where("userName", userId)
+                        .Where("userName", uid)
                         .AsUpdate(new { winCount = originWinCount + 1 })
                         .FirstOrDefault<int>();
             }
@@ -102,12 +102,12 @@ namespace OmokGameServer
 
         }
 
-        int UpdateLoseCount(string userId, int originLoseCount, QueryFactory queryFactory)
+        int UpdateLoseCount(Int32 uid, int originLoseCount, QueryFactory queryFactory)
         {
             try
             {
                 return queryFactory.Query("usergamedata2")
-                        .Where("userName", userId)
+                        .Where("userName", uid)
                         .AsUpdate(new { loseCount = originLoseCount + 1 })
                         .FirstOrDefault<int>();
             }

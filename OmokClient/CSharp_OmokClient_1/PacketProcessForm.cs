@@ -106,9 +106,9 @@ namespace csharp_test_client
         {
             var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFRoomMember>(packetData);
 
-            for (int i = 0; i < notifyPkt.UserIdList.Count; ++i)
+            for (int i = 0; i < notifyPkt.UidList.Count; ++i)
             {
-                AddRoomUserList(notifyPkt.UserIdList[i]);
+                AddRoomUserList(notifyPkt.UidList[i]);
             }
 
             DevLog.Write($"방의 기존 유저 리스트 받음");
@@ -118,9 +118,9 @@ namespace csharp_test_client
         {
             var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFRoomEnter>(packetData);
 
-            AddRoomUserList(notifyPkt.UserId);
+            AddRoomUserList(notifyPkt.Uid);
 
-            DevLog.Write($"방에 {notifyPkt.UserId}가 들어왔습니다.");
+            DevLog.Write($"방에 {notifyPkt.Uid}가 들어왔습니다.");
         }
 
 
@@ -138,9 +138,9 @@ namespace csharp_test_client
         {
             var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFRoomLeave>(packetData);
 
-            RemoveRoomUserList(notifyPkt.UserId);
+            RemoveRoomUserList(notifyPkt.Uid);
 
-            DevLog.Write($"방에서 {notifyPkt.UserId}가 나갔습니다.");
+            DevLog.Write($"방에서 {notifyPkt.Uid}가 나갔습니다.");
         }
 
 
@@ -156,17 +156,17 @@ namespace csharp_test_client
         {
             var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFRoomChat>(packetData);
 
-            AddRoomChatMessageList(notifyPkt.UserId, notifyPkt.Message);
+            AddRoomChatMessageList(notifyPkt.Uid, notifyPkt.Message);
         }
 
-        void AddRoomChatMessageList(string userID, string message)
+        void AddRoomChatMessageList(Int32 uid, string message)
         {
             if (listBoxRoomChatMsg.Items.Count > 512)
             {
                 listBoxRoomChatMsg.Items.Clear();
             }
 
-            listBoxRoomChatMsg.Items.Add($"[{userID}]: {message}");
+            listBoxRoomChatMsg.Items.Add($"[{uid}]: {message}");
             listBoxRoomChatMsg.SelectedIndex = listBoxRoomChatMsg.Items.Count - 1;
         }
 
@@ -190,14 +190,14 @@ namespace csharp_test_client
 
             var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFGameStart>(packetData);
 
-            if (notifyPkt.StartUserId == textBoxSocketID.Text)
+            if (notifyPkt.StartUserUid.ToString() == textBoxSocketID.Text)
             {
                 isMyTurn = true;
             }
 
             StartGame(isMyTurn, textBoxSocketID.Text, GetOtherPlayer(textBoxSocketID.Text));
 
-            DevLog.Write($"게임 시작. 흑돌 플레이어: {notifyPkt.StartUserId}");
+            DevLog.Write($"게임 시작. 흑돌 플레이어: {notifyPkt.StartUserUid}");
         }
 
         void PacketProcess_PutMokResponse(byte[] packetData)
@@ -212,17 +212,17 @@ namespace csharp_test_client
         {
             var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFOmokStonePlace>(packetData);
 
-            플레이어_돌두기(notifyPkt.NextTurnUserId, notifyPkt.PosX, notifyPkt.PosY);
+            플레이어_돌두기(notifyPkt.NextTurnUserUid, notifyPkt.PosX, notifyPkt.PosY);
 
-            if(notifyPkt.NextTurnUserId == textBoxSocketID.Text)
+            if(notifyPkt.NextTurnUserUid.ToString() == textBoxSocketID.Text)
             {
                 IsMyTurn = true;
-                DevLog.Write($"오목 정보: {EnemyStoneColor}돌 X: {notifyPkt.PosX},  Y: {notifyPkt.PosY},   다음 턴:{notifyPkt.NextTurnUserId}");
+                DevLog.Write($"오목 정보: {EnemyStoneColor}돌 X: {notifyPkt.PosX},  Y: {notifyPkt.PosY},   다음 턴:{notifyPkt.NextTurnUserUid}");
             }
-            if(notifyPkt.NextTurnUserId != textBoxSocketID.Text)
+            if(notifyPkt.NextTurnUserUid.ToString() != textBoxSocketID.Text)
             {
                 IsMyTurn = false;
-                DevLog.Write($"오목 정보: {MyStoneColor}돌 X: {notifyPkt.PosX},  Y: {notifyPkt.PosY},   다음 턴:{notifyPkt.NextTurnUserId}");
+                DevLog.Write($"오목 정보: {MyStoneColor}돌 X: {notifyPkt.PosX},  Y: {notifyPkt.PosY},   다음 턴:{notifyPkt.NextTurnUserUid}");
             }
 
         }
@@ -233,7 +233,7 @@ namespace csharp_test_client
 
             EndGame();
 
-            DevLog.Write($"오목 GameOver: Win: {notifyPkt.WinUserId}");
+            DevLog.Write($"오목 GameOver: Win: {notifyPkt.WinUserUid}");
         }
 
         void PacketProcess_LoseOmokNotify(byte[] packetData)
@@ -242,14 +242,14 @@ namespace csharp_test_client
 
             EndGame();
 
-            DevLog.Write($"오목 GameOver: Lose: {notifyPkt.LoseUserId}");
+            DevLog.Write($"오목 GameOver: Lose: {notifyPkt.LoseUserUid}");
         }
 
         void PacketProcess_TurnChangeNotify(byte[] packetData)
         {
             var notifyPkt = MemoryPackSerializer.Deserialize<PKTNTFTurnChange>(packetData);
 
-            if(notifyPkt.TurnGetUserId == textBoxSocketID.Text)
+            if(notifyPkt.TurnGetUserUid.ToString() == textBoxSocketID.Text)
             {
                 IsMyTurn = true;
             }
@@ -258,7 +258,7 @@ namespace csharp_test_client
                 IsMyTurn = false;
             }
 
-            DevLog.Write($"{notifyPkt.TurnGetUserId}의 턴으로 바뀌었습니다.");
+            DevLog.Write($"{notifyPkt.TurnGetUserUid}의 턴으로 바뀌었습니다.");
         }
 
 /*        void PacketProcess_HeartbeatReqFromServer(byte[] packetData)

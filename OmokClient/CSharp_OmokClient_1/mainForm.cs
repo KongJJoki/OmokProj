@@ -92,6 +92,9 @@ namespace csharp_test_client
                 DevLog.Write($"서버에 접속 중", LOG_LEVEL.INFO);
 
                 heartBeatTimer = new System.Threading.Timer(HeartBeatToServer, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+
+                // 로그인 요청
+                SockLoginReq();
             }
             else
             {
@@ -299,18 +302,18 @@ namespace csharp_test_client
         }
 
 
-        void AddRoomUserList(string userID)
+        void AddRoomUserList(Int32 userID)
         {
             listBoxRoomUserList.Items.Add(userID);
         }
 
-        void RemoveRoomUserList(string userID)
+        void RemoveRoomUserList(Int32 uid)
         {
             object removeItem = null;
 
-            foreach (var user in listBoxRoomUserList.Items)
+            foreach (int user in listBoxRoomUserList.Items)
             {
-                if ((string)user == userID)
+                if (user == uid)
                 {
                     removeItem = user;
                     break;
@@ -519,11 +522,11 @@ namespace csharp_test_client
 
 
 
-        // 로그인 요청
-        private void button2_Click(object sender, EventArgs e)
+        // 소켓 로그인 요청
+        private void SockLoginReq()
         {
             var loginReq = new PKTReqLogin();
-            loginReq.UserId = textBoxSocketID.Text;
+            loginReq.Uid = textBoxSocketID.Text.ToInt32();
             loginReq.AuthToken = textBoxSocketToken.Text;
             var packet = MemoryPackSerializer.Serialize(loginReq);
 

@@ -12,11 +12,12 @@ namespace CSCommon
         DisconnectFailUserNotExist = 1501,
 
         // 로그인
-        LoginFailNotConnected = 2000,
-        LoginFailUserCountLimitExceed = 2001,
-        LoginFailAlreadyExistUser = 2002,
+        LoginFailInvalidUser = 2000,
+        LoginFailNotConnected = 2001,
+        LoginFailUserCountLimitExceed = 2002,
+        LoginFailAlreadyExistUser = 2003,
 
-        RemoveFailNotExistSession = 2003,
+        RemoveFailNotExistSession = 2004,
 
         // 방 입장, 퇴장
         RoomEnterFailInvalidUser = 3000,

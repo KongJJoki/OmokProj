@@ -6,7 +6,7 @@ namespace OmokGameServer
         public int myUserArrayIndex { get; set; }
 
         public string sessionId;
-        public string userName;
+        public Int32 uid;
         public int roomNumber = -1;
         public bool isInRoom = false;
 
@@ -16,9 +16,9 @@ namespace OmokGameServer
             lastHeartBeatTime = DateTime.Now;
         }
         
-        public void SetUserName(string userName)
+        public void SetUserName(Int32 uid)
         {
-            this.userName = userName;
+            this.uid = uid;
         }
 
         public void SetRoomEnter(int roomNum)

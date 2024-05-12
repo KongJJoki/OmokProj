@@ -57,6 +57,14 @@ namespace OmokGameServer
 
             try 
             {
+                var requestData = MemoryPackSerializer.Deserialize<InPKTVerifiedLoginReq>(packet.bodyData);
+
+                if(requestData.ErrorCode != ERROR_CODE.None)
+                {
+                    LoginRespond(requestData.ErrorCode, sessionId);
+                    return;
+                }
+
                 ERROR_CODE errorCodeCheck = userManager.CheckUserLoginExist(sessionId);
 
                 if (errorCodeCheck != ERROR_CODE.None)
@@ -66,9 +74,7 @@ namespace OmokGameServer
                     return;
                 }
 
-                var requestData = MemoryPackSerializer.Deserialize<PKTReqLogin>(packet.bodyData);
-
-                ERROR_CODE errorCodeLogin = userManager.AddUserLogin(sessionId, requestData.UserId);
+                ERROR_CODE errorCodeLogin = userManager.AddUserLogin(sessionId, requestData.Uid);
 
                 if (errorCodeLogin == ERROR_CODE.LoginFailUserCountLimitExceed)
                 {
@@ -84,7 +90,7 @@ namespace OmokGameServer
                 mainLogger.Error(ex.ToString());
             }
         }
-        // 로그인 응답
+
         void LoginRespond(ERROR_CODE errorCode, string sessionId)
         {
             PKTResLogin loginRes = new PKTResLogin();
@@ -95,7 +101,7 @@ namespace OmokGameServer
 
             sendFunc(sessionId, sendData);
         }
-        // 유저 다 찬 경우 보낼 응답
+
         void FullUserRespond(ERROR_CODE errorCode, string sessionId)
         {
             PKTResFullUser userFullRes = new PKTResFullUser();

@@ -21,7 +21,7 @@ namespace OmokGameServer
 
         Dictionary<int, Action<ServerPacketData, QueryFactory>> dbPacketHandlerDictionary = new Dictionary<int, Action<ServerPacketData, QueryFactory>>();
 
-        DBPacketHandler dbPacketHandler = new DBPacketHandler();
+        DBGameResultSavePacketHandler dbGameResultPacketHandler = new DBGameResultSavePacketHandler();
 
         public void ProcessorStart(ILog mainLogger, DBConfig dbConfig, ServerOption serverOption)
         {
@@ -54,8 +54,8 @@ namespace OmokGameServer
 
         void SetPacketHandlers()
         {
-            dbPacketHandler.Init(mainLogger);
-            dbPacketHandler.SetPacketHandler(dbPacketHandlerDictionary);
+            dbGameResultPacketHandler.Init(mainLogger);
+            dbGameResultPacketHandler.SetPacketHandler(dbPacketHandlerDictionary);
         }
 
         void Process()

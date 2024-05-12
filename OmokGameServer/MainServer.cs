@@ -23,6 +23,7 @@ namespace OmokGameServer
 
         PacketProcessor packetProcessor = new PacketProcessor();
         DBProcessor dbProcessor = new DBProcessor();
+        RedisProcessor redisProcessor = new RedisProcessor();
         UserManager userManager = new UserManager();
         RoomManager roomManager = new RoomManager();
 
@@ -72,8 +73,9 @@ namespace OmokGameServer
                     mainLogger.Info("서버 초기화 성공");
                 }
 
-                packetProcessor.ProcessorStart(userManager, roomManager, mainLogger, serverOption, SendData, PassPacketToDBProcessor);
+                packetProcessor.ProcessorStart(userManager, roomManager, mainLogger, serverOption, SendData, PassPacketToDBProcessor, PassPacketToRedisProcessor);
                 dbProcessor.ProcessorStart(mainLogger, dbConfig, serverOption);
+                redisProcessor.ProcessorStart(mainLogger, dbConfig, serverOption, PassPacketToPacketProcessor);
 
                 Settings();
                 base.Start();
@@ -91,12 +93,13 @@ namespace OmokGameServer
 
             packetProcessor.ProcessorStop();
             dbProcessor.ProcessorStop();
+            redisProcessor.ProcessorStop();
         }
 
         public void Settings()
         {
-            userManager.Init(serverOption, mainLogger, PassPacketToProcessor, CloseConnection);
-            roomManager.Init(serverOption, PassPacketToProcessor);
+            userManager.Init(serverOption, mainLogger, PassPacketToPacketProcessor, CloseConnection);
+            roomManager.Init(serverOption, PassPacketToPacketProcessor);
             roomManager.CreateRooms();
             Room.sendFunc = SendData;
         }
@@ -124,7 +127,7 @@ namespace OmokGameServer
             return true;
         }
 
-        public void PassPacketToProcessor(ServerPacketData packet)
+        public void PassPacketToPacketProcessor(ServerPacketData packet)
         {
             packetProcessor.InsertPacket(packet);
         }
@@ -132,6 +135,11 @@ namespace OmokGameServer
         public void PassPacketToDBProcessor(ServerPacketData packet)
         {
             dbProcessor.InsertPacket(packet);
+        }
+
+        public void PassPacketToRedisProcessor(ServerPacketData packet)
+        {
+            redisProcessor.InsertPacket(packet);
         }
 
         void OnClientConnect(ClientSession clientSession)
@@ -142,7 +150,7 @@ namespace OmokGameServer
 
             packet.SetPacketNoBody(clientSession.SessionID, (Int16)PACKET_ID.InNTFClientConnect);
 
-            PassPacketToProcessor(packet);
+            PassPacketToPacketProcessor(packet);
         }
         void OnClientDisConnect(ClientSession clientSession, CloseReason reason)
         {
@@ -152,7 +160,7 @@ namespace OmokGameServer
 
             packet.SetPacketNoBody(clientSession.SessionID, (Int16)PACKET_ID.InNTFClientDisconnect);
 
-            PassPacketToProcessor(packet);
+            PassPacketToPacketProcessor(packet);
         }
         void OnPacketReceived(ClientSession clientSession, OmokBinaryRequestInfo requestInfo)
         {
@@ -166,7 +174,7 @@ namespace OmokGameServer
 
             if (packet.packetId >= (int)PACKET_ID.FromClientStart && packet.packetId <= (int)PACKET_ID.FromClientEnd)
             {
-                PassPacketToProcessor(packet);
+                PassPacketToPacketProcessor(packet);
             }
             else
             {

@@ -33,5 +33,6 @@ namespace OmokGameServer
         public int MaxGameTimeHour { get; set; }
 
         public int DBProcessThreadCount { get; set; }
+        public int RedisProcessThreadCount { get; set; }
     }
 }

@@ -6,12 +6,14 @@ namespace OmokGameServer
 {
     class PacketProcessor
     {
-        bool isProcessorRunning = false;
-        Thread packetProcessorTh = null;
         ILog mainLogger;
         ServerOption serverOption;
         Func<string, byte[], bool> sendFunc;
         Action<ServerPacketData> passPacketToDBProcessor;
+        Action<ServerPacketData> passPacketToRedisProcessor;
+
+        bool isProcessorRunning = false;
+        Thread packetProcessorTh = null;
 
         BufferBlock<ServerPacketData> packetBuffer = new BufferBlock<ServerPacketData>();
 
@@ -27,7 +29,7 @@ namespace OmokGameServer
         RoomCheckPacketHandler turnCheckPacketHandler = new RoomCheckPacketHandler();
         HeartBeatPacketHandler heartBeatPacketHandler = new HeartBeatPacketHandler();
 
-        public void ProcessorStart(UserManager userManager, RoomManager roomManager, ILog mainLogger, ServerOption serverOption, Func<string, byte[], bool> sendFunc, Action<ServerPacketData> passPacketToDBProcessor)
+        public void ProcessorStart(UserManager userManager, RoomManager roomManager, ILog mainLogger, ServerOption serverOption, Func<string, byte[], bool> sendFunc, Action<ServerPacketData> passPacketToDBProcessor, Action<ServerPacketData> passPacketToRedisProcessor)
         {
             this.userManager = userManager;
             this.roomManager = roomManager;
@@ -35,6 +37,7 @@ namespace OmokGameServer
             this.serverOption = serverOption;
             this.sendFunc = sendFunc;
             this.passPacketToDBProcessor = passPacketToDBProcessor;
+            this.passPacketToRedisProcessor = passPacketToRedisProcessor;
 
             SetPacketHandlers();
 
@@ -86,6 +89,12 @@ namespace OmokGameServer
                     if(newPacket.packetId == (int)PACKET_ID.InSaveGameResult)
                     {
                         passPacketToDBProcessor(newPacket);
+                        continue;
+                    }
+
+                    if(newPacket.packetId == (int)PACKET_ID.LoginRequest)
+                    {
+                        passPacketToRedisProcessor(newPacket);
                         continue;
                     }
 
