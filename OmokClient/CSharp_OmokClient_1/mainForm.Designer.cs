@@ -138,11 +138,11 @@ namespace csharp_test_client
             // textBoxHiveIP
             // 
             this.textBoxHiveIP.Location = new System.Drawing.Point(55, 23);
-            this.textBoxHiveIP.MaxLength = 20;
+            this.textBoxHiveIP.MaxLength = 30;
             this.textBoxHiveIP.Name = "textBoxHiveIP";
             this.textBoxHiveIP.Size = new System.Drawing.Size(140, 21);
             this.textBoxHiveIP.TabIndex = 18;
-            this.textBoxHiveIP.Text = "http://127.0.0.1:5115";
+            this.textBoxHiveIP.Text = "http://35.213.36.87:5115";
             this.textBoxHiveIP.WordWrap = false;
             // 
             // labelHiveIP
@@ -157,11 +157,11 @@ namespace csharp_test_client
             // textBoxApiIP
             // 
             this.textBoxApiIP.Location = new System.Drawing.Point(55, 60);
-            this.textBoxApiIP.MaxLength = 20;
+            this.textBoxApiIP.MaxLength = 30;
             this.textBoxApiIP.Name = "textBoxApiIP";
             this.textBoxApiIP.Size = new System.Drawing.Size(140, 21);
             this.textBoxApiIP.TabIndex = 18;
-            this.textBoxApiIP.Text = "http://127.0.0.1:5261";
+            this.textBoxApiIP.Text = "http://35.213.20.80:5261";
             this.textBoxApiIP.WordWrap = false;
             // 
             // labelApiIP
