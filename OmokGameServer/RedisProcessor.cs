@@ -84,7 +84,7 @@ namespace OmokGameServer
                 }
                 catch (Exception ex)
                 {
-                    mainLogger.Error($"DBPacketProcessor Error : {ex}");
+                    mainLogger.Error($"RedisPacketProcessor Error : {ex}");
                 }
             }
         }
