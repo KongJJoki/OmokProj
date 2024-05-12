@@ -548,6 +548,8 @@ namespace csharp_test_client
             {
                 textBoxSocketIP.Text = res.SockIP;
                 textBoxSocketPort.Text = res.SockPort;
+                textBoxSocketID.Text = textBoxApiLoginUid.Text;
+                textBoxSocketToken.Text = textBoxApiLoginAuthToken.Text;
             }
 
             DevLog.Write($"Game API 로그인 요청 결과 : {res.Result}");
