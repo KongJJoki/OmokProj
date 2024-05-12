@@ -31,8 +31,9 @@ namespace OmokGameServer
         {
             for (int i = 0; i < oneCheckCount; i++)
             {
-                if (checkRoomNumberOffset == serverOption.RoomMaxCount)
+                if (checkRoomNumberOffset >= serverOption.RoomMaxCount)
                 {
+                    checkRoomNumberOffset = 0;
                     break;
                 }
 
@@ -60,11 +61,6 @@ namespace OmokGameServer
                 }
 
                 checkRoomNumberOffset++;
-            }
-
-            if (checkRoomNumberOffset >= serverOption.RoomMaxCount)
-            {
-                checkRoomNumberOffset = 0;
             }
         }
     }
