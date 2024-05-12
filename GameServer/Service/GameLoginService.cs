@@ -31,14 +31,14 @@ namespace GameServer.Services
 
         public record GameLoginResult(EErrorCode ErrorCode, string SocketIp, string SocketPort);
 
-        public async Task<GameLoginResult> GameLogin(Int32 userId, string authToken)
+        public async Task<GameLoginResult> GameLogin(Int32 uid, string authToken)
         {
             try
             {
                 // Hive 서버에 인증토큰 유효성 검사 요청
                 VerifyData verifyData = new VerifyData
                 {
-                    Uid = userId,
+                    Uid = uid,
                     AuthToken = authToken
                 };
 
@@ -50,16 +50,16 @@ namespace GameServer.Services
 
                 // 인증토큰 유효성 검사 성공한 경우
                 // Game_Server의 Redis에 저장
-                bool redisSaveSuccess = await redisDB.InsertAuthToken(userId.ToString(), authToken);
+                bool redisSaveSuccess = await redisDB.InsertAuthToken(uid.ToString(), authToken);
                 if(!redisSaveSuccess)
                 {
                     return new GameLoginResult(ErrorCode: EErrorCode.RedisError, SocketIp: "", SocketPort: "");
                 }
 
-                bool isUserDataExist = await gameDB.GetUserDataExist(userId);
+                bool isUserDataExist = await gameDB.GetUserDataExist(uid);
                 if(!isUserDataExist) // 기본데이터 없는 경우
                 {
-                    int insertCount = await gameDB.InsertBasicData(userId);
+                    int insertCount = await gameDB.InsertBasicData(uid);
                     if(insertCount != 1)
                     {
                         return new GameLoginResult(ErrorCode: EErrorCode.DBError, SocketIp: "", SocketPort: "");

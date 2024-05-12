@@ -31,21 +31,21 @@ namespace HiveServer.Repository
         {
             return await queryFactory.Query("account").InsertAsync(new
             {
-                email = email,
+                id = email,
                 password = securePassword
             });
         }
 
-        public async Task<bool> AccountExistCheck(string email)
+        public async Task<bool> AccountExistCheck(string id)
         {
-            return await queryFactory.Query("account").Where("email", email).ExistsAsync();
+            return await queryFactory.Query("account").Where("id", id).ExistsAsync();
         }
 
-        public async Task<Account> GetAccountInfo(string email)
+        public async Task<Account> GetAccountInfo(string id)
         {
             return await queryFactory.Query("account")
-                .Select("userId as UserId", "email as Email", "password as Password")
-                .Where("email", email)
+                .Select("userId as UserId", "id as Id", "password as Password")
+                .Where("id", id)
                 .FirstOrDefaultAsync<Account>();
         }
     }

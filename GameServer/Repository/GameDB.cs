@@ -25,16 +25,16 @@ namespace GameServer.Repository
             dbConnection.Close();
         }
 
-        public async Task<bool> GetUserDataExist(Int32 userId)
+        public async Task<bool> GetUserDataExist(Int32 uid)
         {
-            return await queryFactory.Query("usergamedata").Where("userId", userId).ExistsAsync();
+            return await queryFactory.Query("usergamedata").Where("userId", uid).ExistsAsync();
         }
 
-        public async Task<int> InsertBasicData(Int32 userId)
+        public async Task<int> InsertBasicData(Int32 uid)
         {
             return await queryFactory.Query("usergamedata").InsertAsync(new
             {
-                userID = userId,
+                userID = uid,
                 level = 1,
                 exp = 0,
                 winCount = 0,
