@@ -59,7 +59,7 @@ namespace OmokGameServer
             {
                 return queryFactory.Query("usergamedata")
                     .Select("winCount")
-                    .Where("userName", uid)
+                    .Where("userId", uid)
                     .FirstOrDefault<int>();
             }
             catch (Exception ex)
@@ -75,7 +75,7 @@ namespace OmokGameServer
             {
                 return queryFactory.Query("usergamedata")
                     .Select("loseCount")
-                    .Where("userName", uid)
+                    .Where("userId", uid)
                     .FirstOrDefault<int>();
             }
             catch (Exception ex)
@@ -90,7 +90,7 @@ namespace OmokGameServer
             try
             {
                 return queryFactory.Query("usergamedata")
-                        .Where("userName", uid)
+                        .Where("userId", uid)
                         .AsUpdate(new { winCount = originWinCount + 1 })
                         .FirstOrDefault<int>();
             }
@@ -107,7 +107,7 @@ namespace OmokGameServer
             try
             {
                 return queryFactory.Query("usergamedata")
-                        .Where("userName", uid)
+                        .Where("userId", uid)
                         .AsUpdate(new { loseCount = originLoseCount + 1 })
                         .FirstOrDefault<int>();
             }
