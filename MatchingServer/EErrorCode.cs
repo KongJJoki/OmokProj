@@ -1,8 +1,9 @@
 namespace MatchingServer
 {
-    public enum ErrorCode
+    public enum EErrorCode
     {
         None = 0,
 
+        NotMatched = 1,
     }
 }

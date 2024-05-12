@@ -408,7 +408,7 @@ namespace csharp_test_client
             this.btnMatching.TabIndex = 54;
             this.btnMatching.Text = "Matching";
             this.btnMatching.UseVisualStyleBackColor = true;
-            //this.btnMatching.Click += new System.EventHandler(this.btnMatching_Click);
+            this.btnMatching.Click += new System.EventHandler(this.btnMatchRequest_Click);
             // 
             // GameStartBtn
             // 

@@ -456,7 +456,6 @@ namespace csharp_test_client
             DevLog.Write($"Hive 로그인 요청 결과 : {res.Result}");
         }
 
-
         public async Task<ApiLoginRes> ApiLoginHttpRequest(string httpUrl, string requestBody)
         {
             HttpResponseMessage response = await httpClient.PostAsync(httpUrl,
@@ -485,6 +484,40 @@ namespace csharp_test_client
                     res.Result = ApiErrorCode.None;
                     res.SockIP = jsonResult.GetProperty("sockIP").GetString();
                     res.SockPort = jsonResult.GetProperty("sockPort").GetString();
+                }
+            }
+            else
+            {
+                res.Result = ApiErrorCode.GameApiHttpReqFail;
+            }
+
+            return res;
+        }
+
+        public async Task<ApiMatchReqRes> ApiMatchReqHttpRequest(string httpUrl, string requestBody)
+        {
+            HttpResponseMessage response = await httpClient.PostAsync(httpUrl,
+                new StringContent(requestBody, Encoding.UTF8, "application/json"));
+
+            ApiMatchReqRes res = new ApiMatchReqRes();
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                // JsonDoument : JSON 데이터 읽고 파싱 JsonElemnt : JSON 데이터 접근 및 값 가져오기
+                JsonDocument jsonDocument = JsonDocument.Parse(responseBody);
+                JsonElement jsonResult = jsonDocument.RootElement;
+
+                int resultValue = jsonResult.GetProperty("result").GetInt32();
+
+                if (resultValue != 0)
+                {
+                    res.Result = (ApiErrorCode)resultValue;
+                }
+                else
+                {
+                    res.Result = ApiErrorCode.None;
                 }
             }
             else
@@ -532,6 +565,23 @@ namespace csharp_test_client
 
             PostSendPacket((short)PACKET_ID.LoginRequest, packet);
             DevLog.Write($"로그인 요청:  {textBoxSocketID.Text}, {textBoxSocketToken.Text}");
+        }
+
+        // 매칭 요청
+        private async void btnMatchRequest_Click(object sender, EventArgs e)
+        {
+            string apiMatchReqURL = textBoxApiIP.Text + "/MatchRequest";
+
+            ApiMatchReq req = new ApiMatchReq
+            {
+                Uid = textBoxApiLoginUid.Text.ToInt32()
+            };
+
+            string requestBody = JsonSerializer.Serialize(req);
+
+            ApiMatchReqRes res = await ApiMatchReqHttpRequest(apiMatchReqURL, requestBody);
+
+            DevLog.Write($"매칭 요청 결과 : {res.Result}");
         }
 
         // 방 입장 요청

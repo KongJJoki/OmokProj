@@ -36,14 +36,13 @@ namespace GameServer.Services
             try
             {
                 // Hive 서버에 인증토큰 유효성 검사 요청
-                string verifyUrl = tokenVerifyUrl;
                 VerifyData verifyData = new VerifyData
                 {
                     Uid = userId,
                     AuthToken = authToken
                 };
 
-                EErrorCode httpRespond = await HttpRequest(verifyUrl, verifyData);
+                EErrorCode httpRespond = await HttpRequest(tokenVerifyUrl, verifyData);
                 if(httpRespond!=EErrorCode.None)
                 {
                     return new GameLoginResult(ErrorCode: httpRespond, SocketIp: "", SocketPort: "");
