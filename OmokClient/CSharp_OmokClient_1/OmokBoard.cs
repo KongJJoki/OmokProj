@@ -11,7 +11,7 @@ using System.Runtime.Versioning;
 #pragma warning disable CA1416
 
 namespace csharp_test_client
-{    
+{
     public partial class mainForm
     {
         CSCommon.OmokRule OmokLogic = new CSCommon.OmokRule();
@@ -35,15 +35,15 @@ namespace csharp_test_client
         private SoundPlayer 무르기요청;
         private SoundPlayer 오류효과음;
         #endregion
-                
+
         private int 전x좌표 = -1, 전y좌표 = -1;
-        
+
         bool IsMyTurn = false;
-        
+
         private bool AI모드 = true;
         private CSCommon.OmokRule.돌종류 컴퓨터돌;
 
-        int MyPlayerName;        
+        int MyPlayerName;
         int 흑돌플레이어Name;
         int 백돌플레이어Name;
         string MyStoneColor = "";
@@ -75,7 +75,7 @@ namespace csharp_test_client
         {
             MyPlayerName = myPlayerName;
 
-            if(isMyTurn)
+            if (isMyTurn)
             {
                 흑돌플레이어Name = myPlayerName;
                 백돌플레이어Name = otherPlayerName;
@@ -96,7 +96,7 @@ namespace csharp_test_client
             //시작효과음.Play();
 
             OmokLogic.StartGame();
-            
+
             //if (AI모드 == true && 컴퓨터돌 == 돌종류.흑돌)
             //컴퓨터두기();
 
@@ -208,6 +208,8 @@ namespace csharp_test_client
                 }
             }
 
+            현재턴_플레이어_정보();
+
             /*if (OmokLogic.게임종료 == false)
             {
                 for (int i = 0; i < 바둑판크기; i++)
@@ -234,7 +236,7 @@ namespace csharp_test_client
             Rectangle r = new Rectangle(시작위치 + 눈금크기 * x - 돌크기 / 2,
                 시작위치 + 눈금크기 * y - 돌크기 / 2, 돌크기, 돌크기);
 
-            if(stoneColor == "black")
+            if (stoneColor == "black")
             {
                 g.FillEllipse(검은색, r);
             }
@@ -243,14 +245,14 @@ namespace csharp_test_client
                 g.FillEllipse(흰색, r);
             }
 
-/*            if (OmokLogic.바둑판알(x, y) == (int)CSCommon.OmokRule.돌종류.흑돌)                              // 검은 돌
-            {
-                g.FillEllipse(검은색, r);
-            }
-            else if (OmokLogic.바둑판알(x, y) == (int)CSCommon.OmokRule.돌종류.백돌)                         // 흰 돌
-            {
-                g.FillEllipse(흰색, r);
-            }*/
+            /*            if (OmokLogic.바둑판알(x, y) == (int)CSCommon.OmokRule.돌종류.흑돌)                              // 검은 돌
+                        {
+                            g.FillEllipse(검은색, r);
+                        }
+                        else if (OmokLogic.바둑판알(x, y) == (int)CSCommon.OmokRule.돌종류.백돌)                         // 흰 돌
+                        {
+                            g.FillEllipse(흰색, r);
+                        }*/
         }
 
         void 현재돌표시()
@@ -265,7 +267,7 @@ namespace csharp_test_client
                     시작위치 + 눈금크기 * OmokLogic.현재돌y좌표 - 화점크기 / 2, 화점크기, 화점크기);
 
             // 초기화값이 -1이므로 -1보다 큰 값이 존재하면 찍은 값이 존재함
-            if (OmokLogic.전돌x좌표 >= 0 && OmokLogic.전돌y좌표 >= 0)       
+            if (OmokLogic.전돌x좌표 >= 0 && OmokLogic.전돌y좌표 >= 0)
             {
                 // 전돌 다시 찍어서 빨간 점 없애기
                 if (OmokLogic.바둑판알(OmokLogic.전돌x좌표, OmokLogic.전돌y좌표) == (int)CSCommon.OmokRule.돌종류.흑돌)
@@ -279,22 +281,32 @@ namespace csharp_test_client
             }
 
             // 화점 크기만큼 빨간 점 찍기
-            g.FillEllipse(빨간색, r);      
+            g.FillEllipse(빨간색, r);
         }
 
         void 현재턴_플레이어_정보()        // 화면 하단에 다음에 둘 돌의 색을 표시
         {
-            Graphics g = panel1.CreateGraphics();
-            string str;
-            Font 글꼴 = new Font("HY견고딕", 15);
+            if (!OmokLogic.게임종료)
+            {
+                Graphics g = panel1.CreateGraphics();
+                Font 글꼴 = new Font("HY견고딕", 15, FontStyle.Bold);
+                if (IsMyTurn)
+                {
+                    g.DrawString($"현재 턴 : Uid {MyPlayerName}", 글꼴, MakeBrush(MyStoneColor), (시작위치 + 120 + 돌크기), 600);
+                }
+                else
+                {
+                    g.DrawString($"현재 턴 : Uid {GetOtherPlayer(MyPlayerName)}", 글꼴, MakeBrush(EnemyStoneColor), (시작위치 + 120 + 돌크기), 600);
+                }
+            }
 
-            if (OmokLogic.Is흑돌차례())       
+            /*if (OmokLogic.Is흑돌차례())
             {
                 str = "현재 턴 돌";
                 g.FillEllipse(검은색, 시작위치 + 100, 599, 돌크기, 돌크기);
                 g.DrawString(str, 글꼴, 검은색, 시작위치, 600);
 
-                g.DrawString($"PlayerName: {흑돌플레이어Name }", 글꼴, 검은색, (시작위치 + 120 + 돌크기), 600);
+                g.DrawString($"PlayerName: {흑돌플레이어Name}", 글꼴, 검은색, (시작위치 + 120 + 돌크기), 600);
             }
 
             else                 // 다음 돌 표시(흰 돌)
@@ -303,10 +315,21 @@ namespace csharp_test_client
                 g.FillEllipse(흰색, 시작위치 + 100, 599, 돌크기, 돌크기);
                 g.DrawString(str, 글꼴, 검은색, 시작위치, 600);
 
-                g.DrawString($"PlayerName: {백돌플레이어Name }", 글꼴, 검은색, (시작위치 + 120 + 돌크기), 600);
-            }            
+                g.DrawString($"PlayerName: {백돌플레이어Name}", 글꼴, 검은색, (시작위치 + 120 + 돌크기), 600);
+            }*/
         }
 
+        SolidBrush MakeBrush(string stoneColor)
+        {
+            if(stoneColor == "black")
+            {
+                return 검은색;
+            }
+            else
+            {
+                return 흰색;
+            }
+        }
 
         private void panel1_MouseDown(object sender, MouseEventArgs e)
         {
@@ -333,7 +356,7 @@ namespace csharp_test_client
                 return;
             }
             // 바둑판 해당 좌표에 아무것도 없고, 게임이 끝나지 않았으면
-            else if (OmokLogic.바둑판알(x, y) == (int)CSCommon.OmokRule.돌종류.없음 && !OmokLogic.게임종료)             
+            else if (OmokLogic.바둑판알(x, y) == (int)CSCommon.OmokRule.돌종류.없음 && !OmokLogic.게임종료)
             {
                 //플레이어_돌두기(false, x, y);
             }
@@ -350,7 +373,7 @@ namespace csharp_test_client
                             return;
                         }*/
 
-            if(nextTurnUserUid.ToString() == textBoxSocketID.Text)
+            if (nextTurnUserUid.ToString() == textBoxSocketID.Text)
             {
                 돌그리기(EnemyStoneColor, x, y);
             }
@@ -388,10 +411,10 @@ namespace csharp_test_client
             {
                 return;
             }
-            else if (OmokLogic.바둑판알(x, y) == (int)CSCommon.OmokRule.돌종류.없음 && 
-                        !OmokLogic.게임종료 && 
+            else if (OmokLogic.바둑판알(x, y) == (int)CSCommon.OmokRule.돌종류.없음 &&
+                        !OmokLogic.게임종료 &&
                         (전x좌표 != x || 전y좌표 != y)
-                        )  
+                        )
             {
                 // 바둑판 해당 좌표에 아무것도 없고, 좌표가 변경되면
                 Graphics g = panel1.CreateGraphics();
@@ -403,7 +426,7 @@ namespace csharp_test_client
                                         시작위치 + 눈금크기 * y - 돌크기 / 2, 돌크기, 돌크기);
 
                 // 먼저 그린 잔상을 지우고 새로운 잔상을 그린다.
-                panel1.Invalidate(앞에찍은돌을지우기위한구역);               
+                panel1.Invalidate(앞에찍은돌을지우기위한구역);
 
                 if (OmokLogic.Is흑돌차례())
                     g.FillEllipse(투명한검은색, r);
@@ -434,6 +457,6 @@ namespace csharp_test_client
             OmokLogic.오목확인(x, y);
         }
 
-               
+
     }
 }
