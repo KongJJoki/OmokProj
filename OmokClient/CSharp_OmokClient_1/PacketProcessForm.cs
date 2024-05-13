@@ -214,7 +214,7 @@ namespace csharp_test_client
 
             플레이어_돌두기(notifyPkt.NextTurnUserUid, notifyPkt.PosX, notifyPkt.PosY);
 
-            if(notifyPkt.NextTurnUserUid.ToString() == textBoxSocketID.Text)
+            if (notifyPkt.NextTurnUserUid.ToString() == textBoxSocketID.Text)
             {
                 IsMyTurn = true;
                 DevLog.Write($"오목 정보: {EnemyStoneColor}돌 X: {notifyPkt.PosX},  Y: {notifyPkt.PosY},   다음 턴:{notifyPkt.NextTurnUserUid}");

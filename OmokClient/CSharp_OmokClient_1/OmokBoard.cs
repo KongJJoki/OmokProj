@@ -209,7 +209,6 @@ namespace csharp_test_client
             }
 
             현재턴_플레이어_정보();
-
             /*if (OmokLogic.게임종료 == false)
             {
                 for (int i = 0; i < 바둑판크기; i++)
@@ -286,18 +285,21 @@ namespace csharp_test_client
 
         void 현재턴_플레이어_정보()        // 화면 하단에 다음에 둘 돌의 색을 표시
         {
-            if (!OmokLogic.게임종료)
+            Graphics g = panel1.CreateGraphics();
+            Font 글꼴 = new Font("HY견고딕", 15, FontStyle.Bold);
+
+            if (OmokLogic.게임종료)
             {
-                Graphics g = panel1.CreateGraphics();
-                Font 글꼴 = new Font("HY견고딕", 15, FontStyle.Bold);
-                if (IsMyTurn)
-                {
-                    g.DrawString($"현재 턴 : Uid {MyPlayerName}", 글꼴, MakeBrush(MyStoneColor), (시작위치 + 120 + 돌크기), 600);
-                }
-                else
-                {
-                    g.DrawString($"현재 턴 : Uid {GetOtherPlayer(MyPlayerName)}", 글꼴, MakeBrush(EnemyStoneColor), (시작위치 + 120 + 돌크기), 600);
-                }
+                return;
+            }
+
+            if (IsMyTurn)
+            {
+                g.DrawString($"현재 턴 : {MyStoneColor} Stone", 글꼴, MakeBrush(MyStoneColor), (시작위치 + 120 + 돌크기), 600);
+            }
+            else
+            {
+                g.DrawString($"현재 턴 : {EnemyStoneColor} Stone", 글꼴, MakeBrush(EnemyStoneColor), (시작위치 + 120 + 돌크기), 600);
             }
 
             /*if (OmokLogic.Is흑돌차례())
@@ -321,7 +323,7 @@ namespace csharp_test_client
 
         SolidBrush MakeBrush(string stoneColor)
         {
-            if(stoneColor == "black")
+            if (stoneColor == "black")
             {
                 return 검은색;
             }
