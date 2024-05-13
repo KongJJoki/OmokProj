@@ -13,6 +13,7 @@ namespace OmokGameServer
         ILog mainLogger;
         DBConfig dbConfig;
         ServerOption serverOption;
+        MySqlCompiler compiler;
 
         bool isdbPacketProcessorRunning;
         Thread[] dbProcessorThList;
@@ -28,6 +29,7 @@ namespace OmokGameServer
             this.mainLogger = mainLogger;
             this.dbConfig = dbConfig;
             this.serverOption = serverOption;
+            compiler = new MySqlCompiler();
 
             isdbPacketProcessorRunning = true;
             dbProcessorThList = new Thread[serverOption.DBProcessThreadCount];
@@ -64,7 +66,6 @@ namespace OmokGameServer
             dbConnection = new MySqlConnection(dbConfig.GameDB);
             dbConnection.Open();
 
-            MySqlCompiler compiler = new MySqlCompiler();
             QueryFactory queryFactory = new QueryFactory(dbConnection, compiler);
 
             while (isdbPacketProcessorRunning)
