@@ -20,14 +20,28 @@ namespace GameServer.Repository
 
         // Redis연결은 애플리케이션 종료 시 자동으로 닫힘 ConnectionMultiplexer가 관리
 
-        public async Task<bool> InsertAuthToken(string userId, string authToken)
+        public async Task<bool> InsertAuthToken(string uid, string authToken)
         {
             TimeSpan expireTime = TimeSpan.FromHours(24);
-            string key = userId;
+            string key = uid;
             string value = authToken;
             RedisString<string> redisString = new RedisString<string>(redisDB, key, expireTime);
             // SetAsync가 비동기 메서드라서 await 필요
             return await redisString.SetAsync(authToken); // SetAsync 성공 시 true 실패 시 false 반환
+        }
+
+        public async Task<string> GetAuthToken(string uid)
+        {
+            try
+            {
+                RedisString<string> redisString = new RedisString<string>(redisDB, uid, null);
+                RedisResult<string> result = await redisString.GetAsync();
+                return result.Value;
+            }
+            catch(InvalidOperationException)
+            {
+                return null;
+            }
         }
     }
 }

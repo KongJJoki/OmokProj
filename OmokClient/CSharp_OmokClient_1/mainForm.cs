@@ -376,16 +376,21 @@ namespace csharp_test_client
 
         public async Task<HiveLoginRes> HiveLoginHttpRequest(string httpUrl, string requestBody)
         {
-            HttpResponseMessage response = await httpClient.PostAsync(httpUrl,
-                new StringContent(requestBody, Encoding.UTF8, "application/json")); // 요청 본문의 문자 인코딩 + 미디어 타입 지정
+            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, httpUrl);
+
+            requestMessage.Headers.Add("Uid", textBoxApiLoginUid.Text);
+            requestMessage.Headers.Add("AuthToken", textBoxApiLoginAuthToken.Text);
+
+            requestMessage.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await httpClient.SendAsync(requestMessage);
 
             HiveLoginRes res = new HiveLoginRes();
 
-            if (response.IsSuccessStatusCode) // 성공해서 응답 받은 경우
+            if (response.IsSuccessStatusCode)
             {
                 string responseBody = await response.Content.ReadAsStringAsync();
 
-                // JsonDoument : JSON 데이터 읽고 파싱 JsonElemnt : JSON 데이터 접근 및 값 가져오기
                 JsonDocument jsonDocument = JsonDocument.Parse(responseBody);
                 JsonElement jsonResult = jsonDocument.RootElement;
 
@@ -527,7 +532,6 @@ namespace csharp_test_client
 
             return res;
         }
-
 
 
         // GameApi 서버에 로그인 요청

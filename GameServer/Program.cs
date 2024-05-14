@@ -2,6 +2,7 @@ using GameServer;
 using GameServer.Repository;
 using GameServer.Services;
 using GameServer.Services.Interface;
+using GameServer.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,5 +22,7 @@ builder.Services.AddControllers();
 var app = builder.Build();
 
 app.MapControllers();
+
+app.UseMiddleware<CheckAuthTokenValid>();
 
 app.Run();
