@@ -1,7 +1,7 @@
 using CloudStructures;
+using CloudStructures.Structures;
 using MatchingServer.Model.DTO;
 using Microsoft.Extensions.Options;
-using StackExchange.Redis;
 using System.Collections.Concurrent;
 using System.Text.Json;
 
@@ -32,11 +32,16 @@ namespace MatchingServer
 
         RedisDBConfig redisDBConfig;
         RedisConfig redisConfig;
-        RedisConnection redisConn1;
-        RedisConnection redisConn2;
+        RedisConnection redisConnMatchReq;
+        RedisConnection redisConnMatchComplete;
 
-        string pubKey = "";
-        string subKey = "";
+        TimeSpan defaultExpireTime = TimeSpan.FromDays(1);
+
+        RedisList<string> matchReqList;
+        RedisList<string> matchCompleteList;
+
+        string matchReqListKey = "";
+        string matchCompleteListKey = "";
 
         public MatchWoker(IOptions<RedisDBConfig> redisDBConfig)
         {
@@ -44,12 +49,12 @@ namespace MatchingServer
 
             this.redisDBConfig = redisDBConfig.Value;
             redisConfig = new RedisConfig("redisDB", this.redisDBConfig.RedisDB);
-            pubKey = this.redisDBConfig.PubKey;
-            subKey = this.redisDBConfig.SubKey;
+            matchReqListKey = this.redisDBConfig.MatchReqListKey;
+            matchCompleteListKey = this.redisDBConfig.MatchCompleteListKey;
 
             //TODO: Redis 연결 및 초기화 한다
-            redisConn1 = new RedisConnection(redisConfig);
-            redisConn2 = new RedisConnection(redisConfig);
+            redisConnMatchReq = new RedisConnection(redisConfig);
+            redisConnMatchComplete = new RedisConnection(redisConfig);
 
             _reqWorker = new Thread(RunMatching);
             _reqWorker.Start();
@@ -76,15 +81,18 @@ namespace MatchingServer
             return (false, null);
         }
 
-        public record MatchSuccessRes(int user1Uid, int user2Uid);
+        public record MatchReqForm(int user1Uid, int user2Uid);
+        public record MatchCompeleteForm(int roomNum, int user1Uid, int user2Uid);
 
-        void RunMatching()
+        async void RunMatching()
         {
+            // 키 값에 해당하는 리스트가 없으면 만들고, 있으면 가져옴
+            matchReqList = new RedisList<string>(redisConnMatchReq, matchReqListKey, defaultExpireTime);
+
             while (true)
             {
                 try
                 {
-
                     if (_reqQueue.Count < 2)
                     {
                         Thread.Sleep(1);
@@ -98,44 +106,48 @@ namespace MatchingServer
                     _reqQueue.TryDequeue(out userUid1);
                     _reqQueue.TryDequeue(out userUid2);
 
-                    var matchData = new MatchSuccessRes(user1Uid: userUid1, user2Uid: userUid2);
+                    var matchData = new MatchReqForm(user1Uid: userUid1, user2Uid: userUid2);
                     var jsonData = JsonSerializer.Serialize(matchData);
 
-                    //TODO: Redis의 Pub/Sub을 이용해서 매칭된 유저들을 게임서버에 전달한다.
-                    var pub = redisConn1.GetConnection().GetSubscriber();
-                    pub.Publish(pubKey, jsonData);
-
+                    //TODO: Redis의 List를 이용해서 매칭 요청 List에 추가 -> 대전 서버 쪽에서 스레드로 돌면서 List에서 요소 가져오기(빈 방 있으면) -> 대전 서버가 다른 List에 요소 추가
+                    await matchReqList.RightPushAsync(jsonData);
                 }
                 catch (Exception ex)
                 {
-
+                    
                 }
             }
         }
 
         void RunMatchingComplete()
         {
+            matchCompleteList = new RedisList<string>(redisConnMatchComplete, matchCompleteListKey, defaultExpireTime);
+
             while (true)
             {
                 try
                 {
-                    //TODO: Redis의 Pub/Sub을 이용해서 매칭된 결과를 게임서버로 받는다
-                    var sub = redisConn2.GetConnection().GetSubscriber();
-                    sub.Subscribe(subKey, MatchingCompeleteHandler);
+                    //TODO: Redis의 List를 이용해서 매칭이 완료된 내용을 가져온다
+                    var result = matchCompleteList.LeftPopAsync().Result;
+
+                    if(result.HasValue == false)
+                    {
+                        continue;
+                    }
+
+                    var matchCompeleteRes = JsonSerializer.Deserialize<MatchCompeleteForm>(result.Value);
 
                     //TODO: 매칭 결과를 _completeDic에 넣는다
                     // 2명이 하므로 각각 유저를 대상으로 총 2개를 _completeDic에 넣어야 한다
+                    _completeDic[matchCompeleteRes.user1Uid] = matchCompeleteRes.roomNum;
+                    _completeDic[matchCompeleteRes.user2Uid] = matchCompeleteRes.roomNum;
+
                 }
                 catch (Exception ex)
                 {
 
                 }
             }
-        }
-
-        void MatchingCompeleteHandler(RedisChannel channel, RedisValue message)
-        {
-            // 받은 메세지 해석해서 _completeDic에 uid,방번호 넣기?
         }
 
 
