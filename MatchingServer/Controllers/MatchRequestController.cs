@@ -6,11 +6,11 @@ namespace MatchingServer.Controllers
 
     [ApiController]
     [Route("[controller]")]
-    public class RequestMatchController : ControllerBase
+    public class MatchRequestController : ControllerBase
     {
         IMatchWoker _matchWorker;
 
-        public RequestMatchController(IMatchWoker matchWorker)
+        public MatchRequestController(IMatchWoker matchWorker)
         {
             _matchWorker = matchWorker;
         }
