@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 
 WebApplication app = builder.Build();
 
-app.MapDefaultControllerRoute();
+app.MapControllers();
 
 
 app.Run();

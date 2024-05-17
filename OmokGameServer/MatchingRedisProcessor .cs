@@ -46,7 +46,7 @@ namespace OmokGameServer
 
             isMatchingRedisProcessorRunning = true;
             matchingProcessorTh = new Thread(Process);
-
+            matchingProcessorTh.Start();
         }
 
         public void ProcessorStop()
@@ -57,7 +57,7 @@ namespace OmokGameServer
         public record MatchReqForm(int user1Uid, int user2Uid);
         public record MatchCompeleteForm(int roomNum, int user1Uid, int user2Uid);
 
-        async void Process()
+        void Process()
         {
             matchReqList = new RedisList<string>(redisConnMatchReq, matchReqListKey, defaultExpireTime);
             matchCompleteList = new RedisList<string>(redisConnMatchComplete, matchCompleteListKey, defaultExpireTime);
@@ -86,7 +86,7 @@ namespace OmokGameServer
                     var matchCompeleteData = new MatchCompeleteForm(emptyRoomNum, matchReqData.user1Uid, matchReqData.user2Uid);
                     var jsonData = JsonSerializer.Serialize(matchCompeleteData);
 
-                    await matchCompleteList.RightPushAsync(jsonData);
+                    matchCompleteList.RightPushAsync(jsonData);
                     mainLogger.Debug($"매칭 결과 리스트에 추가(방 번호 : {emptyRoomNum})");
                 }
                 catch (Exception ex)

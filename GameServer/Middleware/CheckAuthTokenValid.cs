@@ -1,4 +1,5 @@
 using GameServer.Repository;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace GameServer.Middleware
 {
@@ -15,8 +16,9 @@ namespace GameServer.Middleware
 
         public async Task Invoke(HttpContext context)
         {
+            /*var url = context.Request.GetDisplayUrl();
             var urlString = context.Request.Path.Value;
-            if(urlString == "/gamelogin")
+            if(string.Compare(urlString, "/GameLogin", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 await nextMiddleware(context);
                 return;
@@ -35,7 +37,7 @@ namespace GameServer.Middleware
             if(originAuthToken == null || receivedAuthToken != originAuthToken)
             {
                 return;
-            }
+            }*/
 
             await nextMiddleware(context);
         }

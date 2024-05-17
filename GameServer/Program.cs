@@ -16,13 +16,14 @@ builder.Services.AddTransient<IGameDB, GameDB>();
 builder.Services.AddTransient<IRedisDB, RedisDB>();
 
 builder.Services.AddTransient<IGameLoginService, GameLoginService>();
+builder.Services.AddTransient<IMatchRequestService, MatchRequestService>();
 
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.MapControllers();
+//app.UseMiddleware<CheckAuthTokenValid>();
 
-app.UseMiddleware<CheckAuthTokenValid>();
+app.MapControllers();
 
 app.Run();

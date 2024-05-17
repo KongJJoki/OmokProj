@@ -18,7 +18,7 @@ namespace MatchingServer.Controllers
         [HttpPost]
         public MatchResponse MatchRequest(MatchRequest request)
         {
-            MatchResponse response = new();
+            MatchResponse response = new MatchResponse();
 
             _matchWorker.AddUser(request.Uid);
 
