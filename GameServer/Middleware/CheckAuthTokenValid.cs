@@ -7,9 +7,10 @@ namespace GameServer.Middleware
         private readonly IRedisDB redisDB;
         private readonly RequestDelegate nextMiddleware;
 
-        public CheckAuthTokenValid(IRedisDB redisDB)
+        public CheckAuthTokenValid(IRedisDB redisDB, RequestDelegate nextMiddleware)
         {
             this.redisDB = redisDB;
+            this.nextMiddleware = nextMiddleware;
         }
 
         public async Task Invoke(HttpContext context)
