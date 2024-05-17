@@ -55,6 +55,9 @@ namespace OmokGameServer
                     room.NotifyOmokLose(room.GetOtherUser(user));
 
                     room.SaveGameResult(user, otherUser);
+
+                    room.GameFinish();
+                    roomManager.EnqueueEmptyRoom(room.RoomNumber);
                 }
             }
             catch (Exception ex)

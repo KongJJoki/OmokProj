@@ -1,0 +1,99 @@
+using SuperSocket.SocketBase.Logging;
+using CloudStructures;
+using NLog;
+using CloudStructures.Structures;
+using System.Text.Json;
+
+namespace OmokGameServer
+{
+    class MatchingRedisProcessor
+    {
+        ILog mainLogger;
+        MatchingConfig matchingConfig;
+        ServerOption serverOption;
+        RedisConfig matchingRedisConfig;
+
+        string matchReqListKey = "";
+        string matchCompleteListKey = "";
+
+        RedisConnection redisConnMatchReq;
+        RedisConnection redisConnMatchComplete;
+
+        RedisList<string> matchReqList;
+        RedisList<string> matchCompleteList;
+
+        TimeSpan defaultExpireTime = TimeSpan.FromDays(1);
+
+        RoomManager roomManager;
+
+        bool isMatchingRedisProcessorRunning;
+        Thread matchingProcessorTh;
+
+        public void ProcessorStart(ILog mainLogger, MatchingConfig matchingConfig, ServerOption serverOption, RoomManager roomManager)
+        {
+            this.mainLogger = mainLogger;
+            this.matchingConfig = matchingConfig;
+            this.serverOption = serverOption;
+            matchingRedisConfig = new RedisConfig("MatchingRedis", this.matchingConfig.MatchingRedis);
+
+            matchReqListKey = this.matchingConfig.MatchReqListKey;
+            matchCompleteListKey = this.matchingConfig.MatchCompleteListKey;
+
+            redisConnMatchReq = new RedisConnection(matchingRedisConfig);
+            redisConnMatchComplete = new RedisConnection(matchingRedisConfig);
+
+            this.roomManager = roomManager;
+
+            isMatchingRedisProcessorRunning = true;
+            matchingProcessorTh = new Thread(Process);
+
+        }
+
+        public void ProcessorStop()
+        {
+            isMatchingRedisProcessorRunning = false;
+        }
+
+        public record MatchReqForm(int user1Uid, int user2Uid);
+        public record MatchCompeleteForm(int roomNum, int user1Uid, int user2Uid);
+
+        async void Process()
+        {
+            matchReqList = new RedisList<string>(redisConnMatchReq, matchReqListKey, defaultExpireTime);
+            matchCompleteList = new RedisList<string>(redisConnMatchComplete, matchCompleteListKey, defaultExpireTime);
+
+            while (isMatchingRedisProcessorRunning)
+            {
+                try
+                {
+                    // 빈 방 있는지 체크
+                    if(!roomManager.IsEmptyRoomExist())
+                    {
+                        continue;
+                    }
+
+                    // 레디스 리스트에서 값 있으면 가져오기
+                    var result = matchReqList.LeftPopAsync().Result;
+                    if(!result.HasValue)
+                    {
+                        continue;
+                    }
+
+                    var matchReqData = JsonSerializer.Deserialize<MatchReqForm>(result.Value);
+                    mainLogger.Debug($"매칭 요청 접수(user1 : {matchReqData.user1Uid} / user2 : {matchReqData.user2Uid})");
+
+                    int emptyRoomNum = roomManager.GetEmptyRoomNum();
+                    var matchCompeleteData = new MatchCompeleteForm(emptyRoomNum, matchReqData.user1Uid, matchReqData.user2Uid);
+                    var jsonData = JsonSerializer.Serialize(matchCompeleteData);
+
+                    await matchCompleteList.RightPushAsync(jsonData);
+                    mainLogger.Debug($"매칭 결과 리스트에 추가(방 번호 : {emptyRoomNum})");
+                }
+                catch (Exception ex)
+                {
+                    mainLogger.Error($"MatchingRedisPacketProcessor Error : {ex}");
+                }
+            }
+        }
+    }
+}

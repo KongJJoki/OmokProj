@@ -31,7 +31,7 @@ namespace OmokGameServer
             {
                 var room = roomManager.GetRoom(user.roomNumber);
                 room.GameFinish();
-                room.RemoveUser(user);
+                roomManager.EnqueueEmptyRoom(room.RoomNumber);
             }
 
             ERROR_CODE userConnectedCheck = userManager.CheckUserConnected(userSessionId);

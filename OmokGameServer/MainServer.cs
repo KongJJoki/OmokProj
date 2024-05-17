@@ -17,6 +17,7 @@ namespace OmokGameServer
 
         ServerOption serverOption;
         DBConfig dbConfig;
+        MatchingConfig matchingConfig;
         IServerConfig m_Config;
 
         private readonly IHostApplicationLifetime _appLifetime;
@@ -24,14 +25,16 @@ namespace OmokGameServer
         PacketProcessor packetProcessor = new PacketProcessor();
         DBProcessor dbProcessor = new DBProcessor();
         RedisProcessor redisProcessor = new RedisProcessor();
+        MatchingRedisProcessor matchingRedisProcessor = new MatchingRedisProcessor();
         UserManager userManager = new UserManager();
         RoomManager roomManager = new RoomManager();
 
-        public MainServer(IHostApplicationLifetime appLifetime, IOptions<ServerOption> serverConfig, IOptions<DBConfig> dbConfig)
+        public MainServer(IHostApplicationLifetime appLifetime, IOptions<ServerOption> serverConfig, IOptions<DBConfig> dbConfig, IOptions<MatchingConfig> matchingConfig)
             : base(new DefaultReceiveFilterFactory<ReceiveFilter, OmokBinaryRequestInfo>())
         {
             serverOption = serverConfig.Value;
             this.dbConfig = dbConfig.Value;
+            this.matchingConfig = matchingConfig.Value;
             _appLifetime = appLifetime;
 
             NewSessionConnected += new SessionHandler<ClientSession>(OnClientConnect);
@@ -76,6 +79,7 @@ namespace OmokGameServer
                 packetProcessor.ProcessorStart(userManager, roomManager, mainLogger, serverOption, SendData, PassPacketToDBProcessor, PassPacketToRedisProcessor);
                 dbProcessor.ProcessorStart(mainLogger, dbConfig, serverOption);
                 redisProcessor.ProcessorStart(mainLogger, dbConfig, serverOption, PassPacketToPacketProcessor);
+                matchingRedisProcessor.ProcessorStart(mainLogger, matchingConfig, serverOption, roomManager);
 
                 Settings();
                 base.Start();
@@ -94,12 +98,13 @@ namespace OmokGameServer
             packetProcessor.ProcessorStop();
             dbProcessor.ProcessorStop();
             redisProcessor.ProcessorStop();
+            matchingRedisProcessor.ProcessorStop();
         }
 
         public void Settings()
         {
             userManager.Init(serverOption, mainLogger, PassPacketToPacketProcessor, CloseConnection);
-            roomManager.Init(serverOption, PassPacketToPacketProcessor);
+            roomManager.Init(serverOption, PassPacketToPacketProcessor, CloseConnection);
             roomManager.CreateRooms();
             Room.sendFunc = SendData;
         }

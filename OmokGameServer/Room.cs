@@ -19,7 +19,8 @@ namespace OmokGameServer
         public bool isGameStart;
 
         public static Func<string, byte[], bool> sendFunc;
-        public Action<ServerPacketData> pushPacketInProcessorFunc;
+        Action<ServerPacketData> pushPacketInProcessorFunc;
+        Func<string, bool> userConnectionCloseFunc;
 
         List<User> userList = new List<User>();
         Dictionary<User, bool> readyStatusDictionary = new Dictionary<User, bool>();
@@ -27,7 +28,7 @@ namespace OmokGameServer
         // 게임 관련들은 방말고 게임 안으로 넣기
         OmokBoard omokBoard = new OmokBoard();
 
-        public void Init(int roomNum, int maxUserNum, Action<ServerPacketData> pushPacketInProcessorFunc)
+        public void Init(int roomNum, int maxUserNum, Action<ServerPacketData> pushPacketInProcessorFunc, Func<string, bool> userConnectionCloseFunc)
         {
             RoomNumber = roomNum;
             maxUserNumber = maxUserNum;
@@ -35,6 +36,7 @@ namespace OmokGameServer
             isGameStart = false;
             ForceTurnChangeCount = 0;
             this.pushPacketInProcessorFunc = pushPacketInProcessorFunc;
+            this.userConnectionCloseFunc = userConnectionCloseFunc;
         }
 
 
@@ -74,6 +76,15 @@ namespace OmokGameServer
             readyStatusDictionary.Remove(user);
 
             return ERROR_CODE.None;
+        }
+
+        void RemoveAllUser()
+        {
+            List<User> nowUsers = userList;
+            foreach(var user in nowUsers)
+            {
+                RemoveUser(user);
+            }
         }
 
         public bool CheckUserExist(User user)
@@ -164,6 +175,16 @@ namespace OmokGameServer
             SetAllUserNotReady();
             isGameStart = false;
             omokBoard.ClearOmokBoard();
+            CloseUsersConnection();
+            RemoveAllUser();
+        }
+
+        public void CloseUsersConnection()
+        {
+            foreach(var user in userList)
+            {
+                userConnectionCloseFunc(user.sessionId);
+            }
         }
 
         void SetAllUserNotReady()
@@ -274,8 +295,6 @@ namespace OmokGameServer
 
         public void NotifyOmokWin(User winUser)
         {
-            GameFinish();
-
             PKTNTFOmokWin omokWinNTF = new PKTNTFOmokWin();
             omokWinNTF.WinUserUid = winUser.uid;
 
@@ -287,8 +306,6 @@ namespace OmokGameServer
 
         public void NotifyOmokLose(User loseUser)
         {
-            GameFinish();
-
             PKTNTFOmokLose omokLoseNTF = new PKTNTFOmokLose();
             omokLoseNTF.LoseUserUid = loseUser.uid;
 
@@ -305,8 +322,6 @@ namespace OmokGameServer
 
         public void NotifyGameForceFinish()
         {
-            GameFinish();
-
             PKTNTFForceGameFinish forceGameFinish = new PKTNTFForceGameFinish();
 
             var bodyData = MemoryPackSerializer.Serialize(forceGameFinish);
@@ -328,17 +343,6 @@ namespace OmokGameServer
             var sendData = PacketToBytes.MakeToPacket(PACKET_ID.TurnChangeNotify, bodyData);
 
             Broadcast("", sendData);
-        }
-    }
-
-    public class GameWinEventArgs : EventArgs
-    {
-        public string WinUserId { get; }
-        public string LoseUserId { get; }
-        public GameWinEventArgs(string winUserId, string loseUserId)
-        {
-            WinUserId = winUserId;
-            LoseUserId = loseUserId;
         }
     }
 }

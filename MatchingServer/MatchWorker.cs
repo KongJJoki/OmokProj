@@ -106,8 +106,8 @@ namespace MatchingServer
                     _reqQueue.TryDequeue(out userUid1);
                     _reqQueue.TryDequeue(out userUid2);
 
-                    var matchData = new MatchReqForm(user1Uid: userUid1, user2Uid: userUid2);
-                    var jsonData = JsonSerializer.Serialize(matchData);
+                    var matchReqData = new MatchReqForm(user1Uid: userUid1, user2Uid: userUid2);
+                    var jsonData = JsonSerializer.Serialize(matchReqData);
 
                     //TODO: Redis의 List를 이용해서 매칭 요청 List에 추가 -> 대전 서버 쪽에서 스레드로 돌면서 List에서 요소 가져오기(빈 방 있으면) -> 대전 서버가 다른 List에 요소 추가
                     await matchReqList.RightPushAsync(jsonData);

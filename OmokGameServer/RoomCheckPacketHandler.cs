@@ -46,12 +46,16 @@ namespace OmokGameServer
                 if (roomManager.CheckGameDuration(checkRoomNumberOffset) >= gameDurationLimitTime)
                 {
                     roomList[checkRoomNumberOffset].NotifyGameForceFinish();
+                    roomList[checkRoomNumberOffset].GameFinish();
+                    roomManager.EnqueueEmptyRoom(roomList[checkRoomNumberOffset].RoomNumber);
                     continue;
                 }
 
                 if (roomList[checkRoomNumberOffset].ForceTurnChangeCount >= serverOption.MaxTurnChangeCount)
                 {
                     roomList[checkRoomNumberOffset].NotifyGameForceFinish();
+                    roomList[checkRoomNumberOffset].GameFinish();
+                    roomManager.EnqueueEmptyRoom(roomList[checkRoomNumberOffset].RoomNumber);
                     continue;
                 }
 

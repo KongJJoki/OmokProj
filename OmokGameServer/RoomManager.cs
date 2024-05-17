@@ -1,4 +1,5 @@
 using PacketDefine;
+using System.Collections.Concurrent;
 
 namespace OmokGameServer
 {
@@ -6,14 +7,19 @@ namespace OmokGameServer
     {
         ServerOption serverOption;
         Action<ServerPacketData> pushPacketInProcessorFunc;
+        Func<string, bool> userConnectionCloseFunc;
 
         Timer turnCheckTimer;
         List<Room> roomList = new List<Room>();
+        Dictionary<int, int> nowRoomMemberCount = new Dictionary<int, int>(); // 현재 방의 인원 수 -> 1분 이상 1명인 방 있으면 매칭 상대 접속 실패?로 퇴장시키기
 
-        public void Init(ServerOption serverOption, Action<ServerPacketData> pushPacketInProcessorFunc)
+        ConcurrentQueue<int> emptyRoomNumber = new ConcurrentQueue<int>();
+
+        public void Init(ServerOption serverOption, Action<ServerPacketData> pushPacketInProcessorFunc, Func<string, bool> userConnectionCloseFunc)
         {
             this.serverOption = serverOption;
             this.pushPacketInProcessorFunc = pushPacketInProcessorFunc;
+            this.userConnectionCloseFunc = userConnectionCloseFunc;
             SetTimer();
         }
 
@@ -41,9 +47,10 @@ namespace OmokGameServer
             for(int i = 0; i< maxRoomCount; i++)
             {
                 Room room = new Room();
-                room.Init(nowLastRoomNum, maxUserCount, pushPacketInProcessorFunc);
+                room.Init(nowLastRoomNum, maxUserCount, pushPacketInProcessorFunc, userConnectionCloseFunc);
 
                 roomList.Add(room);
+                emptyRoomNumber.Enqueue(nowLastRoomNum);
 
                 nowLastRoomNum++;
             }
@@ -74,6 +81,23 @@ namespace OmokGameServer
         public TimeSpan CheckGameDuration(int roomIndex)
         {
             return DateTime.Now - roomList[roomIndex].gameStartTime;
+        }
+
+        public bool IsEmptyRoomExist()
+        {
+            return !emptyRoomNumber.IsEmpty;
+        }
+
+        public int GetEmptyRoomNum()
+        {
+            int emptyRoomNum = 0;
+            emptyRoomNumber.TryDequeue(out emptyRoomNum);
+            return emptyRoomNum;
+        }
+
+        public void EnqueueEmptyRoom(int roomNum)
+        {
+            emptyRoomNumber.Enqueue(roomNum);
         }
     }
 }

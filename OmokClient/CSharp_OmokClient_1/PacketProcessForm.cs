@@ -87,6 +87,7 @@ namespace csharp_test_client
 
         void PacketProcess_ForceDisconnected(byte[] packetData)
         {
+            heartBeatTimer.Dispose();
             DevLog.Write("Force Disconnected");
         }
 
