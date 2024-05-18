@@ -75,6 +75,9 @@ namespace MatchingServer
                 matchingData.SockIP = _completeDic[uid].IP;
                 matchingData.SockPort = _completeDic[uid].Port;
                 matchingData.RoomNumber = _completeDic[uid].RoomNumber;
+
+                _completeDic.TryRemove(uid, out _);
+
                 return (true, matchingData);
             }
 
