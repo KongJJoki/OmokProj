@@ -51,7 +51,7 @@ namespace OmokGameServer
                     break;
                 }
 
-                bool isHeartBeatMeaningful = userManager.CheckHeartBeatMeaningful(heartBeatCheckUserIndexOffset);
+                bool isHeartBeatMeaningful = userManager.CheckAndCutHeartBeat(heartBeatCheckUserIndexOffset);
                 if (isHeartBeatMeaningful)
                 {
                     HeartBeatRequestToClient(packet.sessionId);

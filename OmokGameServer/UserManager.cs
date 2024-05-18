@@ -216,7 +216,7 @@ namespace OmokGameServer
             return DateTime.Now - userArrayForHeartBeatCheck[userIndex].lastHeartBeatTime;
         }
 
-        public bool CheckHeartBeatMeaningful(int userIndex)
+        public bool CheckAndCutHeartBeat(int userIndex)
         {
             if(CheckUserArrayIsNull(userIndex))
             {

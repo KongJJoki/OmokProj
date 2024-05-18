@@ -262,14 +262,8 @@ namespace csharp_test_client
         }
 
 
-        /*public void SetDisconnectd()
+        public void SetDisconnectd()
         {
-            if (btnConnect.Enabled == false)
-            {
-                btnConnect.Enabled = true;
-                btnDisconnect.Enabled = false;
-            }
-
             while (true)
             {
                 if (SendPacketQueue.TryDequeue(out var temp) == false)
@@ -278,13 +272,10 @@ namespace csharp_test_client
                 }
             }
 
-            listBoxRoomChatMsg.Items.Clear();
-            listBoxRoomUserList.Items.Clear();
-
             EndGame();
-
-            labelStatus.Text = "서버 접속이 끊어짐";
-        }*/
+            Network.Close();
+            heartBeatTimer.Dispose();
+        }
 
         void PostSendPacket(short packetID, byte[] packetData)
         {
@@ -749,6 +740,8 @@ namespace csharp_test_client
 
             PostSendPacket((short)PACKET_ID.RoomLeaveRequest, packet);
             DevLog.Write($"방 퇴장 요청:  {textBoxRoomNumber.Text} 번");
+
+            SetDisconnectd();
         }
 
         private void btnRoomChat_Click(object sender, EventArgs e)
