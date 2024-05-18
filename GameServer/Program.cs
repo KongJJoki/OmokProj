@@ -22,7 +22,7 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-//app.UseMiddleware<CheckAuthTokenValid>();
+app.UseMiddleware<CheckAuthTokenValid>();
 
 app.MapControllers();
 
