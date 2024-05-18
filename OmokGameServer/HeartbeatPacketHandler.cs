@@ -37,7 +37,6 @@ namespace OmokGameServer
 
         public void HeartBeatResponseFromClient(ServerPacketData packet)
         {
-            mainLogger.Debug($"{packet.sessionId} heartBeat Arrive");
             User user = userManager.GetUser(packet.sessionId);
             user.lastHeartBeatTime = DateTime.Now;
         }
