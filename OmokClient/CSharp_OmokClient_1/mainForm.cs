@@ -275,6 +275,19 @@ namespace csharp_test_client
             EndGame();
             Network.Close();
             heartBeatTimer.Dispose();
+
+            UpdateInvokeButtonEnable(btnMatching, true);
+            UpdateInvokeTextBox(btnMatching, "Matching");
+        }
+
+        void UpdateInvokeButtonEnable(Control control, bool enabled)
+        {
+            void UpdateButton()
+            {
+                control.Enabled = enabled;
+            }
+
+            control.Invoke(new MethodInvoker(UpdateButton));
         }
 
         void PostSendPacket(short packetID, byte[] packetData)
