@@ -4,7 +4,7 @@ namespace OmokGameServer
     {
         public int ServerUniqueID { get; set; }
 
-        public int IP { get; set; }
+        public string IP { get; set; }
 
         public int Port { get; set; }
 
