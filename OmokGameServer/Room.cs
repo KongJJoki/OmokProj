@@ -175,7 +175,7 @@ namespace OmokGameServer
             SetAllUserNotReady();
             isGameStart = false;
             omokBoard.ClearOmokBoard();
-            CloseUsersConnection();
+            //CloseUsersConnection();
             RemoveAllUser();
         }
 

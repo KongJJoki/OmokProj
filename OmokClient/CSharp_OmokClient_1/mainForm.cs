@@ -15,6 +15,7 @@ using System.Text.Json;
 using System.Text;
 using OmokClient.CSCommon;
 using Windows.Services.Maps;
+using static System.Net.Mime.MediaTypeNames;
 
 #pragma warning disable CA1416
 
@@ -102,6 +103,31 @@ namespace csharp_test_client
             else
             {
                 labelStatus.Text = string.Format("{0}. 서버에 접속 실패", DateTime.Now);
+            }
+
+            PacketBuffer.Clear();
+        }
+
+        private void SocketConnect()
+        {
+            string address = textBoxSocketIP.Text;
+
+            int port = Convert.ToInt32(textBoxSocketPort.Text);
+
+            if (Network.Connect(address, port))
+            {
+                //labelStatus.Text = string.Format("{0}. 서버에 접속 중", DateTime.Now);
+
+                DevLog.Write($"서버에 접속 중", LOG_LEVEL.INFO);
+
+                heartBeatTimer = new System.Threading.Timer(HeartBeatToServer, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+
+                // 로그인 요청
+                SockLoginReq();
+            }
+            else
+            {
+                //labelStatus.Text = string.Format("{0}. 서버에 접속 실패", DateTime.Now);
             }
 
             PacketBuffer.Clear();
@@ -553,8 +579,8 @@ namespace csharp_test_client
             ApiLoginRes res = await ApiLoginHttpRequest(apiLoginURL, requestBody);
             if (res.Result == ApiErrorCode.None)
             {
-                textBoxSocketIP.Text = res.SockIP;
-                textBoxSocketPort.Text = res.SockPort;
+                //textBoxSocketIP.Text = res.SockIP;
+                //textBoxSocketPort.Text = res.SockPort;
                 textBoxSocketID.Text = textBoxApiLoginUid.Text;
                 textBoxSocketToken.Text = textBoxApiLoginAuthToken.Text;
             }
@@ -624,17 +650,20 @@ namespace csharp_test_client
 
                 int resultValue = jsonResult.GetProperty("result").GetInt32();
 
-                if (resultValue != 0)
+                if (resultValue == 0)
                 {
-                    res.Result = (ApiErrorCode)resultValue;
+                    matchingCheckTimer.Dispose();
+                    res.Result = ApiErrorCode.None;
                     res.SockIP = jsonResult.GetProperty("sockIP").GetString();
                     res.SockPort = jsonResult.GetProperty("sockPort").GetString();
+                    res.RoomNum = jsonResult.GetProperty("roomNum").GetInt32();
                 }
                 else
                 {
-                    res.Result = ApiErrorCode.None;
+                    res.Result = (ApiErrorCode)resultValue;
                     res.SockIP = "";
                     res.SockPort = "";
+                    res.RoomNum = 0;
                 }
             }
             else
@@ -642,6 +671,7 @@ namespace csharp_test_client
                 res.Result = ApiErrorCode.GameApiHttpReqFail;
                 res.SockIP = "";
                 res.SockPort = "";
+                res.RoomNum = 0;
             }
 
             return res;
@@ -660,12 +690,16 @@ namespace csharp_test_client
             if (res.Result == ApiErrorCode.None)
             {
                 DevLog.Write("매칭 성공");
-                textBoxSocketIP.Text = res.SockIP;
-                textBoxSocketPort.Text = res.SockPort;
-                textBoxRoomNumber.Text = res.RoomNum.ToString();
+                UpdateInvokeTextBox(textBoxSocketIP, res.SockIP);
+                UpdateInvokeTextBox(textBoxSocketPort, res.SockPort);
+                UpdateInvokeTextBox(textBoxRoomNumber, res.RoomNum.ToString());
                 isNowMatchingInProgress = false;
 
+                // 소켓 연결
+                SocketConnect();
+
                 // 방 입장 요청하기
+                RoomEnter();
             }
             else
             {
@@ -673,8 +707,31 @@ namespace csharp_test_client
             }
         }
 
+        void UpdateInvokeTextBox(Control control, string updateInfo)
+        {
+            // UI 스레드에게 대리자 실행
+            // MethodInvoker : 매개변수, 반환값 없는 대리자
+
+            void UpdateTextBox()
+            {
+                control.Text = updateInfo;
+            }
+
+            control.Invoke(new MethodInvoker(UpdateTextBox));
+        }
+
         // 방 입장 요청
         private void btn_RoomEnter_Click(object sender, EventArgs e)
+        {
+            var roomEnterReq = new PKTReqRoomEnter();
+            roomEnterReq.RoomNumber = textBoxRoomNumber.Text.ToInt16();
+            var packet = MemoryPackSerializer.Serialize(roomEnterReq);
+
+            PostSendPacket((short)PACKET_ID.RoomEnterRequest, packet);
+            DevLog.Write($"방 입장 요청:  {textBoxRoomNumber.Text} 번");
+        }
+
+        private void RoomEnter()
         {
             var roomEnterReq = new PKTReqRoomEnter();
             roomEnterReq.RoomNumber = textBoxRoomNumber.Text.ToInt16();
