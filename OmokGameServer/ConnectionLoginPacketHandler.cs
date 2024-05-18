@@ -27,10 +27,18 @@ namespace OmokGameServer
             string userSessionId = packetData.sessionId;
 
             var user = userManager.GetUser(userSessionId);
-            if (user.isInRoom)
+            /*if (user.isInRoom)
             {
                 var room = roomManager.GetRoom(user.roomNumber);
                 room.GameFinish();
+                roomManager.EnqueueEmptyRoom(room.RoomNumber);
+            }*/
+
+            var room = roomManager.GetRoom(user.roomNumber);
+            user.SetRoomLeave();
+            room.GameFinish();
+            if (room.nowUserCount == 0)
+            {
                 roomManager.EnqueueEmptyRoom(room.RoomNumber);
             }
 

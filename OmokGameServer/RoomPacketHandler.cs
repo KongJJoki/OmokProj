@@ -114,7 +114,7 @@ namespace OmokGameServer
                     return;
                 }
 
-                user.SetRoomLeave();
+                //user.SetRoomLeave();
 
                 room.NotifyRoomLeave(user);
                 RoomLeaveRespond(errorCode, sessionId);

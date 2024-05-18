@@ -191,7 +191,7 @@ namespace OmokGameServer
         {
             bool isCloseSuccess = false;
 
-            var session = GetAppSessionByID(sessionId);
+            var session = GetSessionByID(sessionId);
             if (sessionId == session.SessionID)
             {
                 NTFForceDisconnection(sessionId);
