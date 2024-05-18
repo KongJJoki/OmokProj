@@ -49,7 +49,7 @@ namespace OmokGameServer
             m_Config = new ServerConfig
             {
                 Name = options.Name,
-                Ip = options.IP,
+                Ip = "Any",
                 Port = options.Port,
                 Mode = SocketMode.Tcp,
                 MaxConnectionNumber = options.MaxConnectionNumber,
