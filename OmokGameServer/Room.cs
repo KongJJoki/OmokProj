@@ -179,6 +179,11 @@ namespace OmokGameServer
             RemoveAllUser();
         }
 
+        public void CloseUserConnection(User user)
+        {
+            userConnectionCloseFunc(user.sessionId);
+        }
+
         public void CloseUsersConnection()
         {
             foreach(var user in userList)

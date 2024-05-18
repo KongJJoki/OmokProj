@@ -120,6 +120,7 @@ namespace OmokGameServer
                 RoomLeaveRespond(errorCode, sessionId);
 
                 mainLogger.Info($"sessionId({sessionId}) leave Room");
+                room.CloseUserConnection(user);
             }
             catch(Exception ex)
             {
