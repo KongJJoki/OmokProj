@@ -17,6 +17,7 @@ builder.Services.AddTransient<IRedisDB, RedisDB>();
 
 builder.Services.AddTransient<IGameLoginService, GameLoginService>();
 builder.Services.AddTransient<IMatchRequestService, MatchRequestService>();
+builder.Services.AddTransient<IMatchCheckService, MatchCheckService>();
 
 builder.Services.AddControllers();
 

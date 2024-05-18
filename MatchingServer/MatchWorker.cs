@@ -7,6 +7,12 @@ using System.Text.Json;
 
 namespace MatchingServer
 {
+    public class MatchConfig
+    {
+        public string IP { get; set; }
+        public string Port { get; set; }
+        public int RoomNumber { get; set; }
+    }
 
     public interface IMatchWoker : IDisposable
     {
@@ -17,18 +23,12 @@ namespace MatchingServer
 
     public class MatchWoker : IMatchWoker
     {
-        List<string> _pvpServerAddressList = new();
-
         Thread _reqWorker = null;
         ConcurrentQueue<int> _reqQueue = new();
 
         Thread _completeWorker = null;
 
-        // key는 유저ID Value는 방 번호?
-        ConcurrentDictionary<int, int> _completeDic = new();
-
-        //TODO: 2개의 Pub/Sub을 사용하므로 Redis 객체가 2개 있어야 한다.
-        // 매칭서버에서 -> 게임서버, 게임서버 -> 매칭서버로
+        ConcurrentDictionary<int, MatchConfig> _completeDic = new();
 
         RedisDBConfig redisDBConfig;
         RedisConfig redisConfig;
@@ -52,7 +52,6 @@ namespace MatchingServer
             matchReqListKey = this.redisDBConfig.MatchReqListKey;
             matchCompleteListKey = this.redisDBConfig.MatchCompleteListKey;
 
-            //TODO: Redis 연결 및 초기화 한다
             redisConnMatchReq = new RedisConnection(redisConfig);
             redisConnMatchComplete = new RedisConnection(redisConfig);
 
@@ -70,11 +69,12 @@ namespace MatchingServer
 
         public (bool, CompleteMatchData) GetCompleteMatching(int uid)
         {
-            //TODO: _completeDic에서 검색해서 있으면 반환한다.
             if (_completeDic.ContainsKey(uid))
             {
                 CompleteMatchData matchingData = new CompleteMatchData();
-                matchingData.RoomNumber = _completeDic[uid];
+                matchingData.SockIP = _completeDic[uid].IP;
+                matchingData.SockPort = _completeDic[uid].Port;
+                matchingData.RoomNumber = _completeDic[uid].RoomNumber;
                 return (true, matchingData);
             }
 
@@ -82,11 +82,10 @@ namespace MatchingServer
         }
 
         public record MatchReqForm(int user1Uid, int user2Uid);
-        public record MatchCompeleteForm(int roomNum, int user1Uid, int user2Uid);
+        public record MatchCompeleteForm(int user1Uid, int user2Uid, string IP, string port, int roomNum);
 
         async void RunMatching()
         {
-            // 키 값에 해당하는 리스트가 없으면 만들고, 있으면 가져옴
             matchReqList = new RedisList<string>(redisConnMatchReq, matchReqListKey, defaultExpireTime);
 
             while (true)
@@ -99,7 +98,6 @@ namespace MatchingServer
                         continue;
                     }
 
-                    //TODO: 큐에서 2명을 가져온다. 두명을 매칭시킨다
                     int userUid1;
                     int userUid2;
 
@@ -109,7 +107,6 @@ namespace MatchingServer
                     var matchReqData = new MatchReqForm(user1Uid: userUid1, user2Uid: userUid2);
                     var jsonData = JsonSerializer.Serialize(matchReqData);
 
-                    //TODO: Redis의 List를 이용해서 매칭 요청 List에 추가 -> 대전 서버 쪽에서 스레드로 돌면서 List에서 요소 가져오기(빈 방 있으면) -> 대전 서버가 다른 List에 요소 추가
                     await matchReqList.RightPushAsync(jsonData);
                 }
                 catch (Exception ex)
@@ -127,7 +124,6 @@ namespace MatchingServer
             {
                 try
                 {
-                    //TODO: Redis의 List를 이용해서 매칭이 완료된 내용을 가져온다
                     var result = matchCompleteList.LeftPopAsync().Result;
 
                     if(result.HasValue == false)
@@ -137,10 +133,14 @@ namespace MatchingServer
 
                     var matchCompeleteRes = JsonSerializer.Deserialize<MatchCompeleteForm>(result.Value);
 
-                    //TODO: 매칭 결과를 _completeDic에 넣는다
-                    // 2명이 하므로 각각 유저를 대상으로 총 2개를 _completeDic에 넣어야 한다
-                    _completeDic[matchCompeleteRes.user1Uid] = matchCompeleteRes.roomNum;
-                    _completeDic[matchCompeleteRes.user2Uid] = matchCompeleteRes.roomNum;
+                    MatchConfig matchConfig = new MatchConfig();
+
+                    matchConfig.IP = matchCompeleteRes.IP;
+                    matchConfig.Port = matchCompeleteRes.port;
+                    matchConfig.RoomNumber = matchCompeleteRes.roomNum;
+
+                    _completeDic[matchCompeleteRes.user1Uid] = matchConfig;
+                    _completeDic[matchCompeleteRes.user2Uid] = matchConfig;
 
                 }
                 catch (Exception ex)

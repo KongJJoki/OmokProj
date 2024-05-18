@@ -55,7 +55,7 @@ namespace OmokGameServer
         }
 
         public record MatchReqForm(int user1Uid, int user2Uid);
-        public record MatchCompeleteForm(int roomNum, int user1Uid, int user2Uid);
+        public record MatchCompeleteForm(int user1Uid, int user2Uid, string IP, string port, int roomNum);
 
         void Process()
         {
@@ -83,7 +83,7 @@ namespace OmokGameServer
                     mainLogger.Debug($"매칭 요청 접수(user1 : {matchReqData.user1Uid} / user2 : {matchReqData.user2Uid})");
 
                     int emptyRoomNum = roomManager.GetEmptyRoomNum();
-                    var matchCompeleteData = new MatchCompeleteForm(emptyRoomNum, matchReqData.user1Uid, matchReqData.user2Uid);
+                    var matchCompeleteData = new MatchCompeleteForm(matchReqData.user1Uid, matchReqData.user2Uid, "127.0.0.1", serverOption.Port.ToString(), emptyRoomNum);
                     var jsonData = JsonSerializer.Serialize(matchCompeleteData);
 
                     matchCompleteList.RightPushAsync(jsonData);

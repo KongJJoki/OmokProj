@@ -28,6 +28,9 @@ namespace csharp_test_client
         bool IsNetworkThreadRunning = false;
         bool IsBackGroundProcessRunning = false;
 
+        bool isNowMatchingInProgress = false;
+        System.Threading.Timer matchingCheckTimer;
+
         System.Threading.Thread NetworkReadThread = null;
         System.Threading.Thread NetworkSendThread = null;
         System.Threading.Timer heartBeatTimer;
@@ -376,14 +379,8 @@ namespace csharp_test_client
 
         public async Task<HiveLoginRes> HiveLoginHttpRequest(string httpUrl, string requestBody)
         {
-            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, httpUrl);
-
-            requestMessage.Headers.Add("Uid", textBoxApiLoginUid.Text);
-            requestMessage.Headers.Add("AuthToken", textBoxApiLoginAuthToken.Text);
-
-            requestMessage.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = await httpClient.SendAsync(requestMessage);
+            HttpResponseMessage response = await httpClient.PostAsync(httpUrl,
+                new StringContent(requestBody, Encoding.UTF8, "application/json"));
 
             HiveLoginRes res = new HiveLoginRes();
 
@@ -501,8 +498,14 @@ namespace csharp_test_client
 
         public async Task<ApiMatchReqRes> ApiMatchReqHttpRequest(string httpUrl, string requestBody)
         {
-            HttpResponseMessage response = await httpClient.PostAsync(httpUrl,
-                new StringContent(requestBody, Encoding.UTF8, "application/json"));
+            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, httpUrl);
+
+            requestMessage.Headers.Add("Uid", textBoxApiLoginUid.Text);
+            requestMessage.Headers.Add("AuthToken", textBoxApiLoginAuthToken.Text);
+
+            requestMessage.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await httpClient.SendAsync(requestMessage);
 
             ApiMatchReqRes res = new ApiMatchReqRes();
 
@@ -576,18 +579,92 @@ namespace csharp_test_client
         // 매칭 요청
         private async void btnMatchRequest_Click(object sender, EventArgs e)
         {
-            string apiMatchReqURL = textBoxApiIP.Text + "/MatchRequest";
-
-            ApiMatchReq req = new ApiMatchReq
+            if (!isNowMatchingInProgress)
             {
-                Uid = textBoxApiLoginUid.Text.ToInt32()
-            };
+                string apiMatchReqURL = textBoxApiIP.Text + "/MatchRequest";
+
+                ApiMatchReq req = new ApiMatchReq();
+
+                string requestBody = JsonSerializer.Serialize(req);
+
+                ApiMatchReqRes res = await ApiMatchReqHttpRequest(apiMatchReqURL, requestBody);
+
+                isNowMatchingInProgress = true;
+                btnMatching.Text = "Matching...";
+                btnMatching.Enabled = false;
+                matchingCheckTimer = new System.Threading.Timer(MatchCheckReq, null, TimeSpan.Zero, TimeSpan.FromSeconds(1)); // 매칭 체크 타이머 시작
+                DevLog.Write($"매칭 요청 결과 : {res.Result}");
+            }
+            else
+            {
+                DevLog.Write($"이미 매칭 중입니다.");
+            }
+        }
+
+        // 게임 api에 매칭 체크 Http요청
+        public async Task<ApiMatchCheckRes> ApiMatchCheckHttpRequest(string httpUrl, string requestBody)
+        {
+            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, httpUrl);
+
+            requestMessage.Headers.Add("Uid", textBoxApiLoginUid.Text);
+            requestMessage.Headers.Add("AuthToken", textBoxApiLoginAuthToken.Text);
+
+            requestMessage.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await httpClient.SendAsync(requestMessage);
+
+            ApiMatchCheckRes res = new ApiMatchCheckRes();
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                JsonDocument jsonDocument = JsonDocument.Parse(responseBody);
+                JsonElement jsonResult = jsonDocument.RootElement;
+
+                int resultValue = jsonResult.GetProperty("result").GetInt32();
+
+                if (resultValue != 0)
+                {
+                    res.Result = (ApiErrorCode)resultValue;
+                }
+                else
+                {
+                    res.Result = ApiErrorCode.None;
+                }
+            }
+            else
+            {
+                res.Result = ApiErrorCode.GameApiHttpReqFail;
+            }
+
+            return res;
+        }
+
+        // 매칭 체크 요청
+        async void MatchCheckReq(object state)
+        {
+            string apiMatchCheckURL = textBoxApiIP.Text + "/MatchCheck";
+
+            ApiMatchCheckReq req = new ApiMatchCheckReq();
 
             string requestBody = JsonSerializer.Serialize(req);
 
-            ApiMatchReqRes res = await ApiMatchReqHttpRequest(apiMatchReqURL, requestBody);
+            ApiMatchCheckRes res = await ApiMatchCheckHttpRequest(apiMatchCheckURL, requestBody);
+            if (res.Result == ApiErrorCode.None)
+            {
+                DevLog.Write("매칭 성공");
+                textBoxSocketIP.Text = res.SockIP;
+                textBoxSocketPort.Text = res.SockPort;
+                textBoxRoomNumber.Text = res.RoomNum.ToString();
+                isNowMatchingInProgress = false;
 
-            DevLog.Write($"매칭 요청 결과 : {res.Result}");
+                // 방 입장 요청하기
+            }
+            else
+            {
+                return;
+            }
         }
 
         // 방 입장 요청

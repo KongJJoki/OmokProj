@@ -8,7 +8,7 @@ namespace OmokClient.DTO
 {
     public class ApiMatchReq
     {
-        public Int32 Uid { get; set; }
+        
     }
 
     public class ApiMatchReqRes : ApiErrorRes

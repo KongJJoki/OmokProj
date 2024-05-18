@@ -25,7 +25,7 @@ namespace GameServer.Services
         {
             try
             {
-                MatchRequest requestData = new MatchRequest
+                MatchRequestReq requestData = new MatchRequestReq
                 {
                     Uid = uid
                 };
@@ -46,7 +46,7 @@ namespace GameServer.Services
             }
         }
 
-        public async Task<EErrorCode> HttpRequest(string requestUrl, MatchRequest requestData)
+        public async Task<EErrorCode> HttpRequest(string requestUrl, MatchRequestReq requestData)
         {
             string requestBody = JsonSerializer.Serialize(requestData);
 
