@@ -627,15 +627,21 @@ namespace csharp_test_client
                 if (resultValue != 0)
                 {
                     res.Result = (ApiErrorCode)resultValue;
+                    res.SockIP = jsonResult.GetProperty("sockIP").GetString();
+                    res.SockPort = jsonResult.GetProperty("sockPort").GetString();
                 }
                 else
                 {
                     res.Result = ApiErrorCode.None;
+                    res.SockIP = "";
+                    res.SockPort = "";
                 }
             }
             else
             {
                 res.Result = ApiErrorCode.GameApiHttpReqFail;
+                res.SockIP = "";
+                res.SockPort = "";
             }
 
             return res;
