@@ -80,11 +80,8 @@ namespace OmokGameServer
 
         void RemoveAllUser()
         {
-            List<User> nowUsers = userList;
-            foreach(var user in nowUsers)
-            {
-                RemoveUser(user);
-            }
+            userList.Clear();
+            readyStatusDictionary.Clear();
         }
 
         public bool CheckUserExist(User user)
