@@ -277,6 +277,8 @@ namespace csharp_test_client
             heartBeatTimer.Dispose();
 
             panel1.Invalidate();
+            listBoxRoomUserList.Items.Clear();
+            listBoxRoomChatMsg.Items.Clear();
             UpdateInvokeButtonEnable(btnMatching, true);
             UpdateInvokeTextBox(btnMatching, "Matching");
         }
