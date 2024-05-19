@@ -276,6 +276,7 @@ namespace csharp_test_client
             Network.Close();
             heartBeatTimer.Dispose();
 
+            panel1.Invalidate();
             UpdateInvokeButtonEnable(btnMatching, true);
             UpdateInvokeTextBox(btnMatching, "Matching");
         }
