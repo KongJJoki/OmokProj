@@ -1,4 +1,4 @@
-using OmokClient.CSCommon;
+using ErrorCode;
 
 namespace OmokClient.DTO
 {

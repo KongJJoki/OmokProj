@@ -40,6 +40,9 @@
     <Compile Remove="PacketID.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\GameServerClientShare\GameServerClientShare.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>

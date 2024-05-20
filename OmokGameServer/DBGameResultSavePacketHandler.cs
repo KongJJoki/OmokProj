@@ -1,8 +1,9 @@
 using MemoryPack;
-using PacketDefine;
-using PacketTypes;
+using GameServerClientShare;
+using InPacketTypes;
 using SqlKata.Execution;
 using SuperSocket.SocketBase.Logging;
+using SockInternalPacket;
 
 namespace OmokGameServer
 {
@@ -17,7 +18,7 @@ namespace OmokGameServer
 
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData, QueryFactory>> dbPacketHandlerDictionary)
         {
-            dbPacketHandlerDictionary.Add((int)PACKET_ID.InSaveGameResult, UpdateGameResult);
+            dbPacketHandlerDictionary.Add((int)InPACKET_ID.InSaveGameResult, UpdateGameResult);
         }
 
         void UpdateGameResult(ServerPacketData packet, QueryFactory queryFactory)

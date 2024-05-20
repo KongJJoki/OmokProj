@@ -1,6 +1,7 @@
 using MemoryPack;
 using PacketDefine;
-using PacketTypes;
+using InPacketTypes;
+using GameServerClientShare;
 
 namespace OmokGameServer
 {
@@ -22,20 +23,20 @@ namespace OmokGameServer
                 var user = userManager.GetUser(sessionId);
                 if(user == null)
                 {
-                    GameReadyResponse(ERROR_CODE.GameReadyFailInvalidUser, sessionId);
+                    GameReadyResponse(SockErrorCode.GameReadyFailInvalidUser, sessionId);
                     return;
                 }
 
                 if(!user.isInRoom)
                 {
-                    GameReadyResponse(ERROR_CODE.GameReadyFailNotInRoom, sessionId);
+                    GameReadyResponse(SockErrorCode.GameReadyFailNotInRoom, sessionId);
                     return;
                 }
 
                 var room = roomManager.GetRoom(user.roomNumber);
                 if(room.isGameStart)
                 {
-                    GameReadyResponse(ERROR_CODE.GameReadyFailAlreadyGameStart, sessionId);
+                    GameReadyResponse(SockErrorCode.GameReadyFailAlreadyGameStart, sessionId);
                     return;
                 }
 
@@ -43,12 +44,12 @@ namespace OmokGameServer
                 // 준비 취소 기능은 없다고 가정
                 if(myReadyStatus)
                 {
-                    GameReadyResponse(ERROR_CODE.GameReadyFailAlreadyReadyStatus, sessionId);
+                    GameReadyResponse(SockErrorCode.GameReadyFailAlreadyReadyStatus, sessionId);
                     return;
                 }
 
                 room.SetReadyStatus(user, true);
-                GameReadyResponse(ERROR_CODE.None, sessionId);
+                GameReadyResponse(SockErrorCode.None, sessionId);
 
                 mainLogger.Info($"sessionId({sessionId}) Game Ready");
             }
@@ -58,7 +59,7 @@ namespace OmokGameServer
             }
         }
 
-        public void GameReadyResponse(ERROR_CODE errorCode, string sessionId)
+        public void GameReadyResponse(SockErrorCode errorCode, string sessionId)
         {
             PKTResGameReady gameReadyRes = new PKTResGameReady();
             gameReadyRes.Result = errorCode;
@@ -79,13 +80,13 @@ namespace OmokGameServer
                 var user = userManager.GetUser(sessionId);
                 if(user == null)
                 {
-                    GameStartResponse(ERROR_CODE.GameStartFailInvalidUser, sessionId);
+                    GameStartResponse(SockErrorCode.GameStartFailInvalidUser, sessionId);
                     return;
                 }
 
                 if(!user.isInRoom)
                 {
-                    GameStartResponse(ERROR_CODE.GameStartFailNotInRoom, sessionId);
+                    GameStartResponse(SockErrorCode.GameStartFailNotInRoom, sessionId);
                     return;
                 }
 
@@ -93,29 +94,29 @@ namespace OmokGameServer
 
                 if (room.nowUserCount < 2)
                 {
-                    GameStartResponse(ERROR_CODE.GameStartFailNotEnoughUserCount, sessionId);
+                    GameStartResponse(SockErrorCode.GameStartFailNotEnoughUserCount, sessionId);
                     return;
                 }
 
                 if(room.isGameStart)
                 {
-                    GameStartResponse(ERROR_CODE.GameStartFailAlreadyGameStart, sessionId);
+                    GameStartResponse(SockErrorCode.GameStartFailAlreadyGameStart, sessionId);
                     return;
                 }
 
                 if(!room.GetReadyStatus(user))
                 {
-                    GameStartResponse(ERROR_CODE.GameStartFailNotReady, sessionId);
+                    GameStartResponse(SockErrorCode.GameStartFailNotReady, sessionId);
                     return;
                 }
 
                 if(!room.CheckAllReady())
                 {
-                    GameStartResponse(ERROR_CODE.GameStartFailNotAllReady, sessionId);
+                    GameStartResponse(SockErrorCode.GameStartFailNotAllReady, sessionId);
                     return;
                 }
 
-                GameStartResponse(ERROR_CODE.None, sessionId);
+                GameStartResponse(SockErrorCode.None, sessionId);
                 room.NotifyGameStart(user.uid);
 
                 mainLogger.Info($"{room.RoomNumber} room Game Start");
@@ -126,7 +127,7 @@ namespace OmokGameServer
             }
         }
 
-        public void GameStartResponse(ERROR_CODE errorCode, string sessionId)
+        public void GameStartResponse(SockErrorCode errorCode, string sessionId)
         {
             PKTResGameStart gameStartRes = new PKTResGameStart();
             gameStartRes.Result = errorCode;

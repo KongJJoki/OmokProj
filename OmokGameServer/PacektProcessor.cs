@@ -1,4 +1,7 @@
 using PacketDefine;
+using GameServerClientShare;
+using InPacketTypes;
+using SockInternalPacket;
 using SuperSocket.SocketBase.Logging;
 using System.Threading.Tasks.Dataflow;
 
@@ -86,7 +89,7 @@ namespace OmokGameServer
                 {
                     var newPacket = packetBuffer.Receive();
 
-                    if(newPacket.packetId == (int)PACKET_ID.InSaveGameResult)
+                    if(newPacket.packetId == (int)InPACKET_ID.InSaveGameResult)
                     {
                         passPacketToDBProcessor(newPacket);
                         continue;

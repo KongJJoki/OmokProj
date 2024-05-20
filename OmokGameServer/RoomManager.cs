@@ -1,5 +1,6 @@
 using PacketDefine;
 using System.Collections.Concurrent;
+using SockInternalPacket;
 
 namespace OmokGameServer
 {
@@ -31,7 +32,7 @@ namespace OmokGameServer
         void SendTurnCheckPacket(object state)
         {
             ServerPacketData packet = new ServerPacketData();
-            packet.SetPacketNoBody("", (Int16)PACKET_ID.InNTFCheckTurnTime);
+            packet.SetPacketNoBody("", (Int16)InPACKET_ID.InNTFCheckTurnTime);
 
             pushPacketInProcessorFunc(packet);
         }

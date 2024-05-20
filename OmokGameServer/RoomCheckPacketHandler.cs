@@ -1,6 +1,8 @@
 using MemoryPack;
 using PacketDefine;
-using PacketTypes;
+using InPacketTypes;
+using SockInternalPacket;
+using GameServerClientShare;
 using SuperSocket.SocketBase.Logging;
 
 namespace OmokGameServer
@@ -24,7 +26,7 @@ namespace OmokGameServer
 
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
         {
-            packetHandlerDictionary.Add((int)PACKET_ID.InNTFCheckTurnTime, RoomCheckRequest);
+            packetHandlerDictionary.Add((int)InPACKET_ID.InNTFCheckTurnTime, RoomCheckRequest);
         }
 
         void RoomCheckRequest(ServerPacketData packet)

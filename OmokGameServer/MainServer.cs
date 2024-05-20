@@ -7,7 +7,9 @@ using PacketDefine;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using MemoryPack;
-using PacketTypes;
+using InPacketTypes;
+using SockInternalPacket;
+using GameServerClientShare;
 
 namespace OmokGameServer
 {
@@ -153,7 +155,7 @@ namespace OmokGameServer
 
             ServerPacketData packet = new ServerPacketData();
 
-            packet.SetPacketNoBody(clientSession.SessionID, (Int16)PACKET_ID.InNTFClientConnect);
+            packet.SetPacketNoBody(clientSession.SessionID, (Int16)InPACKET_ID.InNTFClientConnect);
 
             PassPacketToPacketProcessor(packet);
         }
@@ -163,7 +165,7 @@ namespace OmokGameServer
 
             ServerPacketData packet = new ServerPacketData();
 
-            packet.SetPacketNoBody(clientSession.SessionID, (Int16)PACKET_ID.InNTFClientDisconnect);
+            packet.SetPacketNoBody(clientSession.SessionID, (Int16)InPACKET_ID.InNTFClientDisconnect);
 
             PassPacketToPacketProcessor(packet);
         }

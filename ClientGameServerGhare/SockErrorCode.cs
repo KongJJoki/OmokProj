@@ -1,6 +1,6 @@
-namespace OmokGameServer
+namespace ClientGameServerShare
 {
-    public enum ERROR_CODE
+    public enum SockErrorCode
     {
         None = 0,
 

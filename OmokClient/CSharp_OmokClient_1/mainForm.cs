@@ -3,19 +3,15 @@ using MemoryPack;
 using MessagePack;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using PacketDefine;
 using System.Net.Http;
 using OmokClient.DTO;
 using System.Text.Json;
 using System.Text;
-using OmokClient.CSCommon;
-using Windows.Services.Maps;
-using static System.Net.Mime.MediaTypeNames;
+using GameServerClientShare;
+using ErrorCode;
 
 #pragma warning disable CA1416
 
@@ -51,7 +47,7 @@ namespace csharp_test_client
 
         private void mainForm_Load(object sender, EventArgs e)
         {
-            PacketBuffer.Init((8096 * 10), MsgPackPacketHeaderInfo.HeadSize, 2048);
+            PacketBuffer.Init((8096 * 10), PacketHeaderInfo.HeadSize, 2048);
 
             IsNetworkThreadRunning = true;
             NetworkReadThread = new System.Threading.Thread(this.NetworkReadProcess);

@@ -1,4 +1,4 @@
-using OmokClient.CSCommon;
+using ErrorCode;
 using System;
 using System.Collections.Generic;
 using System.Linq;

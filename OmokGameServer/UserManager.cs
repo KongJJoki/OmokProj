@@ -1,5 +1,7 @@
 using PacketDefine;
 using SuperSocket.SocketBase.Logging;
+using SockInternalPacket;
+using GameServerClientShare;
 
 namespace OmokGameServer
 {
@@ -40,12 +42,12 @@ namespace OmokGameServer
         void SendHeartBeatCheckPacket(object state)
         {
             ServerPacketData packet = new ServerPacketData();
-            packet.SetPacketNoBody("", (Int16)PACKET_ID.InNTFCheckHeartBeat);
+            packet.SetPacketNoBody("", (Int16)InPACKET_ID.InNTFCheckHeartBeat);
 
             pushPacketInProcessorFunc(packet);
         }
         
-        public ERROR_CODE AddUserConnection(string sessionId)
+        public SockErrorCode AddUserConnection(string sessionId)
         {
             User newUser = new User();
             newUser.SetUser(sessionId);
@@ -54,23 +56,23 @@ namespace OmokGameServer
 
             if(!isAddSuccess)
             {
-                return ERROR_CODE.ConnectFailUserCountLimitExceed;
+                return SockErrorCode.ConnectFailUserCountLimitExceed;
             }
             else
             {
                 sessionIduserDictionary[sessionId] = newUser;
                 userSessionIdDictionary[newUser] = sessionId;
 
-                return ERROR_CODE.None;
+                return SockErrorCode.None;
             }
 
         }
 
-        public ERROR_CODE AddUserLogin(string sessionId, Int32 uid)
+        public SockErrorCode AddUserLogin(string sessionId, Int32 uid)
         {
             if (nowLoginUserList.Count > maxLoginUserCount)
             {
-                return ERROR_CODE.LoginFailUserCountLimitExceed;
+                return SockErrorCode.LoginFailUserCountLimitExceed;
             }
             else
             {
@@ -79,7 +81,7 @@ namespace OmokGameServer
                 nowLoginUserList.Add(newUser);
                 SetUserName(sessionId, uid);
 
-                return ERROR_CODE.None;
+                return SockErrorCode.None;
             }
         }
 
@@ -104,7 +106,7 @@ namespace OmokGameServer
             user.SetUserName(uid);
         }
 
-        public ERROR_CODE RemoveUser(string sessionId)
+        public SockErrorCode RemoveUser(string sessionId)
         {
             User user = GetUser(sessionId);
 
@@ -112,14 +114,14 @@ namespace OmokGameServer
 
             if(!isRemoveSuccess)
             {
-                return ERROR_CODE.RemoveFailNotExistSession;
+                return SockErrorCode.RemoveFailNotExistSession;
             }
 
             userSessionIdDictionary.Remove(user);
 
             nowLoginUserList.Remove(user);
 
-            return ERROR_CODE.None;
+            return SockErrorCode.None;
         }
 
         public bool RemoveUserFromArray(int userIndex)
@@ -142,37 +144,37 @@ namespace OmokGameServer
             }
         }
 
-        public ERROR_CODE CheckUserConnected(string sessionId)
+        public SockErrorCode CheckUserConnected(string sessionId)
         {
             User user = sessionIduserDictionary[sessionId];
 
             if(user == null)
             {
-                return ERROR_CODE.DisconnectFailUserNotExist;
+                return SockErrorCode.DisconnectFailUserNotExist;
             }
             else
             {
-                return ERROR_CODE.None;
+                return SockErrorCode.None;
             }
         }
 
-        public ERROR_CODE CheckUserLoginExist(string sessionId)
+        public SockErrorCode CheckUserLoginExist(string sessionId)
         {
             User user = sessionIduserDictionary[sessionId];
 
             if(user == null)
             {
-                return ERROR_CODE.LoginFailNotConnected;
+                return SockErrorCode.LoginFailNotConnected;
             }
 
             bool isUserExist = nowLoginUserList.Contains(user);
             
             if(isUserExist)
             {
-                return ERROR_CODE.LoginFailAlreadyExistUser;
+                return SockErrorCode.LoginFailAlreadyExistUser;
             }
 
-            return ERROR_CODE.None;
+            return SockErrorCode.None;
         }
 
         public bool CheckUserExistInHeartBeatArray(int index)

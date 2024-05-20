@@ -1,4 +1,4 @@
-﻿using MessagePack;
+using MessagePack;
 using MemoryPack;
 using System;
 using System.Collections.Generic;
@@ -6,9 +6,9 @@ using System.Text;
 
 namespace CSCommon
 {
-    public struct MsgPackPacketHeaderInfo
+    public struct PacketHeaderInfo
     {
-        const int PacketHeaderMsgPackStartPos = 0;
+        const int StartPos = 0;
         public const int HeadSize = 4;
 
         public UInt16 TotalSize;
@@ -16,28 +16,28 @@ namespace CSCommon
 
         public static UInt16 GetTotalSize(byte[] data, int startPos)
         {
-            return FastBinaryRead.UInt16(data, startPos + PacketHeaderMsgPackStartPos);
+            return FastBinaryRead.UInt16(data, startPos + StartPos);
         }
                 
-        public static void Write(byte[] data, UInt16 totalSize, UInt16 packetID)
+        /*public static void Write(byte[] data, UInt16 totalSize, UInt16 packetID)
         {
-            FastBinaryWrite.UInt16(data, PacketHeaderMsgPackStartPos, totalSize);
-            FastBinaryWrite.UInt16(data, PacketHeaderMsgPackStartPos + 2, packetID);
+            FastBinaryWrite.UInt16(data, StartPos, totalSize);
+            FastBinaryWrite.UInt16(data, StartPos + 2, packetID);
         }
 
         public static UInt16 ReadPacketID(byte[] data)
         {
-            return FastBinaryRead.UInt16(data, PacketHeaderMsgPackStartPos + 2);
+            return FastBinaryRead.UInt16(data, StartPos + 2);
         }
 
         public static UInt16 ReadPacketID(byte[] data , int offset)
         {
-            return FastBinaryRead.UInt16(data, offset + PacketHeaderMsgPackStartPos + 2);
-        }
+            return FastBinaryRead.UInt16(data, offset + StartPos + 2);
+        }*/
 
         public void Read(byte[] headerData)
         {
-            var pos = PacketHeaderMsgPackStartPos;
+            var pos = StartPos;
 
             TotalSize = FastBinaryRead.UInt16(headerData, pos);
             pos += 2;
@@ -47,9 +47,9 @@ namespace CSCommon
 
         }
 
-        public void Write(byte[] packetData)
+        /*public void Write(byte[] packetData)
         {
-            var pos = PacketHeaderMsgPackStartPos;
+            var pos = StartPos;
 
             FastBinaryWrite.UInt16(packetData, pos, TotalSize);
             pos += 2;
@@ -60,7 +60,7 @@ namespace CSCommon
 
         public static void Write(byte[] packetData, UInt16 totalSize, UInt16 id, byte type)
         {
-            var pos = PacketHeaderMsgPackStartPos;
+            var pos = StartPos;
 
             FastBinaryWrite.UInt16(packetData, pos, totalSize);
             pos += 2;
@@ -72,7 +72,7 @@ namespace CSCommon
         public byte[] Write()
         {
             var packetData = new byte[HeadSize];
-            var pos = PacketHeaderMsgPackStartPos;
+            var pos = StartPos;
 
             FastBinaryWrite.UInt16(packetData, pos, TotalSize);
             pos += 2;
@@ -81,13 +81,6 @@ namespace CSCommon
             pos += 2;
 
             return packetData;
-        }
-    }
-
-
-    [MemoryPackable]
-    public partial class MsgPackPacketHead
-    {
-        public Byte[] Head = new Byte[MsgPackPacketHeaderInfo.HeadSize];
+        }*/
     }
 }

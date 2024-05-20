@@ -9,6 +9,7 @@
       "OmokClient/1.0.0": {
         "dependencies": {
           "CloudStructures": "3.2.0",
+          "GameServerClientShare": "1.0.0",
           "MemoryPack": "1.21.1",
           "MessagePack": "2.5.140",
           "Microsoft.CSharp": "4.7.0",
@@ -1184,6 +1185,14 @@
             "fileVersion": "2.1.1.0"
           }
         }
+      },
+      "GameServerClientShare/1.0.0": {
+        "dependencies": {
+          "MemoryPack": "1.21.1"
+        },
+        "runtime": {
+          "GameServerClientShare.dll": {}
+        }
       }
     }
   },
@@ -2023,6 +2032,11 @@
       "sha512": "sha512-HLpIUSYL8kVTKBeeMVjQMN63E7RHO+1aGt2aZBjrFhHPjJVsOUh26KDQEDMsjOjlh/hQTqZQEJJc+gNhyQxq4g==",
       "path": "z.extensionmethods/2.1.1",
       "hashPath": "z.extensionmethods.2.1.1.nupkg.sha512"
+    },
+    "GameServerClientShare/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }

@@ -1,6 +1,7 @@
 using MemoryPack;
 using PacketDefine;
-using PacketTypes;
+using InPacketTypes;
+using SockInternalPacket;
 
 namespace OmokGameServer
 {
@@ -234,7 +235,7 @@ namespace OmokGameServer
             var bodyData = MemoryPackSerializer.Serialize(gameResult);
 
             ServerPacketData packet = new ServerPacketData();
-            packet.SetPacket("", (Int16)PACKET_ID.InSaveGameResult, bodyData);
+            packet.SetPacket("", (Int16)InPACKET_ID.InSaveGameResult, bodyData);
 
             pushPacketInProcessorFunc(packet);
         }

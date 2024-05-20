@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PacketDefine;
 using MemoryPack;
+using GameServerClientShare;
 using System.Threading;
 
 #pragma warning disable CA1416
@@ -50,7 +50,7 @@ namespace csharp_test_client
 
         void PacketProcess(byte[] packet)
         {
-            var header = new MsgPackPacketHeaderInfo();
+            var header = new PacketHeaderInfo();
             header.Read(packet);
 
             int headerSize = 4;

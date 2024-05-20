@@ -1,4 +1,4 @@
-namespace PacketDefine
+namespace ClientGameServerShare
 {
     public enum PACKET_ID
     {

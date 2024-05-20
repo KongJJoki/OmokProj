@@ -1,4 +1,4 @@
-namespace OmokClient.CSCommon
+namespace ErrorCode
 {
     public enum HiveErrorCode
     {

@@ -1,3 +1,5 @@
+using GameServerClientShare;
+
 namespace PacketDefine
 {
     public class ConstDefine

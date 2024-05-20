@@ -1,17 +1,7 @@
-namespace PacketDefine
+namespace GameServerClientShare
 {
     public enum PACKET_ID
     {
-        // Internal 1000~1999
-        InNTFClientConnect = 1000,
-        InNTFClientDisconnect = 1001,
-        InNTFCheckTurnTime = 1002,
-        InNTFCheckHeartBeat = 1003,
-        InSaveGameResult = 1004,
-        InVerifiedLoginRequest = 1005,
-
-
-
         // External
 
         //From Client 2000~5000

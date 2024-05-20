@@ -1,6 +1,8 @@
 using MemoryPack;
 using PacketDefine;
-using PacketTypes;
+using InPacketTypes;
+using SockInternalPacket;
+using GameServerClientShare;
 using SuperSocket.Common;
 
 namespace OmokGameServer
@@ -23,14 +25,14 @@ namespace OmokGameServer
 
                 if (user == null)
                 {
-                    OmokStonePlaceRespond(ERROR_CODE.OmokStonePlaceFailInvalidUser, sessionId);
+                    OmokStonePlaceRespond(SockErrorCode.OmokStonePlaceFailInvalidUser, sessionId);
                     return;
                 }
 
                 var room = roomManager.GetRoom(user.roomNumber);
                 if (!room.isGameStart)
                 {
-                    OmokStonePlaceRespond(ERROR_CODE.OmokStonePlaceFailGameNotStart, sessionId);
+                    OmokStonePlaceRespond(SockErrorCode.OmokStonePlaceFailGameNotStart, sessionId);
                     return;
                 }
 
@@ -40,12 +42,12 @@ namespace OmokGameServer
 
                 if(omokBoard.CheckStoneExist(requestData.PosX, requestData.PosY))
                 {
-                    OmokStonePlaceRespond(ERROR_CODE.OmokStonePlaceFailAlreadyStoneExist, sessionId);
+                    OmokStonePlaceRespond(SockErrorCode.OmokStonePlaceFailAlreadyStoneExist, sessionId);
                     return;
                 }
 
                 omokBoard.OmokStonePlace(user.uid, requestData.PosX, requestData.PosY);
-                OmokStonePlaceRespond(ERROR_CODE.None, sessionId);
+                OmokStonePlaceRespond(SockErrorCode.None, sessionId);
                 room.NotifyOmokStonePlace(requestData.PosX, requestData.PosY);
 
                 if(omokBoard.OmokWinCheck(requestData.PosX, requestData.PosY))
@@ -66,7 +68,7 @@ namespace OmokGameServer
             }
         }
 
-        void OmokStonePlaceRespond(ERROR_CODE errorCode, string sessionId)
+        void OmokStonePlaceRespond(SockErrorCode errorCode, string sessionId)
         {
             PKTResOmokStonePlace omokStonePlaceRes = new PKTResOmokStonePlace();
             omokStonePlaceRes.Result = errorCode;

@@ -1,6 +1,8 @@
 using MemoryPack;
 using PacketDefine;
-using PacketTypes;
+using InPacketTypes;
+using GameServerClientShare;
+using SockInternalPacket;
 using SuperSocket.SocketBase.Logging;
 
 namespace OmokGameServer
@@ -21,7 +23,7 @@ namespace OmokGameServer
 
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
         {
-            packetHandlerDictionary.Add((int)PACKET_ID.InNTFCheckHeartBeat, HeartBeatCheckRequest);
+            packetHandlerDictionary.Add((int)InPACKET_ID.InNTFCheckHeartBeat, HeartBeatCheckRequest);
             packetHandlerDictionary.Add((int)PACKET_ID.HeartBeatResponseFromClient, HeartBeatResponseFromClient);
         }
 

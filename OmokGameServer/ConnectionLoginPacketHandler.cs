@@ -1,6 +1,8 @@
 using MemoryPack;
+using GameServerClientShare;
+using InPacketTypes;
+using SockInternalPacket;
 using PacketDefine;
-using PacketTypes;
 
 namespace OmokGameServer
 {
@@ -9,9 +11,9 @@ namespace OmokGameServer
         // 핸들러 맵에 함수 추가하는 함수
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
         {
-            packetHandlerDictionary.Add((int)PACKET_ID.InNTFClientConnect, InternalNTFClientConnect);
-            packetHandlerDictionary.Add((int)PACKET_ID.InNTFClientDisconnect, InternalNTFClientDisconnect);
-            packetHandlerDictionary.Add((int)PACKET_ID.InVerifiedLoginRequest, LoginRequest);
+            packetHandlerDictionary.Add((int)InPACKET_ID.InNTFClientConnect, InternalNTFClientConnect);
+            packetHandlerDictionary.Add((int)InPACKET_ID.InNTFClientDisconnect, InternalNTFClientDisconnect);
+            packetHandlerDictionary.Add((int)InPACKET_ID.InVerifiedLoginRequest, LoginRequest);
         }
         // 클라이언트 연결
         void InternalNTFClientConnect(ServerPacketData packetData)
@@ -42,8 +44,8 @@ namespace OmokGameServer
                 roomManager.EnqueueEmptyRoom(room.RoomNumber);
             }
 
-            ERROR_CODE userConnectedCheck = userManager.CheckUserConnected(userSessionId);
-            if (userConnectedCheck == ERROR_CODE.None)
+            SockErrorCode userConnectedCheck = userManager.CheckUserConnected(userSessionId);
+            if (userConnectedCheck == SockErrorCode.None)
             {
                 int userHeartBeatArrayIndex = userManager.GetUser(userSessionId).myUserArrayIndex;
 
@@ -67,24 +69,24 @@ namespace OmokGameServer
             {
                 var requestData = MemoryPackSerializer.Deserialize<InPKTVerifiedLoginReq>(packet.bodyData);
 
-                if(requestData.ErrorCode != ERROR_CODE.None)
+                if(requestData.ErrorCode != SockErrorCode.None)
                 {
                     LoginRespond(requestData.ErrorCode, sessionId);
                     return;
                 }
 
-                ERROR_CODE errorCodeCheck = userManager.CheckUserLoginExist(sessionId);
+                SockErrorCode errorCodeCheck = userManager.CheckUserLoginExist(sessionId);
 
-                if (errorCodeCheck != ERROR_CODE.None)
+                if (errorCodeCheck != SockErrorCode.None)
                 {
                     LoginRespond(errorCodeCheck, sessionId);
-                    mainLogger.Debug($"sessionId({sessionId}) Login Fail : Error({ERROR_CODE.LoginFailAlreadyExistUser})");
+                    mainLogger.Debug($"sessionId({sessionId}) Login Fail : Error({SockErrorCode.LoginFailAlreadyExistUser})");
                     return;
                 }
 
-                ERROR_CODE errorCodeLogin = userManager.AddUserLogin(sessionId, requestData.Uid);
+                SockErrorCode errorCodeLogin = userManager.AddUserLogin(sessionId, requestData.Uid);
 
-                if (errorCodeLogin == ERROR_CODE.LoginFailUserCountLimitExceed)
+                if (errorCodeLogin == SockErrorCode.LoginFailUserCountLimitExceed)
                 {
                     FullUserRespond(errorCodeLogin, sessionId);
                     mainLogger.Debug($"sessionId({sessionId}) Login Fail : Error({errorCodeLogin})");
@@ -99,7 +101,7 @@ namespace OmokGameServer
             }
         }
 
-        void LoginRespond(ERROR_CODE errorCode, string sessionId)
+        void LoginRespond(SockErrorCode errorCode, string sessionId)
         {
             PKTResLogin loginRes = new PKTResLogin();
             loginRes.Result = errorCode;
@@ -110,7 +112,7 @@ namespace OmokGameServer
             sendFunc(sessionId, sendData);
         }
 
-        void FullUserRespond(ERROR_CODE errorCode, string sessionId)
+        void FullUserRespond(SockErrorCode errorCode, string sessionId)
         {
             PKTResFullUser userFullRes = new PKTResFullUser();
             userFullRes.Result = errorCode;

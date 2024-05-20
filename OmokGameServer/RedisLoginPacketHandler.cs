@@ -2,7 +2,9 @@ using CloudStructures.Structures;
 using CloudStructures;
 using MemoryPack;
 using PacketDefine;
-using PacketTypes;
+using InPacketTypes;
+using GameServerClientShare;
+using SockInternalPacket;
 using SqlKata.Execution;
 using SuperSocket.SocketBase.Logging;
 using MySqlX.XDevAPI.Common;
@@ -35,13 +37,13 @@ namespace OmokGameServer
 
             if (requestData.AuthToken == realAuthToken)
             {
-                verifiedLoginReq.ErrorCode = ERROR_CODE.None;
+                verifiedLoginReq.ErrorCode = SockErrorCode.None;
                 verifiedLoginReq.Uid = requestData.Uid;
                 verifiedLoginReq.AuthToken = requestData.AuthToken;
             }
             else
             {
-                verifiedLoginReq.ErrorCode = ERROR_CODE.LoginFailInvalidUser;
+                verifiedLoginReq.ErrorCode = SockErrorCode.LoginFailInvalidUser;
                 verifiedLoginReq.Uid = 0;
                 verifiedLoginReq.AuthToken = "";
             }
@@ -49,7 +51,7 @@ namespace OmokGameServer
             var bodyData = MemoryPackSerializer.Serialize(verifiedLoginReq);
 
             ServerPacketData newPacket = new ServerPacketData();
-            newPacket.SetPacket(packet.sessionId, (Int16)PACKET_ID.InVerifiedLoginRequest, bodyData);
+            newPacket.SetPacket(packet.sessionId, (Int16)InPACKET_ID.InVerifiedLoginRequest, bodyData);
 
             passPacketToPacketProcessor(newPacket);
         }

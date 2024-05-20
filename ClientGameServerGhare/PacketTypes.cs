@@ -1,8 +1,6 @@
 using MemoryPack;
-using System;
-using System.Collections.Generic;
 
-namespace CSCommon
+namespace ClientGameServerShare
 {
     [MemoryPackable]
     public partial class PKTResponse

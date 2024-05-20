@@ -1,6 +1,7 @@
+using GameServerClientShare;
 using MemoryPack;
 using PacketDefine;
-using PacketTypes;
+using InPacketTypes;
 using SuperSocket.Common;
 
 namespace OmokGameServer
@@ -40,30 +41,30 @@ namespace OmokGameServer
         }
 
 
-        public ERROR_CODE AddUser(User user)
+        public SockErrorCode AddUser(User user)
         {
             if (nowUserCount >= maxUserNumber)
             {
-                return ERROR_CODE.RoomEnterFailUserCountLimitExceed;
+                return SockErrorCode.RoomEnterFailUserCountLimitExceed;
             }
 
             if (CheckUserExist(user))
             {
-                return ERROR_CODE.RoomEnterFailAlreadyInRoom;
+                return SockErrorCode.RoomEnterFailAlreadyInRoom;
             }
 
             userList.Add(user);
             readyStatusDictionary[user] = false;
             nowUserCount++;
 
-            return ERROR_CODE.None;
+            return SockErrorCode.None;
         }
 
-        public ERROR_CODE RemoveUser(User user)
+        public SockErrorCode RemoveUser(User user)
         {
             if (!CheckUserExist(user))
             {
-                return ERROR_CODE.RoomLeaveFailNotInRoom;
+                return SockErrorCode.RoomLeaveFailNotInRoom;
             }
 
             userList.Remove(user);
@@ -75,7 +76,7 @@ namespace OmokGameServer
 
             readyStatusDictionary.Remove(user);
 
-            return ERROR_CODE.None;
+            return SockErrorCode.None;
         }
 
         void RemoveAllUser()
