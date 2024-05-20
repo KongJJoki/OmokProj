@@ -69,6 +69,7 @@ namespace MatchingServer
 
         public (bool, CompleteMatchData) GetCompleteMatching(int uid)
         {
+            // 있나 없나 검사 안하고 그냥 가져오고 가져온 값으로 판단하기
             if (_completeDic.ContainsKey(uid))
             {
                 CompleteMatchData matchingData = new CompleteMatchData();
