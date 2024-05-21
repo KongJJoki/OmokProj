@@ -37,16 +37,14 @@ namespace MatchingServer
 
         TimeSpan defaultExpireTime = TimeSpan.FromDays(1);
 
-        RedisList<string> matchReqList;
-        RedisList<string> matchCompleteList;
+        RedisList<MatchReqForm> matchReqList;
+        RedisList<MatchCompeleteForm> matchCompleteList;
 
         string matchReqListKey = "";
         string matchCompleteListKey = "";
 
         public MatchWoker(IOptions<RedisDBConfig> redisDBConfig)
         {
-            Console.WriteLine("MatchWoker 생성자 호출");
-
             this.redisDBConfig = redisDBConfig.Value;
             redisConfig = new RedisConfig("redisDB", this.redisDBConfig.RedisDB);
             matchReqListKey = this.redisDBConfig.MatchReqListKey;
@@ -90,7 +88,7 @@ namespace MatchingServer
 
         async void RunMatching()
         {
-            matchReqList = new RedisList<string>(redisConnMatchReq, matchReqListKey, defaultExpireTime);
+            matchReqList = new RedisList<MatchReqForm>(redisConnMatchReq, matchReqListKey, defaultExpireTime);
 
             while (true)
             {
@@ -109,9 +107,8 @@ namespace MatchingServer
                     _reqQueue.TryDequeue(out userUid2);
 
                     var matchReqData = new MatchReqForm(user1Uid: userUid1, user2Uid: userUid2);
-                    var jsonData = JsonSerializer.Serialize(matchReqData);
 
-                    await matchReqList.RightPushAsync(jsonData);
+                    await matchReqList.RightPushAsync(matchReqData);
                 }
                 catch (Exception ex)
                 {
@@ -122,7 +119,7 @@ namespace MatchingServer
 
         void RunMatchingComplete()
         {
-            matchCompleteList = new RedisList<string>(redisConnMatchComplete, matchCompleteListKey, defaultExpireTime);
+            matchCompleteList = new RedisList<MatchCompeleteForm>(redisConnMatchComplete, matchCompleteListKey, defaultExpireTime);
 
             while (true)
             {
@@ -132,10 +129,11 @@ namespace MatchingServer
 
                     if(result.HasValue == false)
                     {
+                        Thread.Sleep(250);
                         continue;
                     }
 
-                    var matchCompeleteRes = JsonSerializer.Deserialize<MatchCompeleteForm>(result.Value);
+                    var matchCompeleteRes = result.Value;
 
                     MatchConfig matchConfig = new MatchConfig();
 

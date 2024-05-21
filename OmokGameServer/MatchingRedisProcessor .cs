@@ -19,8 +19,8 @@ namespace OmokGameServer
         RedisConnection redisConnMatchReq;
         RedisConnection redisConnMatchComplete;
 
-        RedisList<string> matchReqList;
-        RedisList<string> matchCompleteList;
+        RedisList<MatchReqForm> matchReqList;
+        RedisList<MatchCompeleteForm> matchCompleteList;
 
         TimeSpan defaultExpireTime = TimeSpan.FromDays(1);
 
@@ -59,8 +59,8 @@ namespace OmokGameServer
 
         void Process()
         {
-            matchReqList = new RedisList<string>(redisConnMatchReq, matchReqListKey, defaultExpireTime);
-            matchCompleteList = new RedisList<string>(redisConnMatchComplete, matchCompleteListKey, defaultExpireTime);
+            matchReqList = new RedisList<MatchReqForm>(redisConnMatchReq, matchReqListKey, defaultExpireTime);
+            matchCompleteList = new RedisList<MatchCompeleteForm>(redisConnMatchComplete, matchCompleteListKey, defaultExpireTime);
 
             while (isMatchingRedisProcessorRunning)
             {
@@ -76,17 +76,17 @@ namespace OmokGameServer
                     var result = matchReqList.LeftPopAsync().Result;
                     if(!result.HasValue)
                     {
+                        Thread.Sleep(250);
                         continue;
                     }
 
-                    var matchReqData = JsonSerializer.Deserialize<MatchReqForm>(result.Value);
+                    var matchReqData = result.Value;
                     mainLogger.Debug($"매칭 요청 접수(user1 : {matchReqData.user1Uid} / user2 : {matchReqData.user2Uid})");
 
                     int emptyRoomNum = roomManager.GetEmptyRoomNum();
                     var matchCompeleteData = new MatchCompeleteForm(matchReqData.user1Uid, matchReqData.user2Uid, serverOption.IP.ToString(), serverOption.Port.ToString(), emptyRoomNum);
-                    var jsonData = JsonSerializer.Serialize(matchCompeleteData);
 
-                    matchCompleteList.RightPushAsync(jsonData);
+                    matchCompleteList.RightPushAsync(matchCompeleteData);
                     mainLogger.Debug($"매칭 결과 리스트에 추가(방 번호 : {emptyRoomNum})");
                 }
                 catch (Exception ex)
