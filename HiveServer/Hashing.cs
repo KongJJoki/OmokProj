@@ -27,7 +27,7 @@ namespace HiveServer
                 return builder.ToString(); // return이 실행되기 전에 using문이 dispose함
             }
         }
-        public static string MakeAuthToken(Int32 userId)
+        public static string MakeAuthToken(int userId)
         {
             string saltedToken = userId.ToString() + saltValue;
 

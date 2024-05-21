@@ -19,7 +19,7 @@ namespace HiveServer.Services
             this.redisDB = redisDB;
         }
 
-        public record HiveLoginResult(EErrorCode ErrorCode, Int32? UserId, string? AuthToken);
+        public record HiveLoginResult(EErrorCode ErrorCode, int UserId, string AuthToken);
 
         public async Task<HiveLoginResult> HiveLogin(string email, string password)
         {
