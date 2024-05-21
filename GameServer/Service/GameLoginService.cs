@@ -31,7 +31,7 @@ namespace GameServer.Services
 
         public record GameLoginResult(EErrorCode ErrorCode, string SocketIp, string SocketPort);
 
-        public async Task<GameLoginResult> GameLogin(Int32 uid, string authToken)
+        public async Task<GameLoginResult> GameLogin(int uid, string authToken)
         {
             try
             {

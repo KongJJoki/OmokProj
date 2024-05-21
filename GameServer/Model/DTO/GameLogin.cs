@@ -2,7 +2,7 @@ namespace GameServer.Model.DTO
 {
     public class GameLoginReq
     {
-        public Int32 Uid { get; set; }
+        public int Uid { get; set; }
         public string AuthToken { get; set; }
     }
     public class GameLoginRes : ErrorCode
