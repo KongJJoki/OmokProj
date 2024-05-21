@@ -89,13 +89,13 @@ namespace OmokGameServer
                 {
                     var newPacket = packetBuffer.Receive();
 
-                    if(newPacket.packetId == (int)InPACKET_ID.InSaveGameResult)
+                    if(newPacket.packetId == (int)InPacketID.InSaveGameResult)
                     {
                         passPacketToDBProcessor(newPacket);
                         continue;
                     }
 
-                    if(newPacket.packetId == (int)PACKET_ID.LoginRequest)
+                    if(newPacket.packetId == (int)PacketID.LoginRequest)
                     {
                         passPacketToRedisProcessor(newPacket);
                         continue;

@@ -1,6 +1,6 @@
 namespace SockInternalPacket
 {
-    public enum InPACKET_ID
+    public enum InPacketID
     {
         // Internal 1000~1999
         InNTFClientConnect = 1000,

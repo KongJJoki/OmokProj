@@ -10,9 +10,9 @@ namespace OmokGameServer
     {
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
         {
-            packetHandlerDictionary.Add((int)PACKET_ID.RoomEnterRequest, RoomEnterRequest);
-            packetHandlerDictionary.Add((int)PACKET_ID.RoomLeaveRequest, RoomLeaveRequest);
-            packetHandlerDictionary.Add((int)PACKET_ID.RoomChatRequest, RoomChatRequest);
+            packetHandlerDictionary.Add((int)PacketID.RoomEnterRequest, RoomEnterRequest);
+            packetHandlerDictionary.Add((int)PacketID.RoomLeaveRequest, RoomLeaveRequest);
+            packetHandlerDictionary.Add((int)PacketID.RoomChatRequest, RoomChatRequest);
         }
         public void RoomEnterRequest(ServerPacketData packet)
         {
@@ -73,7 +73,7 @@ namespace OmokGameServer
             roomEnterRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(roomEnterRes);
-            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.RoomEnterResponse, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PacketID.RoomEnterResponse, bodyData);
 
             sendFunc(sessionId, sendData);
         }
@@ -116,8 +116,6 @@ namespace OmokGameServer
                     return;
                 }
 
-                //user.SetRoomLeave();
-
                 room.NotifyRoomLeave(user);
                 RoomLeaveRespond(errorCode, sessionId);
 
@@ -135,7 +133,7 @@ namespace OmokGameServer
             roomLeaveRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(roomLeaveRes);
-            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.RoomLeaveResponse, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PacketID.RoomLeaveResponse, bodyData);
 
             sendFunc(sessionId, sendData);
         }
@@ -179,7 +177,7 @@ namespace OmokGameServer
             roomEnterRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(roomEnterRes);
-            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.RoomChatResponse, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PacketID.RoomChatResponse, bodyData);
 
             sendFunc(sessionId, sendData);
         }

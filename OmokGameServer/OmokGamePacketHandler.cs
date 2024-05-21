@@ -11,7 +11,7 @@ namespace OmokGameServer
     {
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
         {
-            packetHandlerDictionary.Add((int)PACKET_ID.OmokStonePlaceRequest, OmokStonePlaceRequest);
+            packetHandlerDictionary.Add((int)PacketID.OmokStonePlaceRequest, OmokStonePlaceRequest);
         }
 
         public void OmokStonePlaceRequest(ServerPacketData packet)
@@ -74,7 +74,7 @@ namespace OmokGameServer
             omokStonePlaceRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(omokStonePlaceRes);
-            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.OmokStonePlaceResponse, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PacketID.OmokStonePlaceResponse, bodyData);
 
             sendFunc(sessionId, sendData);
         }

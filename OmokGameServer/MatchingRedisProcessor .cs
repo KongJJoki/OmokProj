@@ -66,13 +66,11 @@ namespace OmokGameServer
             {
                 try
                 {
-                    // 빈 방 있는지 체크
                     if(!roomManager.IsEmptyRoomExist())
                     {
                         continue;
                     }
 
-                    // 레디스 리스트에서 값 있으면 가져오기
                     var result = matchReqList.LeftPopAsync().Result;
                     if(!result.HasValue)
                     {

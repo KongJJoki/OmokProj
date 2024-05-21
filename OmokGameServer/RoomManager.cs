@@ -12,7 +12,6 @@ namespace OmokGameServer
 
         Timer turnCheckTimer;
         List<Room> roomList = new List<Room>();
-        Dictionary<int, int> nowRoomMemberCount = new Dictionary<int, int>(); // 현재 방의 인원 수 -> 1분 이상 1명인 방 있으면 매칭 상대 접속 실패?로 퇴장시키기
 
         ConcurrentQueue<int> emptyRoomNumber = new ConcurrentQueue<int>();
 
@@ -32,7 +31,7 @@ namespace OmokGameServer
         void SendTurnCheckPacket(object state)
         {
             ServerPacketData packet = new ServerPacketData();
-            packet.SetPacketNoBody("", (Int16)InPACKET_ID.InNTFCheckTurnTime);
+            packet.SetPacketNoBody("", (int)InPacketID.InNTFCheckTurnTime);
 
             pushPacketInProcessorFunc(packet);
         }

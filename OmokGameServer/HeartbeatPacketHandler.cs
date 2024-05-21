@@ -23,8 +23,8 @@ namespace OmokGameServer
 
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
         {
-            packetHandlerDictionary.Add((int)InPACKET_ID.InNTFCheckHeartBeat, HeartBeatCheckRequest);
-            packetHandlerDictionary.Add((int)PACKET_ID.HeartBeatResponseFromClient, HeartBeatResponseFromClient);
+            packetHandlerDictionary.Add((int)InPacketID.InNTFCheckHeartBeat, HeartBeatCheckRequest);
+            packetHandlerDictionary.Add((int)PacketID.HeartBeatResponseFromClient, HeartBeatResponseFromClient);
         }
 
         public void HeartBeatRequestToClient(string sessionId)
@@ -32,7 +32,7 @@ namespace OmokGameServer
             PKTHeartBeatToClient heartBeatToClient = new PKTHeartBeatToClient();
 
             var bodyData = MemoryPackSerializer.Serialize(heartBeatToClient);
-            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.HeartBeatRequestToClient, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PacketID.HeartBeatRequestToClient, bodyData);
 
             sendFunc(sessionId, sendData);
         }

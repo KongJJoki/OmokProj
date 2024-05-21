@@ -8,14 +8,13 @@ namespace OmokGameServer
 {
     public class ConnectionLoginPacketHandler : PacketHandler
     {
-        // 핸들러 맵에 함수 추가하는 함수
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
         {
-            packetHandlerDictionary.Add((int)InPACKET_ID.InNTFClientConnect, InternalNTFClientConnect);
-            packetHandlerDictionary.Add((int)InPACKET_ID.InNTFClientDisconnect, InternalNTFClientDisconnect);
-            packetHandlerDictionary.Add((int)InPACKET_ID.InVerifiedLoginRequest, LoginRequest);
+            packetHandlerDictionary.Add((int)InPacketID.InNTFClientConnect, InternalNTFClientConnect);
+            packetHandlerDictionary.Add((int)InPacketID.InNTFClientDisconnect, InternalNTFClientDisconnect);
+            packetHandlerDictionary.Add((int)InPacketID.InVerifiedLoginRequest, LoginRequest);
         }
-        // 클라이언트 연결
+
         void InternalNTFClientConnect(ServerPacketData packetData)
         {
             // MaxConnectionNumber을 넘은 세션 접속은 슈퍼소켓에서 차단
@@ -29,12 +28,6 @@ namespace OmokGameServer
             string userSessionId = packetData.sessionId;
 
             var user = userManager.GetUser(userSessionId);
-            /*if (user.isInRoom)
-            {
-                var room = roomManager.GetRoom(user.roomNumber);
-                room.GameFinish();
-                roomManager.EnqueueEmptyRoom(room.RoomNumber);
-            }*/
 
             var room = roomManager.GetRoom(user.roomNumber);
             user.SetRoomLeave();
@@ -59,7 +52,7 @@ namespace OmokGameServer
 
             mainLogger.Debug($"Client DisConnect");
         }
-        // 로그인 요청
+
         void LoginRequest(ServerPacketData packet)
         {
             string sessionId = packet.sessionId;
@@ -107,7 +100,7 @@ namespace OmokGameServer
             loginRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(loginRes);
-            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.LoginResponse, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PacketID.LoginResponse, bodyData);
 
             sendFunc(sessionId, sendData);
         }
@@ -118,7 +111,7 @@ namespace OmokGameServer
             userFullRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(userFullRes);
-            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.FullUser, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PacketID.FullUser, bodyData);
 
             sendFunc(sessionId, sendData);
         }

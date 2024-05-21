@@ -1,6 +1,6 @@
 namespace GameServerClientShare
 {
-    public enum PACKET_ID
+    public enum PacketID
     {
         // External
 

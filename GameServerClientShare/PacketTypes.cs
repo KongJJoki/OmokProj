@@ -19,7 +19,7 @@ namespace GameServerClientShare
     [MemoryPackable]
     public partial class PKTReqLogin
     {
-        public Int32 Uid { get; set; }
+        public int Uid { get; set; }
         public string AuthToken { get; set; }
     }
 
@@ -62,17 +62,17 @@ namespace GameServerClientShare
     [MemoryPackable]
     public partial class PKTNTFRoomEnter
     {
-        public Int32 Uid { get; set; }
+        public int Uid { get; set; }
     }
     [MemoryPackable]
     public partial class PKTNTFRoomLeave
     {
-        public Int32 Uid { get; set; }
+        public int Uid { get; set; }
     }
     [MemoryPackable]
     public partial class PKTNTFRoomMember
     {
-        public List<Int32> UidList { get; set; } = new List<Int32>();
+        public List<int> UidList { get; set; } = new List<int>();
     }
 
     [MemoryPackable]
@@ -88,7 +88,7 @@ namespace GameServerClientShare
     [MemoryPackable]
     public partial class PKTNTFRoomChat
     {
-        public Int32 Uid { get; set; }
+        public int Uid { get; set; }
         public string Message { get; set; }
     }
 
@@ -121,7 +121,7 @@ namespace GameServerClientShare
     [MemoryPackable]
     public partial class PKTNTFGameStart
     {
-        public Int32 StartUserUid { get; set; }
+        public int StartUserUid { get; set; }
     }
 
     // Omok Game
@@ -141,7 +141,7 @@ namespace GameServerClientShare
     [MemoryPackable]
     public partial class PKTNTFOmokStonePlace
     {
-        public Int32 NextTurnUserUid { get; set; }
+        public int NextTurnUserUid { get; set; }
         public int PosX { get; set; }
         public int PosY { get; set; }
     }
@@ -149,20 +149,20 @@ namespace GameServerClientShare
     [MemoryPackable]
     public partial class PKTNTFOmokWin
     {
-        public Int32 WinUserUid { get; set; }
+        public int WinUserUid { get; set; }
     }
 
     [MemoryPackable]
     public partial class PKTNTFOmokLose
     {
-        public Int32 LoseUserUid { get; set; }
+        public int LoseUserUid { get; set; }
     }
 
     // Turn Change
     [MemoryPackable]
     public partial class PKTNTFTurnChange
     {
-        public Int32 TurnGetUserUid { get; set; }
+        public int TurnGetUserUid { get; set; }
     }
 
     [MemoryPackable]

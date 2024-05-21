@@ -155,7 +155,7 @@ namespace OmokGameServer
 
             ServerPacketData packet = new ServerPacketData();
 
-            packet.SetPacketNoBody(clientSession.SessionID, (Int16)InPACKET_ID.InNTFClientConnect);
+            packet.SetPacketNoBody(clientSession.SessionID, (int)InPacketID.InNTFClientConnect);
 
             PassPacketToPacketProcessor(packet);
         }
@@ -165,7 +165,7 @@ namespace OmokGameServer
 
             ServerPacketData packet = new ServerPacketData();
 
-            packet.SetPacketNoBody(clientSession.SessionID, (Int16)InPACKET_ID.InNTFClientDisconnect);
+            packet.SetPacketNoBody(clientSession.SessionID, (int)InPacketID.InNTFClientDisconnect);
 
             PassPacketToPacketProcessor(packet);
         }
@@ -179,7 +179,7 @@ namespace OmokGameServer
             packet.packetId = requestInfo.PacketId;
             packet.bodyData = requestInfo.Body;
 
-            if (packet.packetId >= (int)PACKET_ID.FromClientStart && packet.packetId <= (int)PACKET_ID.FromClientEnd)
+            if (packet.packetId >= (int)PacketID.FromClientStart && packet.packetId <= (int)PacketID.FromClientEnd)
             {
                 PassPacketToPacketProcessor(packet);
             }
@@ -210,7 +210,7 @@ namespace OmokGameServer
             PKTNTFForceDisconnect forceDisconnect = new PKTNTFForceDisconnect();
 
             var bodyData = MemoryPackSerializer.Serialize(forceDisconnect);
-            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.ForceDisconnect, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PacketID.ForceDisconnect, bodyData);
 
             SendData(sessionId, sendData);
         }

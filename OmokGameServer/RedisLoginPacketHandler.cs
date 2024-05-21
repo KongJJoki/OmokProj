@@ -24,7 +24,7 @@ namespace OmokGameServer
 
         public void SetPacketHandler(Dictionary<int, Func<ServerPacketData, RedisConnection, Task>> redisPacketHandlerDictionary)
         {
-            redisPacketHandlerDictionary.Add((int)PACKET_ID.LoginRequest, VerifyLoginReq);
+            redisPacketHandlerDictionary.Add((int)PacketID.LoginRequest, VerifyLoginReq);
         }
 
         async Task VerifyLoginReq(ServerPacketData packet, RedisConnection redisConnection)
@@ -51,7 +51,7 @@ namespace OmokGameServer
             var bodyData = MemoryPackSerializer.Serialize(verifiedLoginReq);
 
             ServerPacketData newPacket = new ServerPacketData();
-            newPacket.SetPacket(packet.sessionId, (Int16)InPACKET_ID.InVerifiedLoginRequest, bodyData);
+            newPacket.SetPacket(packet.sessionId, (Int16)InPacketID.InVerifiedLoginRequest, bodyData);
 
             passPacketToPacketProcessor(newPacket);
         }

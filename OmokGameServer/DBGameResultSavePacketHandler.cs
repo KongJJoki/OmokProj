@@ -18,7 +18,7 @@ namespace OmokGameServer
 
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData, QueryFactory>> dbPacketHandlerDictionary)
         {
-            dbPacketHandlerDictionary.Add((int)InPACKET_ID.InSaveGameResult, UpdateGameResult);
+            dbPacketHandlerDictionary.Add((int)InPacketID.InSaveGameResult, UpdateGameResult);
         }
 
         void UpdateGameResult(ServerPacketData packet, QueryFactory queryFactory)
@@ -54,7 +54,7 @@ namespace OmokGameServer
             }
         }
 
-        int GetWinCount(Int32 uid, QueryFactory queryFactory)
+        int GetWinCount(int uid, QueryFactory queryFactory)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace OmokGameServer
             }
         }
 
-        int GetLoseCount(Int32 uid, QueryFactory queryFactory)
+        int GetLoseCount(int uid, QueryFactory queryFactory)
         {
             try
             {
@@ -86,7 +86,7 @@ namespace OmokGameServer
             }
         }
 
-        int UpdateWinCount(Int32 uid, int originWinCount, QueryFactory queryFactory)
+        int UpdateWinCount(int uid, int originWinCount, QueryFactory queryFactory)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace OmokGameServer
 
         }
 
-        int UpdateLoseCount(Int32 uid, int originLoseCount, QueryFactory queryFactory)
+        int UpdateLoseCount(int uid, int originLoseCount, QueryFactory queryFactory)
         {
             try
             {

@@ -26,7 +26,7 @@ namespace OmokGameServer
 
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
         {
-            packetHandlerDictionary.Add((int)InPACKET_ID.InNTFCheckTurnTime, RoomCheckRequest);
+            packetHandlerDictionary.Add((int)InPacketID.InNTFCheckTurnTime, RoomCheckRequest);
         }
 
         void RoomCheckRequest(ServerPacketData packet)

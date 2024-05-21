@@ -9,8 +9,8 @@ namespace OmokGameServer
     {
         public void SetPacketHandler(Dictionary<int, Action<ServerPacketData>> packetHandlerDictionary)
         {
-            packetHandlerDictionary.Add((int)PACKET_ID.GameReadyRequest, GameReadyRequest);
-            packetHandlerDictionary.Add((int)PACKET_ID.GameStartRequest, GameStartRequest);
+            packetHandlerDictionary.Add((int)PacketID.GameReadyRequest, GameReadyRequest);
+            packetHandlerDictionary.Add((int)PacketID.GameStartRequest, GameStartRequest);
         }
 
         public void GameReadyRequest(ServerPacketData packet)
@@ -65,7 +65,7 @@ namespace OmokGameServer
             gameReadyRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(gameReadyRes);
-            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.GameReadyResponse, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PacketID.GameReadyResponse, bodyData);
 
             sendFunc(sessionId, sendData);
         }
@@ -133,7 +133,7 @@ namespace OmokGameServer
             gameStartRes.Result = errorCode;
 
             var bodyData = MemoryPackSerializer.Serialize(gameStartRes);
-            var sendData = PacketToBytes.MakeToPacket(PACKET_ID.GameStartResponse, bodyData);
+            var sendData = PacketToBytes.MakeToPacket(PacketID.GameStartResponse, bodyData);
 
             sendFunc(sessionId, sendData);
         }

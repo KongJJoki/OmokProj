@@ -8,17 +8,15 @@ namespace OmokGameServer
     public class OmokBoard
     {
         int[,] omokBoard = new int[19, 19];
-        public Int32 BlackUserUid { get; set; }
-        public Int32 WhiteUserUid { get; set; }
-
-        int turnCount;
+        public int BlackUserUid { get; set; }
+        public int WhiteUserUid { get; set; }
 
         Action<ServerPacketData> pushPacketInProcessorFunc;
 
         const int blackStone = 10;
         const int whiteStone = 20;
 
-        public void Init(Int32 blackUserUid, Int32 whiteUserUid, Action<ServerPacketData> pushPacketInProcessorFunc)
+        public void Init(int blackUserUid, int whiteUserUid, Action<ServerPacketData> pushPacketInProcessorFunc)
         {
             this.BlackUserUid = blackUserUid;
             this.WhiteUserUid = whiteUserUid;
@@ -40,7 +38,7 @@ namespace OmokGameServer
             return false;
         }
 
-        public void OmokStonePlace(Int32 uid, int posX, int posY)
+        public void OmokStonePlace(int uid, int posX, int posY)
         {
             if (uid == BlackUserUid)
             {
@@ -226,7 +224,7 @@ namespace OmokGameServer
             }
         }
 
-        public void GameResultSave(Int32 winUserUid, Int32 loseUserUid)
+        public void GameResultSave(int winUserUid, int loseUserUid)
         {
             InPKTGameResult gameResult = new InPKTGameResult();
             gameResult.WinUserUid = winUserUid;
@@ -235,7 +233,7 @@ namespace OmokGameServer
             var bodyData = MemoryPackSerializer.Serialize(gameResult);
 
             ServerPacketData packet = new ServerPacketData();
-            packet.SetPacket("", (Int16)InPACKET_ID.InSaveGameResult, bodyData);
+            packet.SetPacket("", (int)InPacketID.InSaveGameResult, bodyData);
 
             pushPacketInProcessorFunc(packet);
         }

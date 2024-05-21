@@ -42,7 +42,7 @@ namespace OmokGameServer
         void SendHeartBeatCheckPacket(object state)
         {
             ServerPacketData packet = new ServerPacketData();
-            packet.SetPacketNoBody("", (Int16)InPACKET_ID.InNTFCheckHeartBeat);
+            packet.SetPacketNoBody("", (int)InPacketID.InNTFCheckHeartBeat);
 
             pushPacketInProcessorFunc(packet);
         }
@@ -68,7 +68,7 @@ namespace OmokGameServer
 
         }
 
-        public SockErrorCode AddUserLogin(string sessionId, Int32 uid)
+        public SockErrorCode AddUserLogin(string sessionId, int uid)
         {
             if (nowLoginUserList.Count > maxLoginUserCount)
             {
@@ -100,7 +100,7 @@ namespace OmokGameServer
             return false;
         }
 
-        public void SetUserName(string sessionId, Int32 uid)
+        public void SetUserName(string sessionId, int uid)
         {
             User user = sessionIduserDictionary[sessionId];
             user.SetUserName(uid);

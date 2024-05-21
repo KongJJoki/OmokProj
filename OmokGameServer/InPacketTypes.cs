@@ -21,15 +21,15 @@ namespace InPacketTypes
     [MemoryPackable]
     public partial class InPKTGameResult
     {
-        public Int32 WinUserUid { get; set; }
-        public Int32 LoseUseUid { get; set; }
+        public int WinUserUid { get; set; }
+        public int LoseUseUid { get; set; }
     }
 
     [MemoryPackable]
     public partial class InPKTVerifiedLoginReq
     {
         public SockErrorCode ErrorCode { get; set; }
-        public Int32 Uid { get; set; }
+        public int Uid { get; set; }
         public string AuthToken { get; set; }
     }
 }
