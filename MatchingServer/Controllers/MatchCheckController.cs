@@ -19,15 +19,15 @@ namespace MatchingServer.Controllers
         [HttpPost]
         public MatchCheckRes MatchCheckRequest(MatchCheckReq request)
         {
-            MatchCheckRes response = new();
+            MatchCheckRes response = new MatchCheckRes();
 
-            (var result, var completeMatchingData) = _matchWorker.GetCompleteMatching(request.Uid);
+            var completeMatchingData = _matchWorker.GetCompleteMatching(request.Uid);
 
-            if(result)
+            if(completeMatchingData != null)
             {
                 response.Result = EErrorCode.None;
-                response.SockIP = completeMatchingData.SockIP;
-                response.SockPort = completeMatchingData.SockPort;
+                response.SockIP = completeMatchingData.IP;
+                response.SockPort = completeMatchingData.Port;
                 response.RoomNumber = completeMatchingData.RoomNumber;
             }
             else

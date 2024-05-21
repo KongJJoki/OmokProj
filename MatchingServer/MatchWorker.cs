@@ -18,7 +18,7 @@ namespace MatchingServer
     {
         public void AddUser(int uid);
 
-        public (bool, CompleteMatchData) GetCompleteMatching(int uid);
+        public MatchConfig GetCompleteMatching(int uid);
     }
 
     public class MatchWoker : IMatchWoker
@@ -65,22 +65,13 @@ namespace MatchingServer
             _reqQueue.Enqueue(uid);
         }
 
-        public (bool, CompleteMatchData) GetCompleteMatching(int uid)
+        public MatchConfig GetCompleteMatching(int uid)
         {
-            // 있나 없나 검사 안하고 그냥 가져오고 가져온 값으로 판단하기
-            if (_completeDic.ContainsKey(uid))
-            {
-                CompleteMatchData matchingData = new CompleteMatchData();
-                matchingData.SockIP = _completeDic[uid].IP;
-                matchingData.SockPort = _completeDic[uid].Port;
-                matchingData.RoomNumber = _completeDic[uid].RoomNumber;
+            _completeDic.TryGetValue(uid, out var matchingDataInfo);
 
-                _completeDic.TryRemove(uid, out _);
+            _completeDic.TryRemove(uid, out _);
 
-                return (true, matchingData);
-            }
-
-            return (false, null);
+            return matchingDataInfo;
         }
 
         public record MatchReqForm(int user1Uid, int user2Uid);
@@ -112,7 +103,7 @@ namespace MatchingServer
                 }
                 catch (Exception ex)
                 {
-                    
+
                 }
             }
         }
@@ -127,7 +118,7 @@ namespace MatchingServer
                 {
                     var result = matchCompleteList.LeftPopAsync().Result;
 
-                    if(result.HasValue == false)
+                    if (result.HasValue == false)
                     {
                         Thread.Sleep(250);
                         continue;
