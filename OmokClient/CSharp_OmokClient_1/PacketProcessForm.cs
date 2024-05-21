@@ -21,26 +21,26 @@ namespace csharp_test_client
         {
             
             //PacketFuncDic.Add(PACKET_ID.PACKET_ID_ERROR_NTF, PacketProcess_ErrorNotify);
-            PacketFuncDic.Add((int)PACKET_ID.LoginResponse, PacketProcess_Login);
+            PacketFuncDic.Add((int)PacketID.LoginResponse, PacketProcess_Login);
 
-            PacketFuncDic.Add((int)PACKET_ID.RoomEnterResponse, PacketProcess_RoomEnterResponse);
-            PacketFuncDic.Add((int)PACKET_ID.RoomEnterNotify, PacketProcess_RoomNewUserNotify);
-            PacketFuncDic.Add((int)PACKET_ID.RoomMemberNotify, PacketProcess_RoomUserListNotify);
-            PacketFuncDic.Add((int)PACKET_ID.RoomLeaveResponse, PacketProcess_RoomLeaveResponse);
-            PacketFuncDic.Add((int)PACKET_ID.RoomLeaveNotify, PacketProcess_RoomLeaveUserNotify);
-            PacketFuncDic.Add((int)PACKET_ID.RoomChatResponse, PacketProcess_RoomChatResponse);
-            PacketFuncDic.Add((int)PACKET_ID.RoomChatNotify, PacketProcess_RoomChatNotify);
-            PacketFuncDic.Add((int)PACKET_ID.GameReadyResponse, PacketProcess_GameReadyResponse);
-            PacketFuncDic.Add((int)PACKET_ID.GameStartResponse, PacketProcess_GameStartResultResponse);
-            PacketFuncDic.Add((int)PACKET_ID.GameStartNotify, PacketProcess_GameStartNotify);
-            PacketFuncDic.Add((int)PACKET_ID.OmokStonePlaceResponse, PacketProcess_PutMokResponse);
-            PacketFuncDic.Add((int)PACKET_ID.OmokStonePlaceNotify, PacketProcess_PutMokNotify);
-            PacketFuncDic.Add((int)PACKET_ID.OmokWinNotify, PacketProcess_WinOmokNotify);
-            PacketFuncDic.Add((int)PACKET_ID.OmokLoseNotify, PacketProcess_LoseOmokNotify);
-            PacketFuncDic.Add((int)PACKET_ID.TurnChangeNotify, PacketProcess_TurnChangeNotify);
+            PacketFuncDic.Add((int)PacketID.RoomEnterResponse, PacketProcess_RoomEnterResponse);
+            PacketFuncDic.Add((int)PacketID.RoomEnterNotify, PacketProcess_RoomNewUserNotify);
+            PacketFuncDic.Add((int)PacketID.RoomMemberNotify, PacketProcess_RoomUserListNotify);
+            PacketFuncDic.Add((int)PacketID.RoomLeaveResponse, PacketProcess_RoomLeaveResponse);
+            PacketFuncDic.Add((int)PacketID.RoomLeaveNotify, PacketProcess_RoomLeaveUserNotify);
+            PacketFuncDic.Add((int)PacketID.RoomChatResponse, PacketProcess_RoomChatResponse);
+            PacketFuncDic.Add((int)PacketID.RoomChatNotify, PacketProcess_RoomChatNotify);
+            PacketFuncDic.Add((int)PacketID.GameReadyResponse, PacketProcess_GameReadyResponse);
+            PacketFuncDic.Add((int)PacketID.GameStartResponse, PacketProcess_GameStartResultResponse);
+            PacketFuncDic.Add((int)PacketID.GameStartNotify, PacketProcess_GameStartNotify);
+            PacketFuncDic.Add((int)PacketID.OmokStonePlaceResponse, PacketProcess_PutMokResponse);
+            PacketFuncDic.Add((int)PacketID.OmokStonePlaceNotify, PacketProcess_PutMokNotify);
+            PacketFuncDic.Add((int)PacketID.OmokWinNotify, PacketProcess_WinOmokNotify);
+            PacketFuncDic.Add((int)PacketID.OmokLoseNotify, PacketProcess_LoseOmokNotify);
+            PacketFuncDic.Add((int)PacketID.TurnChangeNotify, PacketProcess_TurnChangeNotify);
             //PacketFuncDic.Add((int)PACKET_ID.HeartBeatRequestToClient, PacketProcess_HeartbeatReqFromServer);
-            PacketFuncDic.Add((int)PACKET_ID.ForceDisconnect, PacketProcess_ForceDisconnected);
-            PacketFuncDic.Add((int)PACKET_ID.OmokForceFinish, PacketProcess_ForceGameFinish);
+            PacketFuncDic.Add((int)PacketID.ForceDisconnect, PacketProcess_ForceDisconnected);
+            PacketFuncDic.Add((int)PacketID.OmokForceFinish, PacketProcess_ForceGameFinish);
             //PacketFuncDic.Add(PacketID.NtfReadyOmok, PacketProcess_ReadyOmokNotify);
             //PacketFuncDic.Add(PacketID.NtfStartOmok, PacketProcess_StartOmokNotify);
             //PacketFuncDic.Add(PacketID.ResPutMok, PacketProcess_PutMokResponse);

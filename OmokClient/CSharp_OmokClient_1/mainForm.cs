@@ -134,7 +134,7 @@ namespace csharp_test_client
             var heartbeatToServer = new PKTHeartBeatFromClient();
             var packet = MemoryPackSerializer.Serialize(heartbeatToServer);
 
-            PostSendPacket((short)PACKET_ID.HeartBeatResponseFromClient, packet);
+            PostSendPacket((int)PacketID.HeartBeatResponseFromClient, packet);
         }
 
         /*private void btnDisconnect_Click(object sender, EventArgs e)
@@ -289,7 +289,7 @@ namespace csharp_test_client
             control.Invoke(new MethodInvoker(UpdateButton));
         }
 
-        void PostSendPacket(short packetID, byte[] packetData)
+        void PostSendPacket(int packetID, byte[] packetData)
         {
             if (Network.IsConnected() == false)
             {
@@ -299,7 +299,7 @@ namespace csharp_test_client
 
             const int headerSize = 4;
             byte[] bodyBytes = packetData;
-            short packetSize = (short)(headerSize + packetData.Length);
+            int packetSize = (int)(headerSize + packetData.Length);
 
             byte[] packet = new byte[packetSize];
             WriteUInt16(packet, 0, packetSize);
@@ -307,24 +307,6 @@ namespace csharp_test_client
             Array.Copy(bodyBytes, 0, packet, headerSize, bodyBytes.Length);
 
             SendPacketQueue.Enqueue(packet);
-
-
-
-            /*var header = new MsgPackPacketHeaderInfo();
-            header.ID = packetID;
-
-            if (packetData != null)
-            {
-                header.TotalSize = (UInt16)packetData.Length;
-                
-                header.Write(packetData);
-            }
-            else
-            {
-                packetData = header.Write();
-            }
-
-            SendPacketQueue.Enqueue(packetData);*/
         }
 
         private void WriteUInt16(byte[] bytes, int offset, int value)
@@ -334,12 +316,12 @@ namespace csharp_test_client
         }
 
 
-        void AddRoomUserList(Int32 userID)
+        void AddRoomUserList(int userID)
         {
             listBoxRoomUserList.Items.Add(userID);
         }
 
-        void RemoveRoomUserList(Int32 uid)
+        void RemoveRoomUserList(int uid)
         {
             object removeItem = null;
 
@@ -601,7 +583,7 @@ namespace csharp_test_client
             loginReq.AuthToken = textBoxSocketToken.Text;
             var packet = MemoryPackSerializer.Serialize(loginReq);
 
-            PostSendPacket((short)PACKET_ID.LoginRequest, packet);
+            PostSendPacket((int)PacketID.LoginRequest, packet);
             DevLog.Write($"로그인 요청:  {textBoxSocketID.Text}, {textBoxSocketToken.Text}");
         }
 
@@ -730,7 +712,7 @@ namespace csharp_test_client
             roomEnterReq.RoomNumber = textBoxRoomNumber.Text.ToInt16();
             var packet = MemoryPackSerializer.Serialize(roomEnterReq);
 
-            PostSendPacket((short)PACKET_ID.RoomEnterRequest, packet);
+            PostSendPacket((int)PacketID.RoomEnterRequest, packet);
             DevLog.Write($"방 입장 요청:  {textBoxRoomNumber.Text} 번");
         }
 
@@ -740,7 +722,7 @@ namespace csharp_test_client
             roomEnterReq.RoomNumber = textBoxRoomNumber.Text.ToInt16();
             var packet = MemoryPackSerializer.Serialize(roomEnterReq);
 
-            PostSendPacket((short)PACKET_ID.RoomEnterRequest, packet);
+            PostSendPacket((int)PacketID.RoomEnterRequest, packet);
             DevLog.Write($"방 입장 요청:  {textBoxRoomNumber.Text} 번");
         }
 
@@ -750,7 +732,7 @@ namespace csharp_test_client
             roomLeaveReq.RoomNumber = textBoxRoomNumber.Text.ToInt16();
             var packet = MemoryPackSerializer.Serialize(roomLeaveReq);
 
-            PostSendPacket((short)PACKET_ID.RoomLeaveRequest, packet);
+            PostSendPacket((int)PacketID.RoomLeaveRequest, packet);
             DevLog.Write($"방 퇴장 요청:  {textBoxRoomNumber.Text} 번");
 
             SetDisconnectd();
@@ -768,7 +750,7 @@ namespace csharp_test_client
             requestPkt.Message = textBoxRoomSendMsg.Text;
             var packet = MemoryPackSerializer.Serialize(requestPkt);
 
-            PostSendPacket((short)PACKET_ID.RoomChatRequest, packet);
+            PostSendPacket((int)PacketID.RoomChatRequest, packet);
             DevLog.Write($"방 채팅 요청");
         }
 
@@ -778,7 +760,7 @@ namespace csharp_test_client
             var requestPkt = new PKTReqRoomChat();
             var packet = MemoryPackSerializer.Serialize(requestPkt);
 
-            PostSendPacket((short)PACKET_ID.GameReadyRequest, packet);
+            PostSendPacket((int)PacketID.GameReadyRequest, packet);
 
             DevLog.Write($"게임 준비 완료 요청");
         }
@@ -789,7 +771,7 @@ namespace csharp_test_client
             var requestPkt = new PKTReqGameStart();
             var packet = MemoryPackSerializer.Serialize(requestPkt);
 
-            PostSendPacket((short)PACKET_ID.GameStartRequest, packet);
+            PostSendPacket((int)PacketID.GameStartRequest, packet);
 
             DevLog.Write($"게임 시작 요청");
         }
@@ -824,7 +806,7 @@ namespace csharp_test_client
             requestPkt.PosY = y;
             var packet = MemoryPackSerializer.Serialize(requestPkt);
 
-            PostSendPacket((short)PACKET_ID.OmokStonePlaceRequest, packet);
+            PostSendPacket((int)PacketID.OmokStonePlaceRequest, packet);
 
             DevLog.Write($"put stone 요청 : x  [ {x} ], y: [ {y} ] ");
         }
